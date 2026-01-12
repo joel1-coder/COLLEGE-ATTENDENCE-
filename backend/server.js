@@ -22,7 +22,7 @@ app.use((err, req, res, next) => {
 
 // Routes
 // Routes
-app.use("/api/auth", require("./routes/Authroutes"));
+app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/attendance", require("./routes/attendanceRoutes"));
 app.use("/api/staff", require("./routes/staffRoutes"));
 app.use("/api/students", require("./routes/studentRoutes"));
