@@ -4,7 +4,7 @@ const Section = require('../models/Section');
 const Student = require('../models/Student');
 const User = require('../models/User');
 const Attendance = require('../models/Attendance');
-const auth = require('../middleware/authmiddleware');
+const auth = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
