@@ -24,7 +24,7 @@ const AdminAttendance = () => {
         setLoading(true);
         setError("");
 
-        const res = await axios.get(`http://localhost:5000/api/attendance?date=${date}`);
+        const res = await axios.get(`https://college-attendence.onrender.com/api/attendance?date=${date}`);
         // API returns an attendance document or {}. Use its `records` array or empty array.
         const attendance = res.data || {};
         setRecords(Array.isArray(attendance.records) ? attendance.records : []);
