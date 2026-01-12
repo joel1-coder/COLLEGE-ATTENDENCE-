@@ -17,7 +17,7 @@ export default function AdminLogin() {
     setError('');
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email: adminId, password });
+      const res = await axios.post('https://college-attendence.onrender.com', { email: adminId, password });
       login({ userId: res.data.userId, role: res.data.role, email: adminId, token: res.data.token });
       if (res.data.role === 'admin') navigate('/admin');
       else navigate('/');
