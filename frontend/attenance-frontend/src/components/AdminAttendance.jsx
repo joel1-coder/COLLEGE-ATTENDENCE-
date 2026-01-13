@@ -67,7 +67,7 @@ const AdminAttendance = () => {
                 if (!window.confirm(`Reset attendance for ${date}? This will delete records.`)) return;
                 try {
                   setActionLoading(true);
-                  const api = axios.create({ baseURL: 'http://localhost:5000/api' });
+                  const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
                   const stored = JSON.parse(localStorage.getItem('user')) || null;
                   if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
                   await api.post('/attendance/reset', { date, action: 'reset' });
@@ -86,7 +86,7 @@ const AdminAttendance = () => {
                 if (!window.confirm(`Reopen attendance for ${date}? This clears records but keeps the entry.`)) return;
                 try {
                   setActionLoading(true);
-                  const api = axios.create({ baseURL: 'http://localhost:5000/api' });
+                  const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
                   const stored = JSON.parse(localStorage.getItem('user')) || null;
                   if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
                   await api.post('/attendance/reset', { date, action: 'reopen' });
@@ -137,7 +137,7 @@ const AdminAttendance = () => {
                         setRecords(prev => prev.map(r => (r === row ? { ...r, status: newStatus } : r)));
                         setTogglingIds(prev => new Set([...prev, String(sid)]));
 
-                        const api = axios.create({ baseURL: 'http://localhost:5000/api' });
+                        const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
                         const stored = JSON.parse(localStorage.getItem('user')) || null;
                         if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
 

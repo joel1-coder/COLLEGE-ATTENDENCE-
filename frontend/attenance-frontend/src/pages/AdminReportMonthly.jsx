@@ -17,7 +17,7 @@ export default function AdminReportMonthly(){
   const [pages, setPages] = useState(1);
 
   useEffect(() => {
-    const api = axios.create({ baseURL: 'http://localhost:5000/api' });
+    const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
     const stored = JSON.parse(localStorage.getItem('user')) || null;
     if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
     api.get('/admin/departments').then(res => setDepartments(res.data || [])).catch(() => setDepartments([]));
@@ -26,7 +26,7 @@ export default function AdminReportMonthly(){
   const fetchReport = async (p = 1, fmt) => {
     setLoading(true);
     try {
-      const api = axios.create({ baseURL: 'http://localhost:5000/api' });
+      const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
       const stored = JSON.parse(localStorage.getItem('user')) || null;
       if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
 
