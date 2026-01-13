@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
 
     // set header and verify token with backend
     axios.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-    axios.get('http://localhost:5000/api/auth/verify')
+    axios.get('https://college-attendence.onrender.com/api/auth/verify')
       .then((res) => {
         if (res.data && res.data.valid) {
           setUser(stored);

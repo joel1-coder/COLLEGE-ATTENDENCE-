@@ -10,7 +10,7 @@ export default function ChartAttendance({ limit = 8 }){
   useEffect(() => {
     const fetch = async () => {
       try {
-        const api = axios.create({ baseURL: 'http://localhost:5000/api' });
+        const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
         const stored = JSON.parse(localStorage.getItem('user')) || null;
         if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
         const res = await api.get('/admin/charts/attendance', { params: { limit } });

@@ -18,7 +18,7 @@ export default function EnterMarks(){
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    const api = axios.create({ baseURL: 'http://localhost:5000/api' });
+    const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
     const stored = JSON.parse(localStorage.getItem('user')) || null;
     if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
 
@@ -69,7 +69,7 @@ export default function EnterMarks(){
 
   useEffect(() => {
     if (!department || !section) return;
-    const api = axios.create({ baseURL: 'http://localhost:5000/api' });
+    const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
     const stored = JSON.parse(localStorage.getItem('user')) || null;
     if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
     setLoading(true);
@@ -89,7 +89,7 @@ export default function EnterMarks(){
     const records = Object.keys(marks).map(k => ({ student: k, mark: Number(marks[k]) }));
     const payload = { date: new Date().toISOString().split('T')[0], department, section, records, description, merge: opts.merge };
     try {
-      const api = axios.create({ baseURL: 'http://localhost:5000/api' });
+      const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
       const stored = JSON.parse(localStorage.getItem('user')) || null;
       if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
       const resp = await api.post('/marks', payload);

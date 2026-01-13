@@ -24,7 +24,7 @@ const AttendanceForm = () => {
   // Fetch students
   // fetch classes and sections once on mount
   useEffect(() => {
-    const api = axios.create({ baseURL: "http://localhost:5000/api" });
+    const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
     const stored = JSON.parse(localStorage.getItem('user')) || null;
     if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
 
@@ -83,7 +83,7 @@ const AttendanceForm = () => {
   //   const fetchStudents = async () => {
   //     setLoading(true);
   //     try {
-  //       const api = axios.create({ baseURL: "http://localhost:5000/api" });
+  //       const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
   //       const stored = JSON.parse(localStorage.getItem('user')) || null;
   //       if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
 
@@ -109,7 +109,7 @@ const AttendanceForm = () => {
   //   fetchStudents();
   // }, [department]);
   useEffect(() => {
-  const api = axios.create({ baseURL: "http://localhost:5000/api" });
+  const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
   const stored = JSON.parse(localStorage.getItem("user"));
   if (stored?.token) {
     api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
@@ -132,7 +132,7 @@ const AttendanceForm = () => {
 useEffect(() => {
   if (!department) return;
 
-  const api = axios.create({ baseURL: "http://localhost:5000/api" });
+  const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
   const stored = JSON.parse(localStorage.getItem("user"));
   if (stored?.token) {
     api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
@@ -164,7 +164,7 @@ useEffect(() => {
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const api = axios.create({ baseURL: "http://localhost:5000/api" });
+      const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
       const stored = JSON.parse(localStorage.getItem("user"));
       if (stored?.token) {
         api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
@@ -212,7 +212,7 @@ useEffect(() => {
       const payload = { date: today, description, records };
       console.log('Submitting attendance payload:', payload);
 
-      const api = axios.create({ baseURL: "http://localhost:5000/api" });
+      const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
       const stored = JSON.parse(localStorage.getItem('user')) || null;
       if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
 

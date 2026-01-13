@@ -17,7 +17,7 @@ const Login = () => {
     setError('');
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const res = await axios.post('https://college-attendence.onrender.com/api/auth/login', { email, password });
       login({ userId: res.data.userId, role: res.data.role, email, token: res.data.token });
       if (res.data.role === 'admin') {
         navigate('/admin');
