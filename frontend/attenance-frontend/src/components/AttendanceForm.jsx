@@ -7,6 +7,8 @@ const AttendanceForm = () => {
   const [attendance, setAttendance] = useState({});
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
+  const [descError, setDescError] = useState(false);
+  const descRef = React.createRef();
   const [message, setMessage] = useState("");
 
   // 🔒 Date locked to today (ISO used for payload, displayDate for UI)
@@ -203,13 +205,22 @@ useEffect(() => {
 
   // Submit attendance
   const handleSubmit = async () => {
+    if (!description || !description.trim()) {
+      setDescError(true);
+      // show popup
+      window.alert("You didn't put anything in the Description");
+      // focus textarea
+      if (descRef.current) descRef.current.focus();
+      return;
+    }
     try {
+      setDescError(false);
       const records = Object.keys(attendance).map((studentId) => ({
         student: studentId,
         status: attendance[studentId],
       }));
 
-      const payload = { date: today, description, records };
+      const payload = { date: today, description, department, section, records };
       console.log('Submitting attendance payload:', payload);
 
       const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
@@ -267,11 +278,13 @@ useEffect(() => {
         <label style={{ marginLeft: 12 }}>
           Description:
           <textarea
+            ref={descRef}
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => { setDescription(e.target.value); if (e.target.value && e.target.value.trim()) setDescError(false); }}
             placeholder="Reason / notes for this attendance"
             style={{ marginLeft: 6, verticalAlign: 'middle' }}
           />
+          {descError && <span style={{ color: '#e74c3c', marginLeft: 8 }}>⚠️</span>}
         </label>
 
         <span style={{ marginLeft: 12 }}>Date: {displayDate}</span>
@@ -314,6 +327,7 @@ useEffect(() => {
         Submit Attendance
       </button>
 
+      
       {message && <p className="message">{message}</p>}
     </div>
   );

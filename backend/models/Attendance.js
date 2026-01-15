@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 
 const attendanceSchema = new mongoose.Schema(
   {
-    date: { type: String, required: true, unique: true },
+    date: { type: String, required: true },
+    department: { type: String },
+    section: { type: String },
     description: { type: String },
     records: [
       {

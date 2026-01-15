@@ -12,7 +12,6 @@ router.get("/", authMiddleware, async (req, res) => {
     const { q, page = 1, limit = 20 } = req.query;
     const pageNum = Math.max(1, Number(page) || 1);
     const lim = Math.max(1, Math.min(100, Number(limit) || 20));
-
     const filter = { role: 'staff' };
     if (q) {
       const re = new RegExp(q, 'i');

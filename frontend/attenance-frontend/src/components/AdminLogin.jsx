@@ -16,12 +16,8 @@ export default function AdminLogin() {
     e.preventDefault();
     setError('');
     setLoading(true);
-    try {
-<<<<<<< HEAD
+        try {
       const res = await axios.post('https://college-attendence.onrender.com/api/auth/login', { email: adminId, password });
-=======
-      const res = await axios.post('https://college-attendence.onrender.com/api/auth/login', { email: adminId, password });
->>>>>>> 5cff581 (Updated frontend code)
       login({ userId: res.data.userId, role: res.data.role, email: adminId, token: res.data.token });
       if (res.data.role === 'admin') navigate('/admin');
       else navigate('/');
