@@ -303,7 +303,11 @@ export default function PreviousAttendance() {
                 return (
                   <tr key={recordId || `rec-${i}`}>
                     <td>{s.studentId || "-"}</td>
-                    <td>{`${s.firstName || ""} ${s.lastName || ""}`}</td>
+                    <td>{
+                      (s.name && String(s.name).trim())
+                        ? s.name
+                        : ((s.firstName || s.lastName) ? `${s.firstName || ""} ${s.lastName || ""}`.trim() : (s.studentId || "-"))
+                    }</td>
                     <td>
                       <button
                         onClick={() => hasIds ? updateRecordStatus(attendanceId, recordId, r.status === 'present' ? 'absent' : 'present') : window.alert('Missing record id; cannot update')}
