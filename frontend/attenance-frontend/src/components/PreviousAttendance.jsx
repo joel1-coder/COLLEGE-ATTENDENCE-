@@ -262,7 +262,8 @@ export default function PreviousAttendance() {
           {departments.map((d) => {
             const name = typeof d === 'string' ? d : (d.name || '');
             const key = (d && d._id) ? d._id : name;
-            return <option key={key} value={name}>{name}</option>;
+            const val = (d && d._id) ? d._id : name;
+            return <option key={key} value={val}>{name}</option>;
           })}
         </select>
 
@@ -271,7 +272,8 @@ export default function PreviousAttendance() {
           {sections.map((s) => {
             const name = typeof s === 'string' ? s : (s.name || '');
             const key = (s && s._id) ? s._id : name;
-            return <option key={key} value={name}>{name}</option>;
+            const val = (s && s._id) ? s._id : name;
+            return <option key={key} value={val}>{name}</option>;
           })}
         </select>
 
