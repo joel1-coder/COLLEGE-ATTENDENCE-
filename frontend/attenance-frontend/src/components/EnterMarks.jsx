@@ -1,115 +1,132 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import './PreviousAttendance.css';
+import "./PreviousAttendance.css";
 
-export default function EnterMarks(){
-  const [department, setDepartment] = useState('');
-  const [section, setSection] = useState('');
+const api = axios.create({
+  baseURL: "https://college-attendence.onrender.com/api",
+});
+
+const attachToken = () => {
+  const stored = JSON.parse(localStorage.getItem("user")) || null;
+  if (stored?.token) {
+    api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
+  }
+};
+
+export default function EnterMarks() {
+  const [department, setDepartment] = useState("");
+  const [section, setSection] = useState("");
   const [sectionsList, setSectionsList] = useState([]);
   const [classesList, setClassesList] = useState([]);
   const [students, setStudents] = useState([]);
-  const [description, setDescription] = useState('');
-  // date helpers (display like MM-DD-YYYY, payload as YYYY-MM-DD)
-  const todayDate = new Date();
-  const pad = (n) => (n < 10 ? `0${n}` : `${n}`);
-  const displayDate = `${pad(todayDate.getMonth() + 1)}-${pad(todayDate.getDate())}-${todayDate.getFullYear()}`;
+  const [description, setDescription] = useState("");
   const [marks, setMarks] = useState({});
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
+  // Date helpers
+  const today = new Date();
+  const displayDate = `${String(today.getMonth() + 1).padStart(2, "0")}-${String(
+    today.getDate()
+  ).padStart(2, "0")}-${today.getFullYear()}`;
+
+  /* ------------------ LOAD DEPARTMENTS & SECTIONS ------------------ */
   useEffect(() => {
-    const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
-    const stored = JSON.parse(localStorage.getItem('user')) || null;
-    if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
+    attachToken();
 
-    const fetchClasses = async () => {
+    const fetchDepartments = async () => {
       try {
-        const res = await api.get('/admin/departments');
-        const cls = Array.isArray(res.data) ? res.data.map(c => c.name) : [];
-        setClassesList(cls);
-        if (!department && cls.length) setDepartment(cls[0]);
+        const res = await api.get("/admin/departments");
+        const list = Array.isArray(res.data) ? res.data.map(d => d.name) : [];
+        setClassesList(list);
+        if (!department && list.length) setDepartment(list[0]);
       } catch (err) {
-        console.warn('Could not load classes', err);
+        console.warn("Failed to load departments", err);
       }
     };
 
-    const fetchSectionsForClass = async (forClass) => {
+    const fetchSections = async () => {
+      if (!department) return;
       try {
-        if (!forClass) return setSectionsList([]);
-        // request sections by department
-        const sRes = await api.get(`/admin/sections?department=${encodeURIComponent(forClass)}`);
-        const secs = Array.isArray(sRes.data) ? sRes.data.map(s => s.name) : [];
-        setSectionsList(secs);
-        if (!section && secs.length) setSection(secs[0]);
+        const res = await api.get("/admin/sections", {
+          params: { department },
+        });
+        const list = Array.isArray(res.data) ? res.data.map(s => s.name) : [];
+        setSectionsList(list);
+        if (!section && list.length) setSection(list[0]);
       } catch (err) {
-        console.warn('Could not load sections for class', forClass, err);
-        setMessage('Could not load sections — please login or check server');
-      }
-    };
-
-
-    if (department) fetchSectionsForClass(department);
-    const onSectionsUpdated = () => fetchSectionsForClass(department);
-    window.addEventListener('sectionsUpdated', onSectionsUpdated);
-    const fetchSections = async (dept) => {
-      try {
-        const res = await api.get('/admin/sections', { params: { department: dept } });
-        const secs = Array.isArray(res.data) ? res.data.map(s => s.name) : [];
-        setSectionsList(secs);
-        if (!section && secs.length) setSection(secs[0]);
-      } catch (err) {
-        console.warn('Could not load sections', err);
+        console.warn("Failed to load sections", err);
         setSectionsList([]);
       }
     };
 
-    fetchClasses();
-    if (department) fetchSections(department);
-  }, [department]);
+    fetchDepartments();
+    fetchSections();
+  }, [department, section]);
 
+  /* ------------------ LOAD STUDENTS ------------------ */
   useEffect(() => {
     if (!department || !section) return;
-    const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
-    const stored = JSON.parse(localStorage.getItem('user')) || null;
-    if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
+
+    attachToken();
     setLoading(true);
-    api.get(`/students?department=${encodeURIComponent(department)}&section=${encodeURIComponent(section)}`)
-      .then(res => {
-        setStudents(res.data || []);
-        const m = {};
-        (res.data || []).forEach(s => { m[s._id] = '0'; });
-        setMarks(m);
+
+    api
+      .get("/students", {
+        params: { department, section },
       })
-      .catch(err => { console.error(err); setStudents([]); })
+      .then(res => {
+        const data = res.data || [];
+        setStudents(data);
+        const initialMarks = {};
+        data.forEach(s => {
+          initialMarks[s._id] = "0";
+        });
+        setMarks(initialMarks);
+      })
+      .catch(err => {
+        console.error(err);
+        setStudents([]);
+      })
       .finally(() => setLoading(false));
   }, [department, section]);
 
+  /* ------------------ SAVE MARKS ------------------ */
   const save = async (opts = {}) => {
-    setMessage('');
-    const records = Object.keys(marks).map(k => ({ student: k, mark: Number(marks[k]) }));
-    const payload = { date: new Date().toISOString().split('T')[0], department, section, records, description, merge: opts.merge };
+    setMessage("");
+
+    const records = Object.keys(marks).map(id => ({
+      student: id,
+      mark: Number(marks[id]),
+    }));
+
+    const payload = {
+      date: new Date().toISOString().split("T")[0],
+      department,
+      section,
+      description,
+      records,
+      merge: opts.merge,
+    };
+
     try {
-      const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
-      const stored = JSON.parse(localStorage.getItem('user')) || null;
-      if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-      const resp = await api.post('/marks', payload);
-      setMessage(resp.data?.message || 'Saved marks');
+      attachToken();
+      const res = await api.post("/marks", payload);
+      setMessage(res.data?.message || "Marks saved");
     } catch (err) {
-      console.error('Save marks error', err);
       const status = err?.response?.status;
       const body = err?.response?.data || {};
+
       if (status === 409 && body?.existingId) {
-        const ok = window.confirm('A marks entry with the same description already exists. Do you want to merge your input into the existing marks?');
+        const ok = window.confirm(
+          "Marks already exist. Merge with existing record?"
+        );
         if (ok) {
-          // resend with merge flag
           await save({ merge: true });
-          return;
-        } else {
-          setMessage('Save canceled; change description to create a new marks entry.');
           return;
         }
       }
-      setMessage(body?.message || err.message || 'Save failed');
+      setMessage(body?.message || "Save failed");
     }
   };
 
@@ -117,65 +134,71 @@ export default function EnterMarks(){
     <div style={{ padding: 16 }}>
       <h2>Enter Marks</h2>
 
-      <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
         <label>
           Department:
-          <select value={department} onChange={e => setDepartment(e.target.value)} style={{ marginLeft: 8 }}>
-            {classesList.length ? classesList.map(c => <option key={c} value={c}>{c}</option>) : <option>Loading...</option>}
+          <select value={department} onChange={e => setDepartment(e.target.value)}>
+            {classesList.map(c => (
+              <option key={c} value={c}>{c}</option>
+            ))}
           </select>
         </label>
 
         <label>
           Section:
-          <select value={section} onChange={e => setSection(e.target.value)} style={{ marginLeft: 8 }}>
-            {sectionsList.length ? sectionsList.map(s => <option key={s} value={s}>{s}</option>) : <option value={section}>Select section</option>}
+          <select value={section} onChange={e => setSection(e.target.value)}>
+            {sectionsList.map(s => (
+              <option key={s} value={s}>{s}</option>
+            ))}
           </select>
         </label>
 
-        <label style={{ display: 'flex', flexDirection: 'column', minWidth: 320 }}>
+        <label style={{ flex: 1 }}>
           Description:
           <textarea
             value={description}
             onChange={e => setDescription(e.target.value)}
-            placeholder="Reason / notes for these marks"
-            style={{ marginTop: 6, resize: 'vertical' }}
           />
         </label>
 
-        <span style={{ marginLeft: 'auto' }}>Date: {displayDate}</span>
-        <button onClick={() => { /* trigger refetch by toggling section */ setSection(section); }} style={{ marginLeft: 8 }}>Load</button>
+        <div>Date: {displayDate}</div>
       </div>
 
-      {loading && <div>Loading students...</div>}
+      {loading && <p>Loading students...</p>}
 
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <table width="100%" border="1">
         <thead>
           <tr>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>#</th>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>Student ID</th>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>Name</th>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>Mark</th>
+            <th>#</th>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Mark</th>
           </tr>
         </thead>
         <tbody>
           {students.map((s, i) => (
             <tr key={s._id}>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{i+1}</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{s.studentId}</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{s.name}</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>
-                <input value={marks[s._id] || ''} onChange={e => setMarks({ ...marks, [s._id]: e.target.value })} style={{ width: 80 }} />
+              <td>{i + 1}</td>
+              <td>{s.studentId}</td>
+              <td>{s.name}</td>
+              <td>
+                <input
+                  value={marks[s._id] || ""}
+                  onChange={e =>
+                    setMarks({ ...marks, [s._id]: e.target.value })
+                  }
+                />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <div style={{ marginTop: 12 }}>
-        <button onClick={save}>Save Marks</button>
-      </div>
+      <button onClick={save} style={{ marginTop: 12 }}>
+        Save Marks
+      </button>
 
-      {message && <div style={{ marginTop: 12 }}>{message}</div>}
+      {message && <p>{message}</p>}
     </div>
   );
 }

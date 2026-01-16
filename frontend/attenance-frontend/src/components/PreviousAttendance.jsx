@@ -16,6 +16,7 @@ export default function PreviousAttendance() {
 
   const today = new Date().toISOString().split("T")[0];
 
+  /* ---------------- API INSTANCE ---------------- */
   const getApiInstance = () => {
     const instance = api;
     const stored = JSON.parse(localStorage.getItem("user")) || null;
@@ -25,20 +26,10 @@ export default function PreviousAttendance() {
     return instance;
   };
 
-  const findRecordExists = (attendanceId, recordId) => {
-    if (!attendanceId || !recordId) return false;
-    for (const item of attendance) {
-      if (item._id === attendanceId) {
-        if (Array.isArray(item.records) && item.records.some((r) => r._id === recordId)) return true;
-      }
-    }
-    return false;
-  };
-
+  /* ---------------- HELPERS ---------------- */
   const parseDate = (val) => {
     if (!val) return null;
-    const re = /^\d{4}-\d{2}-\d{2}$/;
-    return re.test(val) ? val : null;
+    return /^\d{4}-\d{2}-\d{2}$/.test(val) ? val : null;
   };
 
   const ordinal = (n) => {
@@ -47,6 +38,7 @@ export default function PreviousAttendance() {
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
   };
 
+  /* ---------------- FETCH ATTENDANCE ---------------- */
   const fetchFor = async (rawDate) => {
     setError("");
     setAttendance([]);
@@ -66,7 +58,6 @@ export default function PreviousAttendance() {
 
       const res = await instance.get(url);
       const data = res.data;
-      console.log('Fetched attendance response', data);
 
       let items = [];
       if (Array.isArray(data)) items = data;
@@ -84,6 +75,7 @@ export default function PreviousAttendance() {
     }
   };
 
+  /* ---------------- EXPORT ---------------- */
   const downloadExcel = async () => {
     const dateStr = parseDate(input);
     if (!dateStr) {
@@ -107,53 +99,41 @@ export default function PreviousAttendance() {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(blobUrl);
-    } catch (err) {
+    } catch {
       alert("Download failed");
     }
   };
 
+  /* ---------------- UPDATE RECORD ---------------- */
   const updateRecordStatus = async (attendanceId, recordId, status) => {
-    if (!attendanceId || !recordId) {
-      window.alert('Record or attendance id missing — cannot update');
-      return;
-    }
-    setError("");
+    if (!attendanceId || !recordId) return;
+
     setUpdatingIds((s) => ({ ...s, [recordId]: true }));
+    setError("");
+
     try {
-      // optimistic UI update
+      // optimistic update
       setAttendance((prev) =>
-        prev.map((item) => {
-          if (item._id !== attendanceId) return item;
-          return {
-            ...item,
-            records: (item.records || []).map((r) => (r._id === recordId ? { ...r, status } : r)),
-          };
-        })
+        prev.map((item) =>
+          item._id !== attendanceId
+            ? item
+            : {
+                ...item,
+                records: item.records.map((r) =>
+                  r._id === recordId ? { ...r, status } : r
+                ),
+              }
+        )
       );
+
       const instance = getApiInstance();
-      // debug: show stored user and axios auth header
-      try {
-        const storedDebug = JSON.parse(localStorage.getItem('user')) || null;
-        console.log('DEBUG stored user before update:', storedDebug);
-      } catch (e) {
-        console.log('DEBUG stored user parse error');
-      }
-      console.log('DEBUG instance auth header:', instance?.defaults?.headers?.common?.Authorization);
-      console.log('Updating record', { attendanceId, recordId, status });
-      const endpoint = `/attendance/${attendanceId}/records/${recordId}`;
-      console.log('PUT', endpoint, { status });
-      const res = await instance.put(endpoint, { status });
-      console.log('Update response', res && res.data);
-      window.alert(res?.data?.message || 'Record updated');
+      await instance.put(
+        `/attendance/${attendanceId}/records/${recordId}`,
+        { status }
+      );
     } catch (err) {
-      console.error('Update record error', err);
-      const msg = err?.response?.data?.message || err.message || 'Failed to update record';
-      setError(msg);
-      window.alert(msg);
-      // revert optimistic update by re-fetching
-      try {
-        await fetchFor(input);
-      } catch {}
+      setError(err?.response?.data?.message || "Update failed");
+      await fetchFor(input);
     } finally {
       setUpdatingIds((s) => {
         const ns = { ...s };
@@ -163,61 +143,12 @@ export default function PreviousAttendance() {
     }
   };
 
-  const deleteRecord = async (attendanceId, recordId) => {
-    if (!window.confirm('Delete this record? This cannot be undone.')) return;
-    if (!attendanceId || !recordId) {
-      window.alert('Record or attendance id missing — cannot delete');
-      return;
-    }
-    setError("");
-    setUpdatingIds((s) => ({ ...s, [recordId]: true }));
-    try {
-      // optimistic UI remove
-      setAttendance((prev) =>
-        prev.map((item) => {
-          if (item._id !== attendanceId) return item;
-          return { ...item, records: (item.records || []).filter((r) => r._id !== recordId) };
-        })
-      );
-      const instance = getApiInstance();
-      // debug: show stored user and axios auth header for delete
-      try {
-        const storedDebug = JSON.parse(localStorage.getItem('user')) || null;
-        console.log('DEBUG stored user before delete:', storedDebug);
-      } catch (e) {
-        console.log('DEBUG stored user parse error (delete)');
-      }
-      console.log('DEBUG instance auth header (delete):', instance?.defaults?.headers?.common?.Authorization);
-      const endpoint = `/attendance/${attendanceId}/records/${recordId}`;
-      console.log('DELETE', endpoint);
-      const res = await instance.delete(endpoint);
-      console.log('Delete response', res && res.data);
-      window.alert(res?.data?.message || 'Record deleted');
-    } catch (err) {
-      console.error('Delete record error', err);
-      const msg = err?.response?.data?.message || err.message || 'Failed to delete record';
-      setError(msg);
-      window.alert(msg);
-      // revert optimistic removal
-      try {
-        await fetchFor(input);
-      } catch {}
-    } finally {
-      setUpdatingIds((s) => {
-        const ns = { ...s };
-        delete ns[recordId];
-        return ns;
-      });
-    }
-  };
-
+  /* ---------------- LOAD DEPARTMENTS ---------------- */
   useEffect(() => {
     const loadDepartments = async () => {
       try {
         const res = await getApiInstance().get("/admin/departments");
-        const list = Array.isArray(res.data) ? res.data : [];
-        console.log('PreviousAttendance: loaded departments', list);
-        setDepartments(list);
+        setDepartments(Array.isArray(res.data) ? res.data : []);
       } catch {
         setDepartments([]);
       }
@@ -225,6 +156,7 @@ export default function PreviousAttendance() {
     loadDepartments();
   }, []);
 
+  /* ---------------- LOAD SECTIONS ---------------- */
   useEffect(() => {
     const loadSections = async () => {
       if (!department) {
@@ -235,19 +167,13 @@ export default function PreviousAttendance() {
         const res = await getApiInstance().get(
           `/admin/sections?department=${encodeURIComponent(department)}`
         );
-        const list = Array.isArray(res.data) ? res.data : [];
-        console.log('PreviousAttendance: loaded sections for', department, list);
-        setSections(list);
+        setSections(Array.isArray(res.data) ? res.data : []);
       } catch {
         setSections([]);
       }
     };
     loadSections();
   }, [department]);
-
-  const onKeyDown = (e) => {
-    if (e.key === "Enter") fetchFor(input);
-  };
 
   return (
     <div className="previous-attendance">
@@ -260,20 +186,16 @@ export default function PreviousAttendance() {
         <select value={department} onChange={(e) => setDepartment(e.target.value)}>
           <option value="">All Departments</option>
           {departments.map((d) => {
-            const name = typeof d === 'string' ? d : (d.name || '');
-            const key = (d && d._id) ? d._id : name;
-            const val = (d && d._id) ? d._id : name;
-            return <option key={key} value={val}>{name}</option>;
+            const name = typeof d === "string" ? d : d.name;
+            return <option key={name} value={name}>{name}</option>;
           })}
         </select>
 
         <select value={section} onChange={(e) => setSection(e.target.value)}>
           <option value="">All Sections</option>
           {sections.map((s) => {
-            const name = typeof s === 'string' ? s : (s.name || '');
-            const key = (s && s._id) ? s._id : name;
-            const val = (s && s._id) ? s._id : name;
-            return <option key={key} value={val}>{name}</option>;
+            const name = typeof s === "string" ? s : s.name;
+            return <option key={name} value={name}>{name}</option>;
           })}
         </select>
 
@@ -282,7 +204,6 @@ export default function PreviousAttendance() {
           value={input}
           max={today}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={onKeyDown}
         />
 
         <button onClick={() => fetchFor(input)}>Fetch</button>
@@ -292,7 +213,7 @@ export default function PreviousAttendance() {
       {error && <p className="error">{error}</p>}
 
       {attendance.map((item, idx) => (
-        <div key={idx} className="attendance-card">
+        <div key={item._id || idx} className="attendance-card">
           <h4>{ordinal(idx + 1)} Attendance</h4>
           <p>{item.description || "—"}</p>
 
@@ -305,36 +226,29 @@ export default function PreviousAttendance() {
               </tr>
             </thead>
             <tbody>
-              {(item.records || []).map((r, i) => {
+              {(item.records || []).map((r) => {
                 const s = r.student || {};
-                const attendanceId = item._id;
-                const recordId = r._id;
-                const hasIds = Boolean(attendanceId && recordId);
                 return (
-                  <tr key={recordId || `rec-${i}`}>
+                  <tr key={r._id}>
                     <td>{s.studentId || "-"}</td>
-                    <td>{
-                      (s.name && String(s.name).trim())
-                        ? s.name
-                        : ((s.firstName || s.lastName) ? `${s.firstName || ""} ${s.lastName || ""}`.trim() : (s.studentId || "-"))
-                    }</td>
+                    <td>{s.name || "-"}</td>
                     <td>
                       <button
-                        onClick={() => hasIds ? updateRecordStatus(attendanceId, recordId, r.status === 'present' ? 'absent' : 'present') : window.alert('Missing record id; cannot update')}
-                        disabled={!hasIds || Boolean(updatingIds[recordId])}
+                        onClick={() =>
+                          updateRecordStatus(
+                            item._id,
+                            r._id,
+                            r.status === "present" ? "absent" : "present"
+                          )
+                        }
+                        disabled={updatingIds[r._id]}
                         style={{
-                          background: r.status === 'present' ? '#2ecc71' : '#e74c3c',
-                          color: '#fff',
-                          border: 'none',
-                          padding: '6px 10px',
-                          borderRadius: 4,
-                          cursor: hasIds && !updatingIds[recordId] ? 'pointer' : 'not-allowed',
-                          opacity: updatingIds[recordId] ? 0.7 : 1
+                          background: r.status === "present" ? "#2ecc71" : "#e74c3c",
+                          color: "#fff",
                         }}
                       >
-                        {updatingIds[recordId] ? 'Updating…' : r.status}
+                        {updatingIds[r._id] ? "Updating…" : r.status}
                       </button>
-                      {!hasIds && <div style={{ color: '#a00', marginTop: 6 }}>Missing internal id — cannot edit</div>}
                     </td>
                   </tr>
                 );
@@ -343,7 +257,6 @@ export default function PreviousAttendance() {
           </table>
         </div>
       ))}
-      
     </div>
   );
 }
