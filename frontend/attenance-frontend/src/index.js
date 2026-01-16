@@ -22,6 +22,9 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import { AuthProvider } from './context/AuthContext';
 import { AuthContext } from './context/AuthContext';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import "./theme.css"; // Import global theme.css to apply color variables
 
 function Protected({ children }) {
   const { user, initializing } = useContext(AuthContext);
@@ -49,6 +52,27 @@ function ErrorPage() {
 }
 
 function Layout() {
+  const location = useLocation();
+  useEffect(() => {
+    // remove any previous page- classes
+    document.body.classList.remove(
+      'page-default',
+      'page-attendance',
+      'page-marks',
+      'page-creation',
+      'page-admin',
+      'page-login'
+    );
+    let cls = 'page-default';
+    const p = location.pathname || '/';
+    if (p.startsWith('/previous-attendance')) cls = 'page-attendance';
+    else if (p.startsWith('/marks') || p.startsWith('/enter-marks')) cls = 'page-marks';
+    else if (p.startsWith('/creation') || p.startsWith('/editing-adding')) cls = 'page-creation';
+    else if (p.startsWith('/admin')) cls = 'page-admin';
+    else if (p.startsWith('/login') || p.startsWith('/admin/login')) cls = 'page-login';
+    document.body.classList.add(cls);
+  }, [location.pathname]);
+
   return (
     <>
       <NavBar />

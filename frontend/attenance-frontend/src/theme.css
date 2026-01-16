@@ -1,0 +1,95 @@
+:root{
+  --bg:#f6fbff;
+  --surface:#ffffff;
+  --primary:#0d6efd;
+  --primary-700:#0b5ed7;
+  --accent:#6f42c1;
+  --muted:#6c757d;
+  --success:#198754;
+  --danger:#dc3545;
+  --card-shadow: 0 6px 18px rgba(13,110,253,0.08);
+}
+
+body{ background: var(--bg); color: #222; }
+
+.btn { background: var(--primary); color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+.btn.secondary { background: var(--accent); }
+.btn.ghost { background: transparent; border: 1px solid rgba(0,0,0,0.06); color: var(--muted); }
+
+.card { background: var(--surface); border-radius: 8px; padding: 12px; box-shadow: var(--card-shadow); }
+
+.header h2{ color: var(--primary-700); }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; background: transparent; }
+table th { text-align: left; padding: 8px; background: rgba(11,94,215,0.06); }
+table td { padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.04); }
+
+/* Font color variables and global text styles */
+:root{
+  --text:#152238; /* primary body text */
+  --heading:#0b2447; /* headings */
+  --link:#0d6efd; /* links */
+  --table-heading-text:#ffffff;
+  --muted-text:#6c757d;
+  --button-text:#ffffff;
+}
+
+/* Font family and sizing */
+:root{
+  --font-sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-heading: 'Poppins', var(--font-sans);
+  --base-font-size: 16px;
+  --h1-size: 2rem;
+  --h2-size: 1.5rem;
+  --h3-size: 1.25rem;
+  --font-weight-regular: 400;
+  --font-weight-medium: 600;
+  --font-weight-bold: 700;
+}
+
+body { font-family: var(--font-sans); font-size: var(--base-font-size); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+h1{ font-family: var(--font-heading); font-size: var(--h1-size); font-weight: var(--font-weight-bold); margin: 0 0 12px 0; }
+h2{ font-family: var(--font-heading); font-size: var(--h2-size); font-weight: var(--font-weight-medium); margin: 0 0 10px 0; }
+h3{ font-family: var(--font-heading); font-size: var(--h3-size); font-weight: var(--font-weight-medium); margin: 0 0 8px 0; }
+
+/* Buttons and form controls */
+button, .btn, input, select, textarea { font-family: var(--font-sans); font-size: 0.95rem; }
+
+/* Subtle letter spacing for readability */
+p, li, td, th { letter-spacing: 0.2px; }
+
+body { color: var(--text); }
+h1,h2,h3,h4,h5,h6 { color: var(--heading); }
+a { color: var(--link); }
+a:hover { opacity: 0.9; }
+
+/* Nav links and logo */
+.nav-logo { color: var(--heading); }
+.nav-links a { color: var(--text); }
+
+/* Tables */
+/* Global table header appearance */
+table th, .card table th {
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  color: var(--table-heading-text);
+}
+table td { color: var(--text); }
+
+/* Buttons */
+.btn, button { color: var(--button-text); }
+
+/* Muted text */
+.muted { color: var(--muted-text); }
+
+/* Page-specific colorful backgrounds */
+body.page-default { background: linear-gradient(120deg, #f6fbff 0%, #fff 100%); }
+body.page-attendance { background: linear-gradient(120deg, #ffecd2 0%, #fcb69f 100%); }
+body.page-marks { background: linear-gradient(120deg, #e0f7fa 0%, #80deea 100%); }
+body.page-creation { background: linear-gradient(120deg, #f3e8ff 0%, #c8a2ff 100%); }
+body.page-admin { background: linear-gradient(120deg, #e8f5e9 0%, #a5d6a7 100%); }
+body.page-login { background: linear-gradient(120deg, #fff3e0 0%, #ffcc80 100%); }
+
+/* Ensure content area is readable */
+.previous-attendance, .card, .attendance-card { background: rgba(255,255,255,0.9); }
+

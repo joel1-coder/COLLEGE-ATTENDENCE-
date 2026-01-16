@@ -1,4 +1,7 @@
-.previous-attendance { padding: 16px; }
-.previous-attendance input { padding: 6px; }
-.previous-attendance button { padding: 6px 10px; }
-.previous-attendance table th { background: blue; text-align: left; }
+.previous-attendance { padding: 18px; }
+.previous-attendance input { padding: 8px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.08); }
+.previous-attendance button { padding: 8px 12px; border-radius: 8px; background: var(--primary); color: #fff; border: none; box-shadow: 0 8px 20px rgba(13,110,253,0.08); }
+.previous-attendance .header { display:flex; align-items:center; gap:12px; }
+.previous-attendance .controls { display:flex; gap:12px; align-items:center; margin-top:12px; margin-bottom:12px; }
+.previous-attendance table th { background: linear-gradient(90deg,var(--primary),var(--accent)); color:#fff; text-align:left; }
+.previous-attendance .attendance-card { background: rgba(255,255,255,0.95); padding:12px; border-radius:10px; box-shadow: 0 8px 24px rgba(16,24,40,0.06); margin-bottom:12px; }

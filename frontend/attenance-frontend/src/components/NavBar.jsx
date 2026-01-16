@@ -50,7 +50,7 @@ function NavBar() {
               <Link to="/admin/student">Student</Link>
               <Link to="/admin/report">Report</Link>
               <Link to="/admin/assign">Assign</Link>
-              <button onClick={handleLogout} type="button" style={{ cursor: "pointer", color: "#fff", marginLeft: 12, background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}>Logout</button>
+              <button onClick={handleLogout} type="button" style={{ cursor: "pointer", color: "#000", marginLeft: 12, background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}>Logout</button>
             </>
           ) : (
             <>
@@ -60,8 +60,8 @@ function NavBar() {
               {user && <Link to="/editing-adding">Manage Entries</Link>}
               {user && <Link to="/enter-marks">Marks Portal</Link>}
               <Link to="/admin">Admin Panel</Link>
-              {user ? (
-                <button onClick={handleLogout} type="button" style={{ cursor: "pointer", color: "#fff", marginLeft: 12, background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}>Logout</button>
+                {user ? (
+                <button onClick={handleLogout} type="button" style={{ cursor: "pointer", color: "#000", marginLeft: 12, background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}>Logout</button>
               ) : (
                 <Link to="/login">Login</Link>
               )}
