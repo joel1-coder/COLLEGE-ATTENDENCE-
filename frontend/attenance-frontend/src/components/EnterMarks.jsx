@@ -1,57 +1,57 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import "./PreviousAttendance.css";
 
-const api = axios.create({
-  baseURL: "https://college-attendence.onrender.com/api",
-});
-
-const attachToken = () => {
-  const stored = JSON.parse(localStorage.getItem("user")) || null;
-  if (stored?.token) {
-    api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
-  }
-};
-
 export default function EnterMarks() {
+  /* ---------------- STATES ---------------- */
   const [department, setDepartment] = useState("");
   const [section, setSection] = useState("");
-  const [sectionsList, setSectionsList] = useState([]);
   const [classesList, setClassesList] = useState([]);
+  const [sectionsList, setSectionsList] = useState([]);
   const [students, setStudents] = useState([]);
   const [description, setDescription] = useState("");
   const [marks, setMarks] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Date helpers
+  /* ---------------- DATE ---------------- */
   const today = new Date();
   const displayDate = `${String(today.getMonth() + 1).padStart(2, "0")}-${String(
     today.getDate()
   ).padStart(2, "0")}-${today.getFullYear()}`;
 
-  /* ------------------ LOAD DEPARTMENTS & SECTIONS ------------------ */
-  useEffect(() => {
-    attachToken();
+  /* ---------------- API CLIENT ---------------- */
+  const apiClient = useCallback(() => {
+    const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
+    const stored = JSON.parse(localStorage.getItem("user")) || null;
+    if (stored?.token) {
+      api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
+    }
+    return api;
+  }, []);
 
+  /* ---------------- LOAD DEPARTMENTS ---------------- */
+  useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const res = await api.get("/admin/departments");
-        const list = Array.isArray(res.data) ? res.data.map(d => d.name) : [];
+        const res = await apiClient().get("/admin/departments");
+        const list = Array.isArray(res.data) ? res.data.map((d) => d.name) : [];
         setClassesList(list);
         if (!department && list.length) setDepartment(list[0]);
       } catch (err) {
         console.warn("Failed to load departments", err);
       }
     };
+    fetchDepartments();
+  }, [apiClient, department]);
 
+  /* ---------------- LOAD SECTIONS ---------------- */
+  useEffect(() => {
+    if (!department) return;
     const fetchSections = async () => {
-      if (!department) return;
       try {
-        const res = await api.get("/admin/sections", {
-          params: { department },
-        });
-        const list = Array.isArray(res.data) ? res.data.map(s => s.name) : [];
+        const res = await apiClient().get("/admin/sections", { params: { department } });
+        const list = Array.isArray(res.data) ? res.data.map((s) => s.name) : [];
         setSectionsList(list);
         if (!section && list.length) setSection(list[0]);
       } catch (err) {
@@ -59,68 +59,48 @@ export default function EnterMarks() {
         setSectionsList([]);
       }
     };
-
-    fetchDepartments();
     fetchSections();
-  }, [department, section]);
+  }, [department, section, apiClient]);
 
-  /* ------------------ LOAD STUDENTS ------------------ */
+  /* ---------------- LOAD STUDENTS ---------------- */
   useEffect(() => {
     if (!department || !section) return;
-
-    attachToken();
     setLoading(true);
 
-    api
-      .get("/students", {
-        params: { department, section },
-      })
-      .then(res => {
+    apiClient()
+      .get("/students", { params: { department, section } })
+      .then((res) => {
         const data = res.data || [];
         setStudents(data);
+
         const initialMarks = {};
-        data.forEach(s => {
+        data.forEach((s) => {
           initialMarks[s._id] = "0";
         });
         setMarks(initialMarks);
       })
-      .catch(err => {
-        console.error(err);
+      .catch((err) => {
+        console.error("Failed to load students", err);
         setStudents([]);
       })
       .finally(() => setLoading(false));
-  }, [department, section]);
+  }, [department, section, apiClient]);
 
-  /* ------------------ SAVE MARKS ------------------ */
+  /* ---------------- SAVE MARKS ---------------- */
   const save = async (opts = {}) => {
     setMessage("");
-
-    const records = Object.keys(marks).map(id => ({
-      student: id,
-      mark: Number(marks[id]),
-    }));
-
-    const payload = {
-      date: new Date().toISOString().split("T")[0],
-      department,
-      section,
-      description,
-      records,
-      merge: opts.merge,
-    };
+    const records = Object.keys(marks).map((id) => ({ student: id, mark: Number(marks[id]) }));
+    const payload = { date: new Date().toISOString().split("T")[0], department, section, description, records, merge: opts.merge };
 
     try {
-      attachToken();
-      const res = await api.post("/marks", payload);
+      const res = await apiClient().post("/marks", payload);
       setMessage(res.data?.message || "Marks saved");
     } catch (err) {
       const status = err?.response?.status;
       const body = err?.response?.data || {};
 
       if (status === 409 && body?.existingId) {
-        const ok = window.confirm(
-          "Marks already exist. Merge with existing record?"
-        );
+        const ok = window.confirm("Marks already exist. Merge with existing record?");
         if (ok) {
           await save({ merge: true });
           return;
@@ -130,6 +110,7 @@ export default function EnterMarks() {
     }
   };
 
+  /* ---------------- UI ---------------- */
   return (
     <div style={{ padding: 16 }}>
       <h2>Enter Marks</h2>
@@ -137,8 +118,8 @@ export default function EnterMarks() {
       <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
         <label>
           Department:
-          <select value={department} onChange={e => setDepartment(e.target.value)}>
-            {classesList.map(c => (
+          <select value={department} onChange={(e) => setDepartment(e.target.value)}>
+            {classesList.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
@@ -146,8 +127,8 @@ export default function EnterMarks() {
 
         <label>
           Section:
-          <select value={section} onChange={e => setSection(e.target.value)}>
-            {sectionsList.map(s => (
+          <select value={section} onChange={(e) => setSection(e.target.value)}>
+            {sectionsList.map((s) => (
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
@@ -155,10 +136,7 @@ export default function EnterMarks() {
 
         <label style={{ flex: 1 }}>
           Description:
-          <textarea
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-          />
+          <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
         </label>
 
         <div>Date: {displayDate}</div>
@@ -184,9 +162,7 @@ export default function EnterMarks() {
               <td>
                 <input
                   value={marks[s._id] || ""}
-                  onChange={e =>
-                    setMarks({ ...marks, [s._id]: e.target.value })
-                  }
+                  onChange={(e) => setMarks({ ...marks, [s._id]: e.target.value })}
                 />
               </td>
             </tr>
@@ -194,10 +170,7 @@ export default function EnterMarks() {
         </tbody>
       </table>
 
-      <button onClick={save} style={{ marginTop: 12 }}>
-        Save Marks
-      </button>
-
+      <button onClick={save} style={{ marginTop: 12 }}>Save Marks</button>
       {message && <p>{message}</p>}
     </div>
   );

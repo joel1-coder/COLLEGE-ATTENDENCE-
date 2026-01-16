@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import api from "../api/api";
 import "./PreviousAttendance.css";
 
 export default function PreviousAttendance() {
+  /* ---------------- STATES ---------------- */
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -16,22 +17,18 @@ export default function PreviousAttendance() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  /* ---------------- API INSTANCE ---------------- */
-  const getApiInstance = () => {
+  /* ---------------- API CLIENT ---------------- */
+  const apiClient = useCallback(() => {
     const instance = api;
     const stored = JSON.parse(localStorage.getItem("user")) || null;
     if (stored?.token) {
       instance.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
     }
     return instance;
-  };
+  }, []);
 
   /* ---------------- HELPERS ---------------- */
-  const parseDate = (val) => {
-    if (!val) return null;
-    return /^\d{4}-\d{2}-\d{2}$/.test(val) ? val : null;
-  };
-
+  const parseDate = (val) => (/^\d{4}-\d{2}-\d{2}$/.test(val) ? val : null);
   const ordinal = (n) => {
     const s = ["th", "st", "nd", "rd"];
     const v = n % 100;
@@ -51,7 +48,7 @@ export default function PreviousAttendance() {
 
     setLoading(true);
     try {
-      const instance = getApiInstance();
+      const instance = apiClient();
       let url = `/attendance?date=${dateStr}`;
       if (department) url += `&department=${encodeURIComponent(department)}`;
       if (section) url += `&section=${encodeURIComponent(section)}`;
@@ -64,9 +61,7 @@ export default function PreviousAttendance() {
       else if (data?.records) items = [data];
 
       setAttendance(items);
-      if (items.length === 0) {
-        setError(`No attendance found for ${dateStr}`);
-      }
+      if (items.length === 0) setError(`No attendance found for ${dateStr}`);
     } catch (err) {
       console.error(err);
       setError(err?.response?.data?.message || "Failed to fetch attendance");
@@ -84,7 +79,7 @@ export default function PreviousAttendance() {
     }
 
     try {
-      const instance = getApiInstance();
+      const instance = apiClient();
       let url = `/attendance/export?date=${dateStr}&format=xlsx`;
       if (department) url += `&department=${encodeURIComponent(department)}`;
       if (section) url += `&section=${encodeURIComponent(section)}`;
@@ -99,7 +94,8 @@ export default function PreviousAttendance() {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(blobUrl);
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert("Download failed");
     }
   };
@@ -112,7 +108,7 @@ export default function PreviousAttendance() {
     setError("");
 
     try {
-      // optimistic update
+      // optimistic UI update
       setAttendance((prev) =>
         prev.map((item) =>
           item._id !== attendanceId
@@ -126,11 +122,8 @@ export default function PreviousAttendance() {
         )
       );
 
-      const instance = getApiInstance();
-      await instance.put(
-        `/attendance/${attendanceId}/records/${recordId}`,
-        { status }
-      );
+      const instance = apiClient();
+      await instance.put(`/attendance/${attendanceId}/records/${recordId}`, { status });
     } catch (err) {
       setError(err?.response?.data?.message || "Update failed");
       await fetchFor(input);
@@ -147,14 +140,14 @@ export default function PreviousAttendance() {
   useEffect(() => {
     const loadDepartments = async () => {
       try {
-        const res = await getApiInstance().get("/admin/departments");
+        const res = await apiClient().get("/admin/departments");
         setDepartments(Array.isArray(res.data) ? res.data : []);
       } catch {
         setDepartments([]);
       }
     };
     loadDepartments();
-  }, []);
+  }, [apiClient]);
 
   /* ---------------- LOAD SECTIONS ---------------- */
   useEffect(() => {
@@ -164,7 +157,7 @@ export default function PreviousAttendance() {
         return;
       }
       try {
-        const res = await getApiInstance().get(
+        const res = await apiClient().get(
           `/admin/sections?department=${encodeURIComponent(department)}`
         );
         setSections(Array.isArray(res.data) ? res.data : []);
@@ -173,8 +166,9 @@ export default function PreviousAttendance() {
       }
     };
     loadSections();
-  }, [department]);
+  }, [department, apiClient]);
 
+  /* ---------------- UI ---------------- */
   return (
     <div className="previous-attendance">
       <div className="header">
@@ -199,13 +193,7 @@ export default function PreviousAttendance() {
           })}
         </select>
 
-        <input
-          type="date"
-          value={input}
-          max={today}
-          onChange={(e) => setInput(e.target.value)}
-        />
-
+        <input type="date" value={input} max={today} onChange={(e) => setInput(e.target.value)} />
         <button onClick={() => fetchFor(input)}>Fetch</button>
       </div>
 
