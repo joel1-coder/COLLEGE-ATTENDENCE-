@@ -15,7 +15,7 @@ export default function ForgotPassword(){
       setMessage(resp.data?.message || 'If that email exists, a reset link has been sent.');
     } catch (err) {
       console.error(err);
-      setMessage(err?.response?.data?.message || err.message || 'Request failed');
+      setMessage(eadded err?.response?.data?.message || err.message || 'Request failed');
     } finally { setLoading(false); }
   };
 
