@@ -215,7 +215,9 @@ export default function PreviousAttendance() {
     const loadDepartments = async () => {
       try {
         const res = await getApiInstance().get("/admin/departments");
-        setDepartments(Array.isArray(res.data) ? res.data : []);
+        const list = Array.isArray(res.data) ? res.data : [];
+        console.log('PreviousAttendance: loaded departments', list);
+        setDepartments(list);
       } catch {
         setDepartments([]);
       }
@@ -233,7 +235,9 @@ export default function PreviousAttendance() {
         const res = await getApiInstance().get(
           `/admin/sections?department=${encodeURIComponent(department)}`
         );
-        setSections(Array.isArray(res.data) ? res.data : []);
+        const list = Array.isArray(res.data) ? res.data : [];
+        console.log('PreviousAttendance: loaded sections for', department, list);
+        setSections(list);
       } catch {
         setSections([]);
       }
@@ -255,16 +259,20 @@ export default function PreviousAttendance() {
       <div className="controls">
         <select value={department} onChange={(e) => setDepartment(e.target.value)}>
           <option value="">All Departments</option>
-          {departments.map((d) => (
-            <option key={d._id} value={d.name}>{d.name}</option>
-          ))}
+          {departments.map((d) => {
+            const name = typeof d === 'string' ? d : (d.name || '');
+            const key = (d && d._id) ? d._id : name;
+            return <option key={key} value={name}>{name}</option>;
+          })}
         </select>
 
         <select value={section} onChange={(e) => setSection(e.target.value)}>
           <option value="">All Sections</option>
-          {sections.map((s) => (
-            <option key={s._id} value={s.name}>{s.name}</option>
-          ))}
+          {sections.map((s) => {
+            const name = typeof s === 'string' ? s : (s.name || '');
+            const key = (s && s._id) ? s._id : name;
+            return <option key={key} value={name}>{name}</option>;
+          })}
         </select>
 
         <input
