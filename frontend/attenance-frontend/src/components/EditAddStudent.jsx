@@ -47,7 +47,7 @@ export default function EditAddStudent(){
       <h2>Editing & Adding (Edit student details)</h2>
       <div style={{ marginBottom: 12 }}>
         <label>Student ID: </label>
-        <input value={studentId} onChange={e => setStudentId(e.target.value)} style={{ marginLeft: 8 }} />
+        <input value={studentId} onChange={e => setStudentId(e.target.value.toUpperCase())} style={{ marginLeft: 8 }} />
         <button onClick={fetchStudent} style={{ marginLeft: 8 }}>Fetch</button>
       </div>
 

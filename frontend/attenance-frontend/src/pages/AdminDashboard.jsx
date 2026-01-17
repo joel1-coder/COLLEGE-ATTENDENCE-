@@ -37,42 +37,52 @@ const AdminDashboard = () => {
       </header>
 
       <main className="admin-main">
-        <section className="cards">
-          <div className="card">
-            <h3>Today's Attendance</h3>
-            <p>{stats.presentsToday} presents / {stats.sessionsToday} records ({stats.date})</p>
-            <div style={{ marginTop: 8 }}>
+        <section className="cards flashcards">
+          <div className="flashcard attendance-card">
+            <div className="flashcard-body">
+              <div className="flashcard-title">Today's Attendance</div>
+              <div className="flashcard-stat">{(stats && (stats.presentsToday ?? stats.presents)) ?? 0}</div>
+              <div className="flashcard-sub">of {(stats && (stats.sessionsToday ?? stats.sessions)) ?? 0} records</div>
+            </div>
+            <div className="flashcard-footer">
               <a href="/admin/attendance">Open Attendance</a>
-              <span style={{ marginLeft: 8 }}>•</span>
-              <a style={{ marginLeft: 8 }} href="/admin/report/monthly">Reports</a>
+              <a href="/admin/report/monthly">Reports</a>
             </div>
           </div>
-          <div className="card">
-            <h3>Manage Staff</h3>
-            <p>{stats.staffCount} staff accounts</p>
-            <div style={{ marginTop: 8 }}><a href="/admin/staff">Open Staff</a></div>
+
+          <div className="flashcard staff-card">
+            <div className="flashcard-body">
+              <div className="flashcard-title">Manage Staff</div>
+              <div className="flashcard-stat">{stats.staffCount}</div>
+              <div className="flashcard-sub">staff accounts</div>
+            </div>
+            <div className="flashcard-footer"><a href="/admin/staff">Open Staff</a></div>
           </div>
-          <div className="card">
-            <h3>Students</h3>
-            <p>{stats.studentCount} students</p>
-            <div style={{ marginTop: 8 }}><a href="/admin/students">Manage Students</a></div>
+
+          <div className="flashcard students-card">
+            <div className="flashcard-body">
+              <div className="flashcard-title">Students</div>
+              <div className="flashcard-stat">{stats.studentCount}</div>
+              <div className="flashcard-sub">registered students</div>
+            </div>
+            <div className="flashcard-footer"><a href="/admin/students">Manage Students</a></div>
           </div>
         </section>
-        <section style={{ marginTop: 20, display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+        {/* <section style={{ marginTop: 20, display: 'flex', gap: 24, flexWrap: 'wrap' }}>
           <div style={{ flex: 1 }}>
             <h4>Top Marks</h4>
             <div>
-              <ChartMarks limit={8} />
+              <ChartMarks limit={5} />
             </div>
           </div>
           <div style={{ flex: 1 }}>
             <h4>Attendance %</h4>
             <div>
-              <ChartAttendance limit={8} />
+              <ChartAttendance limit={5} />
             </div>
           </div>
-        </section>
-        {loading && <div>Loading stats...</div>}
+        </section> */}
+        {/* {loading && <div>Loading stats...</div>} */}
       </main>
     </div>
   );

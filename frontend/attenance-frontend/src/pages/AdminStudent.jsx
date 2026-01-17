@@ -82,6 +82,30 @@ export default function AdminStudent() {
     loadSections();
   }, [loadSections]);
 
+  // fetch sections for an arbitrary department (used by add-student form)
+  const fetchSectionsFor = useCallback(
+    async (dept) => {
+      if (!dept) {
+        setSectionsList([]);
+        return;
+      }
+      try {
+        const res = await apiClient().get(`/admin/sections?department=${encodeURIComponent(dept)}`);
+        const list = Array.isArray(res.data) ? res.data.map((s) => s.name) : [];
+        setSectionsList(list);
+      } catch (err) {
+        console.error('Fetch sections for dept error', err);
+        setSectionsList([]);
+      }
+    },
+    [apiClient]
+  );
+
+  // when selected department for add-student changes, load its sections
+  useEffect(() => {
+    if (student.department) fetchSectionsFor(student.department);
+  }, [student.department, fetchSectionsFor]);
+
   /* ---------------- FETCH STUDENTS ---------------- */
   const fetchStudents = async () => {
     setStudents([]);
@@ -219,7 +243,8 @@ export default function AdminStudent() {
           <input
             placeholder="Section name"
             value={sectionName}
-            onChange={(e) => setSectionName(e.target.value)}
+            onChange={(e) => setSectionName(e.target.value.toUpperCase())}
+            maxLength={1}
             required
           />
           <button>Add</button>
@@ -256,21 +281,24 @@ export default function AdminStudent() {
           <select
             value={student.department}
             onChange={(e) =>
-              setStudent({ ...student, department: e.target.value })
+              setStudent({ ...student, department: e.target.value, section: '' })
             }
           >
             <option value="">Select Department</option>
             {classesList.map((d) => (
-              <option key={d}>{d}</option>
+              <option key={d} value={d}>{d}</option>
             ))}
           </select>
-          <input
-            placeholder="Section"
+
+          <select
             value={student.section}
-            onChange={(e) =>
-              setStudent({ ...student, section: e.target.value })
-            }
-          />
+            onChange={(e) => setStudent({ ...student, section: e.target.value })}
+          >
+            <option value="">Select Section</option>
+            {sectionsList.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
           <button>Add Student</button>
         </form>
       </section>
@@ -307,6 +335,7 @@ export default function AdminStudent() {
         {studentsError && <p style={{ color: "red" }}>{studentsError}</p>}
 
         {students.length > 0 && (
+          <div className="table-responsive">
           <table width="100%" border="1" cellPadding="6">
             <thead>
               <tr>
@@ -333,6 +362,7 @@ export default function AdminStudent() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </section>
     </div>

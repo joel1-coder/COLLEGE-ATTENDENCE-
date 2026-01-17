@@ -19,14 +19,28 @@
 }
 .nav-links a {
   color: var(--text);
-  margin-left: 16px;
+  margin-left: 12px;
   text-decoration: none;
   font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
 }
 .nav-links a:hover {
   color: var(--primary-700);
-  text-decoration: underline;
+  background: rgba(13,110,253,0.06);
+  transform: translateY(-2px);
 }
+
+/* Admin-specific theme */
+.navbar.admin .nav-links a {
+  color: rgba(255,255,255,0.95);
+  background: linear-gradient(90deg,#7c3aed,#06b6d4);
+}
+.navbar.admin .nav-links a:hover { filter: brightness(0.95); }
+
+/* User-style subtle pill */
+.navbar.user .nav-links a { background: transparent; }
 
 /* Hamburger button (hidden on desktop) */
 .hamburger{
@@ -63,8 +77,13 @@
 }
 .mobile-menu{ opacity:0; transform: translateY(-6px); transition: opacity 180ms ease, transform 180ms ease; pointer-events: none; }
 .mobile-menu.open{ opacity:1; transform: translateY(0); pointer-events: auto; }
-.mobile-menu a{ color: var(--text); text-decoration: none; }
+.mobile-menu a{ color: var(--text); text-decoration: none; padding:6px 8px; border-radius:6px; }
 .mobile-menu .mobile-logout{ background: transparent; border: none; color: var(--text); padding: 0; text-align: left; cursor: pointer; }
+
+/* Mobile: admin colored links */
+.navbar.admin .mobile-menu { background: linear-gradient(180deg,#7c3aed,#06b6d4); color: #fff; }
+.navbar.admin .mobile-menu a { color: #fff; }
+.navbar.admin .mobile-logout { color: #fff; }
 
 @media (max-width: 768px) {
   .nav-links { display: none; }
