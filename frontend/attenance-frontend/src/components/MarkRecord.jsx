@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
+// Clean, single-mark-record component implementation
 export default function MarkRecord() {
   const [department, setDepartment] = useState('');
   const [section, setSection] = useState('');
@@ -98,32 +99,34 @@ export default function MarkRecord() {
   return (
     <div style={{ padding: 16 }}>
       <h2>Mark Record</h2>
-      <div style={{ display: 'flex', gap: 12, marginBottom: 12, alignItems: 'center' }}>
-        <label>
+      <div style={{ display: 'flex', gap: 12, marginBottom: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+        <label style={{ display: 'flex', flexDirection: 'column' }}>
           Department:
           <select value={department} onChange={e => setDepartment(e.target.value)}>
             {classesList.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </label>
-        <label>
+        <label style={{ display: 'flex', flexDirection: 'column' }}>
           Section:
           <select value={section} onChange={e => setSection(e.target.value)}>
             {sectionsList.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
         </label>
-        <label>
+        <label style={{ display: 'flex', flexDirection: 'column' }}>
           Date:
           <input type="date" value={date} onChange={e => setDate(e.target.value)} />
         </label>
-        <button onClick={fetchMarks}>Fetch</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={fetchMarks} className="btn">Fetch</button>
+          <button onClick={save} className="btn" disabled={records.length === 0}>Save</button>
+        </div>
       </div>
 
       {loading && <p>Loading...</p>}
+      {message && <p>{message}</p>}
 
-      {records.length === 0 && !loading && <p>No records found for selected date.</p>}
-
-      {records.length > 0 && (
-        <table width="100%" border="1">
+      <div className="table-responsive">
+        <table>
           <thead>
             <tr>
               <th>#</th>
@@ -149,11 +152,6 @@ export default function MarkRecord() {
             ))}
           </tbody>
         </table>
-      )}
-
-      <div style={{ marginTop: 12 }}>
-        <button onClick={save} disabled={records.length === 0}>Save Changes</button>
-        {message && <p>{message}</p>}
       </div>
     </div>
   );
