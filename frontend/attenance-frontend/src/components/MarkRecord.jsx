@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
-// Clean, single-mark-record component implementation
+// Clean, single-mark-record component implementation (updated)
 export default function MarkRecord() {
   const [department, setDepartment] = useState('');
   const [section, setSection] = useState('');
