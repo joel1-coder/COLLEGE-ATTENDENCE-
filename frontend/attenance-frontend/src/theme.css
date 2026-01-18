@@ -93,3 +93,33 @@ body.page-login { background: linear-gradient(120deg, #fff3e0 0%, #ffcc80 100%);
 /* Ensure content area is readable */
 .previous-attendance, .card, .attendance-card { background: rgba(255,255,255,0.9); }
 
+/* Responsive improvements */
+.container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+.table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-responsive table { min-width: 700px; }
+
+/* Forms: make controls stack and expand on small screens */
+.form-row { display: flex; gap: 12px; align-items: center; }
+.form-row label { display: flex; flex-direction: column; margin: 0; }
+input[type="text"], input[type="date"], input[type="number"], select, textarea { padding: 8px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.08); width: auto; }
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  :root { --base-font-size: 15px; }
+  .container { padding: 12px; }
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.2rem; }
+  .form-row { flex-direction: column; align-items: stretch; }
+  input[type="text"], input[type="date"], input[type="number"], select, textarea { width: 100%; }
+  .nav-links { display: none; }
+  .mobile-menu.open { display: flex; flex-direction: column; gap: 8px; }
+  .mobile-menu a, .mobile-menu button { padding: 8px 12px; }
+  /* reduce table min width on small devices */
+  .table-responsive table { min-width: 100%; }
+  table th, table td { padding: 10px 6px; font-size: 0.95rem; }
+  .card { padding: 10px; }
+}
+
+/* Ensure admin pages also use responsive container */
+body.page-admin .container { padding-bottom: 24px; }
+

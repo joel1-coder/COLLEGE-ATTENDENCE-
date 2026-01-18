@@ -62,6 +62,7 @@ function NavBar() {
               <Link to="/previous-attendance">Attendance Records</Link>
               {user && <Link to="/editing-adding">Manage Entries</Link>}
               {user && <Link to="/enter-marks">Marks Portal</Link>}
+              {user && <Link to="/mark-record">Mark Record</Link>}
               <Link to="/admin">Admin Panel</Link>
                 {user ? (
                 <button onClick={handleLogout} type="button" style={{ cursor: "pointer", color: "#000", marginLeft: 12, background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}>Logout</button>
@@ -98,6 +99,7 @@ function NavBar() {
                 <Link to="/previous-attendance">Attendance Records</Link>
                 {user && <Link to="/editing-adding">Manage Entries</Link>}
                 {user && <Link to="/enter-marks">Marks Portal</Link>}
+                {user && <Link to="/mark-record">Mark Record</Link>}
                 <Link to="/admin/login">Admin Panel</Link>
                 {user ? (
                   <button onClick={handleLogout} type="button" className="mobile-logout">Logout</button>
