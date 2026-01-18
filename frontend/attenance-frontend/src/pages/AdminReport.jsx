@@ -8,30 +8,38 @@ export default function AdminReport(){
     <div style={{ padding: 16 }}>
       <h2>Reports</h2>
 
-      <div style={{ display: 'grid', gap: 12, maxWidth: 720 }}>
-        <div style={{ padding: 12, border: '1px solid #ddd', borderRadius: 6 }}>
+      <div className="flashcards">
+        <article className="flashcard">
           <h3>View Daily Attendance</h3>
-          <p>View attendance for a specific date.</p>
-          <Link to="/previous-attendance"><button>Open</button></Link>
-        </div>
+          <p className="muted">View attendance for a specific date and class.</p>
+          <div className="card-actions">
+            <Link to="/previous-attendance"><button className="btn">Open</button></Link>
+          </div>
+        </article>
 
-        <div style={{ padding: 12, border: '1px solid #ddd', borderRadius: 6 }}>
+        <article className="flashcard">
           <h3>Monthly Reports</h3>
-          <p>Generate aggregated monthly attendance and marks reports.</p>
-          <button onClick={() => navigate('/admin/report/monthly')}>Generate</button>
-        </div>
+          <p className="muted">Generate aggregated monthly attendance and marks summaries.</p>
+          <div className="card-actions">
+            <button className="btn" onClick={() => navigate('/admin/report/monthly')}>Generate</button>
+          </div>
+        </article>
 
-        <div style={{ padding: 12, border: '1px solid #ddd', borderRadius: 6 }}>
+        <article className="flashcard">
           <h3>Edit Attendance</h3>
-          <p>Edit attendance records (admin-only).</p>
-          <Link to="/admin/attendance"><button>Edit Attendance</button></Link>
-        </div>
+          <p className="muted">Edit attendance records for any date (admin-only).</p>
+          <div className="card-actions">
+            <Link to="/admin/attendance"><button className="btn">Edit Attendance</button></Link>
+          </div>
+        </article>
 
-        <div style={{ padding: 12, border: '1px solid #f8d7da', borderRadius: 6, background: '#fff5f5' }}>
+        <article className="flashcard danger">
           <h3>Reset / Reopen Attendance</h3>
-          <p>Reset attendance for a date or reopen submission for edits.</p>
-          <button onClick={() => navigate('/admin/report/reset')}>Reset / Reopen</button>
-        </div>
+          <p className="muted">Reset attendance for a date or reopen submissions for edits.</p>
+          <div className="card-actions">
+            <button className="btn" onClick={() => navigate('/admin/report/reset')}>Reset / Reopen</button>
+          </div>
+        </article>
       </div>
     </div>
   );
