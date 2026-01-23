@@ -119,6 +119,7 @@ export default function MarkRecord() {
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={fetchMarks} className="btn">Fetch</button>
           <button onClick={save} className="btn" disabled={records.length === 0}>Save</button>
+          <button onClick={() => downloadCSV()} className="btn secondary" disabled={records.length === 0}>Download</button>
         </div>
       </div>
 
@@ -231,6 +232,26 @@ export default function MarkRecord() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const downloadCSV = () => {
+    if (!records || records.length === 0) {
+      setMessage('No records to download');
+      return;
+    }
+    const header = ['#', 'Student ID', 'Name', 'Mark'];
+    const rows = records.map((r, i) => [i + 1, r.studentId ?? '', r.name ?? '', r.mark ?? '']);
+    const escapeCell = (cell) => `"${String(cell).replace(/"/g, '""')}"`;
+    const csv = [header, ...rows].map(r => r.map(escapeCell).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const fname = `marks-${department || 'all'}-${section || 'all'}-${date}.csv`;
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', fname);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setMessage('Download started');
   };
 
   const save = async () => {
