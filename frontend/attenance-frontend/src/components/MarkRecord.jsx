@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 export default function MarkRecord() {
   const [department, setDepartment] = useState('');
@@ -56,6 +57,11 @@ export default function MarkRecord() {
       setMessage('Select date, department and section');
       return;
     }
+    const stored = JSON.parse(localStorage.getItem('user')) || null;
+    if (!stored?.token) {
+      setMessage('Not authenticated — please log in');
+      return;
+    }
     setMessage('');
     setLoading(true);
     try {
@@ -71,6 +77,13 @@ export default function MarkRecord() {
     } catch (err) {
       console.error('Failed to fetch marks', err);
       setRecords([]);
+      if (err?.response?.status === 401) {
+        setMessage('Unauthorized — please log in again');
+        localStorage.removeItem('user');
+        // redirect to login page (app should have a login route)
+        window.location.href = '/login';
+        return;
+      }
       setMessage(err?.response?.data?.message || 'Fetch failed');
     } finally {
       setLoading(false);
@@ -80,6 +93,11 @@ export default function MarkRecord() {
   const save = async () => {
     if (!date || !department || !section) {
       setMessage('Select date, department and section');
+      return;
+    }
+    const stored = JSON.parse(localStorage.getItem('user')) || null;
+    if (!stored?.token) {
+      setMessage('Not authenticated — please log in');
       return;
     }
     setMessage('');
@@ -94,21 +112,33 @@ export default function MarkRecord() {
       setMessage(res.data?.message || 'Saved');
     } catch (err) {
       console.error('Save failed', err);
+      if (err?.response?.status === 401) {
+        setMessage('Unauthorized — please log in again');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+        return;
+      }
       setMessage(err?.response?.data?.message || 'Save failed');
     }
   };
 
-  const downloadCSV = () => {
+  const downloadExcel = () => {
     if (!records || records.length === 0) {
       setMessage('No records to download');
       return;
     }
-    const header = ['#', 'Student ID', 'Name', 'Mark'];
-    const rows = records.map((r, i) => [i + 1, r.studentId ?? '', r.name ?? '', r.mark ?? '']);
-    const escapeCell = (cell) => `"${String(cell).replace(/"/g, '""')}"`;
-    const csv = [header, ...rows].map(r => r.map(escapeCell).join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const fname = `marks-${department || 'all'}-${section || 'all'}-${date}.csv`;
+    const data = records.map((r, i) => ({
+      '#': i + 1,
+      'Student ID': r.studentId ?? '',
+      Name: r.name ?? '',
+      Mark: r.mark ?? '',
+    }));
+    const ws = XLSX.utils.json_to_sheet(data, { header: ['#', 'Student ID', 'Name', 'Mark'] });
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Marks');
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([wbout], { type: 'application/octet-stream' });
+    const fname = `marks-${department || 'all'}-${section || 'all'}-${date}.xlsx`;
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.setAttribute('download', fname);
@@ -141,7 +171,7 @@ export default function MarkRecord() {
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={fetchMarks} className="btn">Fetch</button>
           <button onClick={save} className="btn" disabled={records.length === 0}>Save</button>
-          <button onClick={downloadCSV} className="btn secondary" disabled={records.length === 0}>Download</button>
+          <button onClick={downloadExcel} className="btn secondary" disabled={records.length === 0}>Download</button>
         </div>
       </div>
 
