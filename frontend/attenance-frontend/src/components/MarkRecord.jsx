@@ -52,6 +52,32 @@ export default function MarkRecord() {
     fetch();
   }, [department, apiClient, section]);
 
+  // Fetch students for selected department/section and initialize records (default mark 0)
+  useEffect(() => {
+    if (!department || !section) return;
+    const fetchStudents = async () => {
+      setLoading(true);
+      try {
+        const api = apiClient();
+        const res = await api.get(`/students?department=${encodeURIComponent(department)}&section=${encodeURIComponent(section)}`);
+        const students = Array.isArray(res.data) ? res.data : [];
+        const defaultRecords = students.map(s => ({
+          id: s._id,
+          studentId: s.studentId || '',
+          name: s.name || '',
+          mark: 0,
+        }));
+        setRecords(defaultRecords);
+      } catch (err) {
+        console.warn('Failed to fetch students', err);
+        setRecords([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStudents();
+  }, [department, section, apiClient]);
+
   const fetchMarks = async () => {
     if (!date || !department || !section) {
       setMessage('Select date, department and section');
