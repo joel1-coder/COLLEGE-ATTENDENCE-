@@ -145,7 +145,7 @@ function Creation() {
           <input
             placeholder="Section name"
             value={sectionName}
-            onChange={(e) => setSectionName(e.target.value)}
+            onChange={(e) => setSectionName(e.target.value.toUpperCase())}
             required
           />
           <button>Add</button>

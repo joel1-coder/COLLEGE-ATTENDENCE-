@@ -18,6 +18,7 @@ import NavBar from "./components/NavBar";
 import PreviousAttendance from "./components/PreviousAttendance";
 import EditAddStudent from "./components/EditAddStudent";
 import EnterMarks from "./components/EnterMarks";
+import MarkRecord from "./components/MarkRecord";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import { AuthProvider } from './context/AuthContext';
@@ -107,6 +108,7 @@ const router = createBrowserRouter(
         { path: "previous-attendance", element: <Protected><PreviousAttendance /></Protected> },
         { path: "editing-adding", element: <Protected><EditAddStudent /></Protected> },
         { path: "enter-marks", element: <Protected><EnterMarks /></Protected> },
+          { path: "mark-record", element: <Protected><MarkRecord /></Protected> },
         { path: "forgot-password", element: <ForgotPassword /> },
         { path: "reset-password", element: <ResetPassword /> },
         { path: "creation", element: <Protected><Creation /></Protected> },

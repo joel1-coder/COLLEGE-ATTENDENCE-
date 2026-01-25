@@ -7,6 +7,10 @@ const AdminAttendance = () => {
   const todayIso = new Date().toISOString().split('T')[0];
   const [date, setDate] = useState(todayIso);
   const [records, setRecords] = useState([]);
+  const [department, setDepartment] = useState('');
+  const [section, setSection] = useState('');
+  const [departments, setDepartments] = useState([]);
+  const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [togglingIds, setTogglingIds] = useState(new Set());
@@ -24,10 +28,28 @@ const AdminAttendance = () => {
         setLoading(true);
         setError("");
 
-        const res = await axios.get(`https://college-attendence.onrender.com/api/attendance?date=${date}`);
-        // API returns an attendance document or {}. Use its `records` array or empty array.
+        const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
+        const stored = JSON.parse(localStorage.getItem('user')) || null;
+        if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
+
+        const params = { date };
+        if (department) params.department = department;
+        if (section) params.section = section;
+
+        const res = await api.get('/attendance', { params });
         const attendance = res.data || {};
-        setRecords(Array.isArray(attendance.records) ? attendance.records : []);
+        const recs = Array.isArray(attendance.records) ? attendance.records : [];
+        setRecords(recs);
+
+        // If departments/sections not loaded, derive from returned records
+        if (departments.length === 0 && recs.length > 0) {
+          const depts = Array.from(new Set(recs.map(r => r.student?.department).filter(Boolean)));
+          setDepartments(depts);
+        }
+        if ((sections.length === 0 || section) && recs.length > 0) {
+          const secs = Array.from(new Set(recs.map(r => r.student?.section).filter(Boolean)));
+          setSections(secs);
+        }
       } catch (err) {
         setError("Failed to load attendance");
       } finally {
@@ -58,6 +80,17 @@ const AdminAttendance = () => {
             }
             return opts;
           })()}
+        </select>
+        <label style={{ marginLeft: 12 }}>Department:</label>
+        <select value={department} onChange={(e) => { setDepartment(e.target.value); setSection(''); }}>
+          <option value="">All</option>
+          {departments.map(d => <option key={d} value={d}>{d}</option>)}
+        </select>
+
+        <label style={{ marginLeft: 12 }}>Section:</label>
+        <select value={section} onChange={(e) => setSection(e.target.value)}>
+          <option value="">All</option>
+          {sections.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
         {isAdmin && (
           <div style={{ marginLeft: 12 }}>
