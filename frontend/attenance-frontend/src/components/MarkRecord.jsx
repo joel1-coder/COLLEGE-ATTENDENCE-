@@ -9,6 +9,8 @@ export default function MarkRecord() {
   const [sectionsList, setSectionsList] = useState([]);
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [records, setRecords] = useState([]);
+  const [markEntries, setMarkEntries] = useState([]);
+  const [currentEntryIndex, setCurrentEntryIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -92,14 +94,26 @@ export default function MarkRecord() {
     setLoading(true);
     try {
       const res = await apiClient().get('/marks', { params: { date, department, section } });
-      const doc = res.data || { records: [] };
-      const normalized = (doc.records || []).map(r => ({
-        id: r.student?._id || r.student,
-        studentId: r.student?.studentId || '',
-        name: r.student?.name || '',
-        mark: r.mark ?? 0,
-      }));
-      setRecords(normalized);
+      const data = res.data;
+      // API may return an array of mark documents (multiple submissions) or a single document
+      let items = [];
+      if (Array.isArray(data)) items = data;
+      else if (data?.records) items = [data];
+
+      setMarkEntries(items);
+      setCurrentEntryIndex(0);
+      if (items.length > 0) {
+        const doc = items[0];
+        const normalized = (doc.records || []).map(r => ({
+          id: r.student?._id || r.student,
+          studentId: r.student?.studentId || '',
+          name: r.student?.name || '',
+          mark: r.mark ?? 0,
+        }));
+        setRecords(normalized);
+      } else {
+        setRecords([]);
+      }
     } catch (err) {
       console.error('Failed to fetch marks', err);
       setRecords([]);
@@ -115,6 +129,22 @@ export default function MarkRecord() {
       setLoading(false);
     }
   };
+
+  const showEntry = (index) => {
+    if (!markEntries || !markEntries[index]) return;
+    const doc = markEntries[index];
+    const normalized = (doc.records || []).map(r => ({
+      id: r.student?._id || r.student,
+      studentId: r.student?.studentId || '',
+      name: r.student?.name || '',
+      mark: r.mark ?? 0,
+    }));
+    setCurrentEntryIndex(index);
+    setRecords(normalized);
+  };
+
+  const prevEntry = () => showEntry(Math.max(0, currentEntryIndex - 1));
+  const nextEntry = () => showEntry(Math.min(markEntries.length - 1, currentEntryIndex + 1));
 
   const save = async () => {
     if (!date || !department || !section) {
