@@ -56,49 +56,11 @@ router.get('/', authMiddleware, async (req, res) => {
   try {
     const { date, department, section } = req.query;
     if (!date || !department || !section) return res.status(400).json({ message: 'date, department and section required' });
-    // return all marks documents for the date+department+section (supports multiple submissions per day)
-    const filter = { date, department, section };
-    const docs = await Marks.find(filter).sort({ createdAt: -1 }).populate('records.student');
-    return res.json(Array.isArray(docs) ? docs : []);
+    const doc = await Marks.find({ date, department, section }).populate('records.student');
+    return res.json(doc || { records: [] });
   } catch (err) {
     console.error('Marks fetch error', err);
     return res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// PUT /api/marks/:marksId/records/:recordId  - update a single mark
-router.put('/:marksId/records/:recordId', authMiddleware, async (req, res) => {
-  try {
-    const { marksId, recordId } = req.params;
-    const { mark } = req.body || {};
-    if (mark === undefined) return res.status(400).json({ message: 'mark is required' });
-    const doc = await Marks.findById(marksId).populate('records.student');
-    if (!doc) return res.status(404).json({ message: 'Marks document not found' });
-    const rec = doc.records.id(recordId);
-    if (!rec) return res.status(404).json({ message: 'Record not found' });
-    rec.mark = mark;
-    await doc.save();
-    return res.json({ message: 'Record updated', record: rec });
-  } catch (err) {
-    console.error('Update mark error', err);
-    return res.status(500).json({ message: 'Server error updating record' });
-  }
-});
-
-// DELETE /api/marks/:marksId/records/:recordId  - delete a single mark record
-router.delete('/:marksId/records/:recordId', authMiddleware, async (req, res) => {
-  try {
-    const { marksId, recordId } = req.params;
-    const doc = await Marks.findById(marksId).populate('records.student');
-    if (!doc) return res.status(404).json({ message: 'Marks document not found' });
-    const rec = doc.records.id(recordId);
-    if (!rec) return res.status(404).json({ message: 'Record not found' });
-    rec.remove();
-    await doc.save();
-    return res.json({ message: 'Record deleted' });
-  } catch (err) {
-    console.error('Delete mark error', err);
-    return res.status(500).json({ message: 'Server error deleting record' });
   }
 });
 
