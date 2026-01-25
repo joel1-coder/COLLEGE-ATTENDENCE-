@@ -56,7 +56,7 @@ router.get('/', authMiddleware, async (req, res) => {
   try {
     const { date, department, section } = req.query;
     if (!date || !department || !section) return res.status(400).json({ message: 'date, department and section required' });
-    const doc = await Marks.findOne({ date, department, section }).populate('records.student');
+    const doc = await Marks.find({ date, department, section }).populate('records.student');
     return res.json(doc || { records: [] });
   } catch (err) {
     console.error('Marks fetch error', err);
