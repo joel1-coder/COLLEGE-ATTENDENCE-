@@ -1,117 +1,199 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
-import "./NavBar.css";
-import { AuthContext } from "../context/AuthContext";
+/* ============================================================
+   NAVBAR — PREMIUM DARK GLASS
+   ============================================================ */
 
-function NavBar() {
-  const { user, logout } = useContext(AuthContext);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
-  const buttonRef = useRef(null);
-
-  const location = useLocation();
-  const isLoginPage = location.pathname === '/login' || location.pathname === '/admin/login';
-  const isAdmin = user?.role === 'admin';
-
-  const handleLogout = () => {
-    logout();
-    window.location.href = "/login";
-  };
-  useEffect(() => {
-    // close mobile menu on route change
-    setMenuOpen(false);
-  }, [location.pathname]);
-
-  useEffect(() => {
-    function handleOutside(e) {
-      if (!menuOpen) return;
-      if (menuRef.current && !menuRef.current.contains(e.target) && buttonRef.current && !buttonRef.current.contains(e.target)) {
-        setMenuOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleOutside);
-    return () => document.removeEventListener('mousedown', handleOutside);
-  }, [menuOpen]);
-  const logoLink = isAdmin ? '/admin' : '/';
-  const logoText = isAdmin && 'Attendance';
-
-  return (
-    <nav className={`navbar ${isAdmin ? 'admin' : 'user'}`}>
-      <div className="nav-container">
-        <Link to={logoLink} className="nav-logo">{logoText}</Link>
-        <div className="nav-links">
-          {isLoginPage ? (
-            <>
-              <Link to="/admin">Admin</Link>
-              <Link to="/login">Login</Link>
-            </>
-          ) : isAdmin ? (
-            <>
-              <Link to="/admin">Dashboard</Link>
-              <Link to="/admin/staff">Staff</Link>
-              {/* <Link to="/admin/create-admin">Create Admin</Link> */}
-              <Link to="/admin/student">Student</Link>
-              <Link to="/admin/report">Report</Link>
-              {/* <Link to="/admin/assign">Assign</Link> */}
-              <button onClick={handleLogout} type="button" style={{ cursor: "pointer", color: "#000", marginLeft: 12, background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}>Logout</button>
-            </>
-          ) : (
-            <>
-              <Link to="/">Home</Link>
-              {user && <Link to="/creation">Session Setup</Link>}
-              <Link to="/previous-attendance">Attendance Records</Link>
-              {user && <Link to="/editing-adding">Manage Entries</Link>}
-              {user && <Link to="/enter-marks">Marks Portal</Link>}
-              {user && <Link to="/mark-record">Mark Record</Link>}
-              <Link to="/admin">Admin Panel</Link>
-                {user ? (
-                <button onClick={handleLogout} type="button" style={{ cursor: "pointer", color: "#000", marginLeft: 12, background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}>Logout</button>
-              ) : (
-                <Link to="/login">Login</Link>
-              )}
-            </>
-          )}
-        </div>
-        <button ref={buttonRef} className={`hamburger ${menuOpen ? 'open' : ''}`} aria-label="Toggle menu" onClick={() => setMenuOpen(v => !v)}>
-          <span className="bar" />
-          <span className="bar" />
-          <span className="bar" />
-        </button>
-        <div ref={menuRef} className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
-            {isLoginPage ? (
-              <>
-                <Link to="/admin">Admin</Link>
-                <Link to="/login">Login</Link>
-              </>
-            ) : isAdmin ? (
-              <>
-                <Link to="/admin">Dashboard</Link>
-                <Link to="/admin/staff">Staff</Link>
-                <Link to="/admin/student">Student</Link>
-                <Link to="/admin/report">Report</Link>
-                <Link to="/admin/assign">Assign</Link>
-                <button onClick={handleLogout} type="button" className="mobile-logout">Logout</button>
-              </>
-            ) : (
-              <>
-                <Link to="/">Home</Link>
-                {user && <Link to="/creation">Session Setup</Link>}
-                <Link to="/previous-attendance">Attendance Records</Link>
-                {user && <Link to="/editing-adding">Manage Entries</Link>}
-                {user && <Link to="/enter-marks">Marks Portal</Link>}
-                {user && <Link to="/mark-record">Mark Record</Link>}
-                <Link to="/admin/login">Admin Panel</Link>
-                {user ? (
-                  <button onClick={handleLogout} type="button" className="mobile-logout">Logout</button>
-                ) : (
-                  <Link to="/login">Login</Link>
-                )}
-              </>
-            )}
-          </div>
-      </div>
-    </nav>
-  );
+.navbar {
+  background: rgba(8, 12, 20, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(34, 211, 238, 0.1);
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 
-export default NavBar;
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 62px;
+}
+
+/* ── LOGO ── */
+.nav-logo {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  background: linear-gradient(90deg, #22d3ee, #a5f3fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: opacity 0.2s;
+}
+.nav-logo:hover { opacity: 0.85; }
+
+/* ── LINKS ── */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.nav-links a {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-decoration: none;
+  padding: 7px 13px;
+  border-radius: 8px;
+  letter-spacing: 0.02em;
+  transition: color 0.18s, background 0.18s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.nav-links a:hover {
+  color: #22d3ee;
+  background: rgba(34, 211, 238, 0.09);
+  transform: translateY(-1px);
+}
+
+.nav-links a.active {
+  color: #22d3ee;
+  background: rgba(34, 211, 238, 0.12);
+}
+
+/* Logout button inline */
+.nav-links button[type="button"] {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #f43f5e !important;
+  background: rgba(244, 63, 94, 0.08) !important;
+  border: 1px solid rgba(244, 63, 94, 0.2) !important;
+  padding: 7px 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, transform 0.15s;
+  box-shadow: none !important;
+}
+.nav-links button[type="button"]:hover {
+  background: rgba(244, 63, 94, 0.18) !important;
+  color: #fb7185 !important;
+  transform: translateY(-1px);
+}
+
+/* Admin nav — slightly brighter links */
+.navbar.admin .nav-links a {
+  color: #a5f3fc;
+}
+.navbar.admin .nav-links a:hover {
+  color: #22d3ee;
+  background: rgba(34, 211, 238, 0.1);
+}
+
+/* ── HAMBURGER ── */
+.hamburger {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: 8px;
+  box-shadow: none !important;
+  background: transparent !important;
+  transform: none !important;
+}
+
+.hamburger .bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #94a3b8;
+  margin: 5px 0;
+  border-radius: 2px;
+  transition: transform 0.22s ease, opacity 0.15s ease;
+  transform-origin: center;
+}
+
+.hamburger.open .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); background: #22d3ee; }
+.hamburger.open .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: #22d3ee; }
+
+/* ── MOBILE MENU ── */
+.mobile-menu {
+  position: absolute;
+  right: 16px;
+  top: 68px;
+  background: rgba(13, 18, 32, 0.97);
+  border: 1px solid rgba(34, 211, 238, 0.15);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(34,211,238,0.06);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  opacity: 0;
+  transform: translateY(-8px) scale(0.97);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.mobile-menu.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.mobile-menu a {
+  color: #94a3b8;
+  text-decoration: none;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+  display: block;
+}
+.mobile-menu a:hover { color: #22d3ee; background: rgba(34,211,238,0.09); }
+
+.mobile-menu .mobile-logout {
+  background: transparent !important;
+  border: none !important;
+  color: #f43f5e;
+  padding: 9px 12px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: background 0.15s;
+}
+.mobile-menu .mobile-logout:hover { background: rgba(244,63,94,0.1) !important; }
+
+/* Admin mobile menu */
+.navbar.admin .mobile-menu {
+  background: rgba(13, 18, 32, 0.97);
+}
+.navbar.admin .mobile-menu a { color: #a5f3fc; }
+.navbar.admin .mobile-menu a:hover { color: #22d3ee; background: rgba(34,211,238,0.09); }
+.navbar.admin .mobile-logout { color: #f43f5e; }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: block; }
+  .navbar { padding: 0 16px; }
+}
