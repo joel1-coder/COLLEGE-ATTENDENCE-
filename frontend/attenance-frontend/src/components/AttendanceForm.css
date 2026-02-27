@@ -1,50 +1,89 @@
 .attendance-container {
-  width: 90%;
-  margin: 28px auto;
-  padding: 20px;
-  background: rgba(255,255,255,0.92);
+  width: 92%;
+  max-width: 1200px;
+  margin: 32px auto;
+  padding: 24px;
+  background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(16,24,40,0.08);
-  border: 1px solid rgba(13,110,253,0.06);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
 }
 
 .attendance-container h2 {
   text-align: center;
-  margin-bottom: 18px;
-  color: var(--primary-700);
+  margin-bottom: 20px;
+  color: #111827;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 14px;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table th {
+  background: #f9fafb;
+  color: #374151;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 12px;
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 table td {
   padding: 12px;
-  border: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid #f1f5f9;
   text-align: center;
+  color: #1f2933;
 }
 
-table th {
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-    color: white;
-    font-weight: 600;
+table tr:hover td {
+  background: #f9fafb;
 }
-table tr:nth-child(even) { background: rgba(0,0,0,0.02); }
+
+table tr:last-child td {
+  border-bottom: none;
+}
 
 button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background: var(--primary);
+  margin-top: 18px;
+  padding: 10px 16px;
+  background: #2563eb;
   border: none;
   color: white;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(13,110,253,0.12);
+  transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.1s ease;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
 }
 
-.absent{
-  background-color: var(--danger);
-  color: #fff;
+button:hover {
+  background: #1d4ed8;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.absent {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 4px 8px;
 }
