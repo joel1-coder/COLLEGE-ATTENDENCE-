@@ -1,89 +1,458 @@
+/* ================================================
+   CS LAB ATTENDANCE — PREMIUM DARK NAVY + GOLD
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --navy-900: #0a0e1a;
+  --navy-800: #0f1628;
+  --navy-700: #151d35;
+  --navy-600: #1c2645;
+  --navy-500: #243055;
+  --gold-400: #d4a843;
+  --gold-300: #e8c06a;
+  --gold-200: #f5d98a;
+  --gold-glow: rgba(212, 168, 67, 0.18);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(212, 168, 67, 0.15);
+  --text-primary: #f0ede6;
+  --text-muted: #8b9ab8;
+  --text-dim: #5a6a88;
+  --red-soft: #f87171;
+  --red-bg: rgba(248, 113, 113, 0.12);
+  --green-soft: #4ade80;
+  --green-bg: rgba(74, 222, 128, 0.1);
+  --shadow-gold: 0 0 40px rgba(212, 168, 67, 0.08);
+}
+
+/* ---- GLOBAL RESET ---- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy-900);
+  color: var(--text-primary);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(212, 168, 67, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(37, 99, 235, 0.08) 0%, transparent 55%);
+}
+
+/* ---- NAVIGATION ---- */
+nav {
+  background: rgba(10, 14, 26, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(212, 168, 67, 0.12);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 60px;
+}
+
+nav a {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+  transition: color 0.2s, background 0.2s;
+}
+
+nav a:hover {
+  color: var(--gold-300);
+  background: var(--gold-glow);
+}
+
+nav a.active {
+  color: var(--gold-400);
+  background: var(--gold-glow);
+}
+
+nav a.logout {
+  color: #ef4444;
+  margin-left: 8px;
+}
+
+nav a.logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* ---- MAIN CONTAINER ---- */
 .attendance-container {
   width: 92%;
   max-width: 1200px;
-  margin: 32px auto;
-  padding: 24px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e5e7eb;
+  margin: 40px auto;
+  padding: 36px 40px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    var(--shadow-gold),
+    0 24px 64px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 
+/* Decorative corner accent */
+.attendance-container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle at top left, rgba(212, 168, 67, 0.12), transparent 70%);
+  pointer-events: none;
+}
+
+/* ---- HEADING ---- */
 .attendance-container h2 {
   text-align: center;
-  margin-bottom: 20px;
-  color: #111827;
-  font-size: 20px;
-  font-weight: 600;
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: transparent;
+  background: linear-gradient(135deg, var(--gold-200) 0%, var(--gold-400) 50%, var(--gold-300) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  margin-bottom: 28px;
+  position: relative;
 }
 
+.attendance-container h2::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
+  margin: 10px auto 0;
+}
+
+/* ---- FILTER ROW ---- */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.filter-row label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.filter-row select,
+.filter-row input,
+.filter-row textarea {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.filter-row select:focus,
+.filter-row input:focus,
+.filter-row textarea:focus {
+  border-color: var(--gold-400);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+
+.filter-row select option {
+  background: var(--navy-700);
+  color: var(--text-primary);
+}
+
+.filter-row textarea {
+  resize: vertical;
+  min-height: 48px;
+  max-height: 120px;
+}
+
+.filter-row textarea::placeholder {
+  color: var(--text-dim);
+}
+
+.date-badge {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--gold-300);
+  background: var(--gold-glow);
+  border: 1px solid rgba(212, 168, 67, 0.25);
+  border-radius: 8px;
+  padding: 7px 14px;
+  white-space: nowrap;
+}
+
+/* ---- TABLE ---- */
 table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
-  background: #ffffff;
-  border-radius: 8px;
-  overflow: hidden;
+}
+
+/* Table header */
+table thead tr {
+  background: linear-gradient(90deg, #1e2d5e 0%, #2a3d7a 50%, #1e2d5e 100%);
 }
 
 table th {
-  background: #f9fafb;
-  color: #374151;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: 12px;
-  padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-table td {
-  padding: 12px;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 14px 16px;
   text-align: center;
-  color: #1f2933;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold-300);
+  border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+  position: relative;
 }
 
-table tr:hover td {
-  background: #f9fafb;
+table th:first-child {
+  border-radius: 8px 0 0 0;
+  text-align: left;
+  padding-left: 20px;
 }
 
-table tr:last-child td {
+table th:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+/* Table rows */
+table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease;
+}
+
+table tbody tr:hover td {
+  background: rgba(212, 168, 67, 0.04);
+}
+
+table tbody tr:last-child td {
   border-bottom: none;
 }
 
-button {
-  margin-top: 18px;
-  padding: 10px 16px;
-  background: #2563eb;
-  border: none;
-  color: white;
-  font-size: 14px;
+table td {
+  padding: 13px 16px;
+  text-align: center;
+  color: var(--text-primary);
+  font-size: 13.5px;
+  font-weight: 400;
+}
+
+table td:first-child {
+  text-align: left;
+  padding-left: 20px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Student ID styling */
+table td.student-id {
+  font-family: 'DM Sans', monospace;
   font-weight: 600;
-  cursor: pointer;
+  color: var(--text-primary);
+  letter-spacing: 0.03em;
+}
+
+/* Name styling */
+table td.name {
+  font-weight: 500;
+  text-align: left;
+}
+
+/* ---- STATUS BADGES ---- */
+.status-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 20px;
+  padding: 4px 14px;
+}
+
+.absent,
+.status-badge.absent {
+  background: var(--red-bg);
+  color: var(--red-soft);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.present,
+.status-badge.present {
+  background: var(--green-bg);
+  color: var(--green-soft);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Status select inside table */
+table td select {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.1s ease;
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+
+table td select:focus {
+  border-color: var(--gold-400);
+}
+
+table td select option {
+  background: var(--navy-700);
+}
+
+/* ---- SUBMIT BUTTON ---- */
+button,
+.submit-btn {
+  margin-top: 24px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, var(--gold-400) 0%, #b8882a 100%);
+  border: none;
+  color: #0a0e1a;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow:
+    0 4px 20px rgba(212, 168, 67, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  pointer-events: none;
 }
 
 button:hover {
-  background: #1d4ed8;
+  filter: brightness(1.1);
+  box-shadow:
+    0 6px 28px rgba(212, 168, 67, 0.45),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
 }
 
 button:active {
   transform: translateY(1px);
+  filter: brightness(0.95);
 }
 
 button:disabled {
-  opacity: 0.6;
+  opacity: 0.45;
   cursor: not-allowed;
   box-shadow: none;
+  transform: none;
 }
 
-.absent {
-  background-color: #fee2e2;
-  color: #b91c1c;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 4px 8px;
+/* ---- EMPTY STATE ---- */
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-dim);
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--navy-800);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 168, 67, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 168, 67, 0.5);
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .attendance-container {
+    width: 95%;
+    padding: 24px 20px;
+  }
+
+  .filter-row {
+    gap: 12px;
+  }
+
+  .date-badge {
+    margin-left: 0;
+  }
+
+  table {
+    font-size: 12px;
+  }
 }
