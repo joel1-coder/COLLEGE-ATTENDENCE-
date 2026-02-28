@@ -6,36 +6,26 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Nunito:wght@400;500;600;700&display=swap');
 
-/* ── DESIGN TOKENS ───────────────────────────────────────── */
 :root {
-  /* Backgrounds */
   --bg:          #080c14;
   --bg-2:        #0d1220;
   --surface:     #111827;
   --surface-2:   #1a2236;
   --surface-3:   #222d44;
-
-  /* Brand — Cyan */
   --cyan-50:     #ecfeff;
   --cyan-200:    #a5f3fc;
   --cyan-400:    #22d3ee;
   --cyan-500:    #06b6d4;
   --cyan-600:    #0891b2;
-
-  /* Accent — Amber */
   --amber-300:   #fcd34d;
   --amber-400:   #fbbf24;
   --amber-500:   #f59e0b;
-
-  /* Semantic aliases (legacy compat) */
   --primary:       var(--cyan-500);
   --primary-700:   var(--cyan-600);
   --accent:        var(--amber-400);
   --success:       #10b981;
   --danger:        #f43f5e;
   --muted:         #64748b;
-
-  /* Text */
   --text:          #cbd5e1;
   --heading:       #f1f5f9;
   --link:          var(--cyan-400);
@@ -43,21 +33,15 @@
   --muted-text:    #64748b;
   --table-heading-text: #f1f5f9;
   --button-text:   #080c14;
-
-  /* Borders & Glows */
   --border:        rgba(34, 211, 238, 0.12);
   --border-strong: rgba(34, 211, 238, 0.28);
   --glow-cyan:     0 0 24px rgba(6, 182, 212, 0.25);
   --glow-amber:    0 0 24px rgba(251, 191, 36, 0.2);
   --card-shadow:   0 8px 32px rgba(0, 0, 0, 0.45);
-
-  /* Radii */
   --radius-sm: 6px;
   --radius:    12px;
   --radius-lg: 18px;
   --radius-xl: 24px;
-
-  /* Typography */
   --font-sans:    'Nunito', system-ui, sans-serif;
   --font-heading: 'Sora', system-ui, sans-serif;
   --base-font-size: 16px;
@@ -69,7 +53,6 @@
   --font-weight-bold: 700;
 }
 
-/* ── RESET & BASE ────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
@@ -88,7 +71,6 @@ body {
     radial-gradient(ellipse 80% 60% at 50%  50%, rgba(8,12,20,0.0)      0%, transparent 100%);
 }
 
-/* ── TYPOGRAPHY ──────────────────────────────────────────── */
 h1,h2,h3,h4,h5,h6 {
   font-family: var(--font-heading);
   color: var(--heading);
@@ -103,13 +85,11 @@ p, li, td, th { letter-spacing: 0.15px; line-height: 1.6; }
 a { color: var(--link); text-decoration: none; transition: color 0.2s; }
 a:hover { color: var(--cyan-200); }
 
-/* ── SCROLLBAR ───────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-2); }
 ::-webkit-scrollbar-thumb { background: var(--cyan-600); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-400); }
 
-/* ── BUTTONS ─────────────────────────────────────────────── */
 .btn, button {
   font-family: var(--font-sans);
   font-size: 0.9rem;
@@ -143,7 +123,6 @@ a:hover { color: var(--cyan-200); }
 .btn.ghost { background: transparent; border: 1px solid var(--border-strong); color: var(--text-muted); box-shadow: none; }
 .btn.ghost:hover { border-color: var(--cyan-400); color: var(--cyan-400); background: rgba(34,211,238,0.06); }
 
-/* ── CARDS ───────────────────────────────────────────────── */
 .card {
   background: var(--surface);
   border-radius: var(--radius);
@@ -154,7 +133,6 @@ a:hover { color: var(--cyan-200); }
 }
 .card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.5), var(--glow-cyan); }
 
-/* ── TABLES ──────────────────────────────────────────────── */
 table { width: 100%; border-collapse: collapse; background: transparent; }
 
 table th {
@@ -183,7 +161,6 @@ table td {
 
 table tbody tr:hover td { background: rgba(34,211,238,0.04); }
 
-/* ── FORM CONTROLS ───────────────────────────────────────── */
 input, select, textarea {
   font-family: var(--font-sans);
   font-size: 0.9rem;
@@ -205,18 +182,13 @@ input:focus, select:focus, textarea:focus {
 }
 select option { background: var(--surface-2); color: var(--text); }
 
-/* ── CONTAINER ───────────────────────────────────────────── */
 .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
 .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .table-responsive table { min-width: 700px; }
 
-/* ── FORM ROWS ───────────────────────────────────────────── */
 .form-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .form-row label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
 
-/* ── PAGE-SPECIFIC BACKGROUNDS ───────────────────────────── */
-/* All pages now share the premium dark base from body above.
-   The radial accents shift color subtly per page type. */
 body.page-default    { --bg-accent: rgba(6,182,212,0.07); }
 body.page-attendance { --bg-accent: rgba(16,185,129,0.07); }
 body.page-marks      { --bg-accent: rgba(139,92,246,0.07); }
@@ -224,7 +196,6 @@ body.page-creation   { --bg-accent: rgba(251,191,36,0.06); }
 body.page-admin      { --bg-accent: rgba(34,211,238,0.08); }
 body.page-login      { --bg-accent: rgba(251,191,36,0.07); }
 
-/* ── FLASHCARDS (Admin) ──────────────────────────────────── */
 .flashcards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -266,11 +237,9 @@ body.page-login      { --bg-accent: rgba(251,191,36,0.07); }
 .staff-card      { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
 .students-card   { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); }
 
-/* ── MISC ────────────────────────────────────────────────── */
 .muted { color: var(--muted-text); }
 .previous-attendance, .card, .attendance-card { background: var(--surface); }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 768px) {
   :root { --base-font-size: 15px; }
   .container { padding: 14px; }
@@ -287,8 +256,4 @@ body.page-login      { --bg-accent: rgba(251,191,36,0.07); }
 @media (max-width: 480px) {
   .flashcards { gap: 12px; }
   .flashcard { padding: 16px; min-height: 130px; }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 475331af711c5bccb690bd8b98cb924f956f9620
