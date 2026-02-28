@@ -3,9 +3,8 @@
 body {
   margin: 0;
   font-family: 'DM Sans', sans-serif;
+  background-color: #F8FAFC;
+  color: #1E293B;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }

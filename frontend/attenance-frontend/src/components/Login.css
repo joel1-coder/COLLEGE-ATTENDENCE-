@@ -1,5 +1,5 @@
 /* ============================================================
-   LOGIN PAGE — PREMIUM DARK WITH CYAN GLOW
+   LOGIN PAGE — LIGHT PROFESSIONAL
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Nunito:wght@400;500;600;700&display=swap');
@@ -10,40 +10,49 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background:
-    radial-gradient(ellipse 70% 60% at 20% 10%, rgba(6, 182, 212, 0.1) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 80% 90%, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
-    #080c14;
+  background: #F8FAFC;
   position: relative;
   overflow: hidden;
 }
 
+/* Subtle background pattern */
 .login-page::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(34,211,238,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34,211,238,0.03) 1px, transparent 1px);
+    linear-gradient(rgba(30, 58, 138, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 58, 138, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
 }
 
+/* Subtle color accents in corners */
+.login-page::after {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(30, 58, 138, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── CARD ── */
 .login-card {
   position: relative;
   width: 100%;
   max-width: 420px;
-  background: rgba(17, 24, 39, 0.85);
+  background: #FFFFFF;
   border-radius: 20px;
-  border: 1px solid rgba(34, 211, 238, 0.15);
+  border: 1px solid #E2E8F0;
   box-shadow:
-    0 0 0 1px rgba(34, 211, 238, 0.05),
-    0 24px 60px rgba(0, 0, 0, 0.6),
-    0 0 80px rgba(6, 182, 212, 0.08);
+    0 4px 6px rgba(15, 23, 42, 0.04),
+    0 20px 50px rgba(15, 23, 42, 0.1);
   padding: 38px 36px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   animation: cardIn 0.45s ease both;
+  z-index: 1;
 }
 
 @keyframes cardIn {
@@ -51,15 +60,17 @@
   to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
+/* Top navy accent line */
 .login-card::before {
   content: '';
   position: absolute;
   top: 0; left: 20%; right: 20%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #1E3A8A, transparent);
   border-radius: 99px;
 }
 
+/* ── BRAND ── */
 .brand {
   display: flex;
   align-items: center;
@@ -71,15 +82,15 @@
   width: 46px;
   height: 46px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #06b6d4, #0891b2);
-  color: #f1f5f9;
+  background: linear-gradient(135deg, #1E3A8A, #1E40AF);
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Sora', sans-serif;
   font-weight: 800;
   font-size: 20px;
-  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4);
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.35);
   flex-shrink: 0;
 }
 
@@ -87,21 +98,19 @@
   font-family: 'Sora', sans-serif;
   font-weight: 800;
   font-size: 1.25rem;
-  background: linear-gradient(90deg, #22d3ee, #a5f3fc);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #1E3A8A;
   letter-spacing: -0.01em;
 }
 
 .subtitle {
   font-family: 'Nunito', sans-serif;
   font-size: 0.88rem;
-  color: #64748b;
+  color: #64748B;
   margin: 4px 0 28px 0;
   font-weight: 500;
 }
 
+/* ── FORM ── */
 .login-form { display: flex; flex-direction: column; gap: 0; }
 
 .input-group {
@@ -117,44 +126,45 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #94a3b8;
+  color: #334155;
 }
 
 .input-group input {
   font-family: 'Nunito', sans-serif;
   font-size: 0.92rem;
   padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(34, 211, 238, 0.12);
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
   border-radius: 10px;
-  color: #e2e8f0;
+  color: #1E293B;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
   width: 100%;
 }
 
-.input-group input::placeholder { color: #475569; }
+.input-group input::placeholder { color: #94A3B8; }
 
 .input-group input:focus {
-  border-color: #22d3ee;
-  background: rgba(34, 211, 238, 0.05);
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.12);
+  border-color: #1E3A8A;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
 }
 
+/* ── SUBMIT BUTTON ── */
 .btn-primary {
   width: 100%;
   padding: 13px;
   margin-top: 6px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 50%, #0891b2 100%);
-  color: #080c14;
+  background: #1E3A8A;
+  color: #FFFFFF;
   font-family: 'Sora', sans-serif;
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4);
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.3);
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
@@ -164,13 +174,13 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%);
   pointer-events: none;
 }
 
 .btn-primary:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 6px 28px rgba(6, 182, 212, 0.55);
+  background: #1E40AF;
+  box-shadow: 0 6px 24px rgba(30, 58, 138, 0.4);
   transform: translateY(-1px);
 }
 
@@ -183,6 +193,7 @@
   box-shadow: none;
 }
 
+/* ── MESSAGES ── */
 .message {
   padding: 11px 14px;
   border-radius: 9px;
@@ -192,18 +203,25 @@
 }
 
 .message.error {
-  background: rgba(244, 63, 94, 0.1);
-  color: #fb7185;
-  border: 1px solid rgba(244, 63, 94, 0.2);
+  background: rgba(220, 38, 38, 0.08);
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
+.message.success {
+  background: rgba(22, 163, 74, 0.08);
+  color: #16A34A;
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+/* ── FOOTER ── */
 .login-footer {
   margin-top: 22px;
   text-align: center;
 }
 
 .login-footer a {
-  color: #22d3ee;
+  color: #1E3A8A;
   text-decoration: none;
   font-size: 0.83rem;
   font-weight: 600;
@@ -212,6 +230,7 @@
 }
 .login-footer a:hover { opacity: 1; text-decoration: underline; }
 
+/* ── RESPONSIVE ── */
 @media (max-width: 480px) {
   .login-card { padding: 28px 22px; }
   .login-page { padding: 1.2rem; }
