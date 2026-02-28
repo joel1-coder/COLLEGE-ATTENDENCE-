@@ -287,4 +287,8 @@ body.page-login      { --bg-accent: rgba(251,191,36,0.07); }
 @media (max-width: 480px) {
   .flashcards { gap: 12px; }
   .flashcard { padding: 16px; min-height: 130px; }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 475331af711c5bccb690bd8b98cb924f956f9620
