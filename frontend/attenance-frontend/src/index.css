@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #07091a;
+  background-image:
+    radial-gradient(ellipse 70% 45% at 15% -5%, rgba(212, 168, 67, 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 40% at 85% 105%, rgba(37, 99, 235, 0.07) 0%, transparent 55%);
+  min-height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}

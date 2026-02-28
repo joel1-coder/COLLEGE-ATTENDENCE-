@@ -1,0 +1,401 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* =============================================
+   ROOT VARIABLES
+   ============================================= */
+:root {
+  --navy-900: #07091a;
+  --navy-800: #0c1028;
+  --navy-700: #131a38;
+  --gold-400: #d4a843;
+  --gold-300: #e8c06a;
+  --gold-200: #f5d98a;
+  --gold-glow: rgba(212, 168, 67, 0.16);
+  --glass-bg: rgba(255, 255, 255, 0.035);
+  --glass-border: rgba(212, 168, 67, 0.18);
+  --text-primary: #eeeae0;
+  --text-muted: #8b9ab8;
+  --text-dim: #4e5e7a;
+  --red-soft: #f87171;
+  --red-bg: rgba(248, 113, 113, 0.12);
+  --green-soft: #4ade80;
+  --green-bg: rgba(74, 222, 128, 0.1);
+}
+
+/* =============================================
+   BODY — GLOBAL DARK BACKGROUND
+   ============================================= */
+body {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--navy-900);
+  background-image:
+    radial-gradient(ellipse 70% 45% at 15% -5%, rgba(212, 168, 67, 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 40% at 85% 105%, rgba(37, 99, 235, 0.07) 0%, transparent 55%);
+  min-height: 100vh;
+  color: var(--text-primary);
+}
+
+/* =============================================
+   LOADING STATE
+   ============================================= */
+.loading {
+  text-align: center;
+  margin-top: 80px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* =============================================
+   MAIN CONTAINER
+   ============================================= */
+.attendance-container {
+  width: 92%;
+  max-width: 1200px;
+  margin: 44px auto;
+  padding: 38px 44px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 0 60px rgba(212, 168, 67, 0.07),
+    0 30px 70px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative top-left glow */
+.attendance-container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle at top left, rgba(212, 168, 67, 0.09), transparent 70%);
+  pointer-events: none;
+}
+
+/* =============================================
+   HEADING
+   ============================================= */
+.attendance-container h2 {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: transparent;
+  background: linear-gradient(135deg, var(--gold-200) 0%, var(--gold-400) 50%, var(--gold-300) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  margin-bottom: 32px;
+}
+
+.attendance-container h2::after {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+/* =============================================
+   INFO ROW (Department / Section / Description / Date)
+   ============================================= */
+.info {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 28px;
+  padding: 18px 22px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.info label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.info select {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 7px 12px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 90px;
+}
+
+.info select:focus {
+  border-color: var(--gold-400);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+
+.info select option {
+  background: var(--navy-700);
+  color: var(--text-primary);
+}
+
+.info textarea {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  outline: none;
+  resize: vertical;
+  min-height: 48px;
+  min-width: 200px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.info textarea:focus {
+  border-color: var(--gold-400);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+
+.info textarea::placeholder {
+  color: var(--text-dim);
+}
+
+/* Date span */
+.info span {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--gold-300);
+  background: var(--gold-glow);
+  border: 1px solid rgba(212, 168, 67, 0.22);
+  border-radius: 8px;
+  padding: 7px 14px;
+  white-space: nowrap;
+  align-self: center;
+}
+
+/* =============================================
+   TABLE
+   ============================================= */
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Header */
+.attendance-table thead tr {
+  background: linear-gradient(90deg, #172050 0%, #223070 50%, #172050 100%);
+}
+
+.attendance-table th {
+  padding: 14px 18px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold-300);
+  border-bottom: 1px solid rgba(212, 168, 67, 0.18);
+}
+
+.attendance-table th:first-child {
+  text-align: left;
+  padding-left: 22px;
+}
+
+/* Body rows */
+.attendance-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease;
+}
+
+.attendance-table tbody tr:hover td {
+  background: rgba(212, 168, 67, 0.04);
+}
+
+.attendance-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.attendance-table td {
+  padding: 13px 18px;
+  text-align: center;
+  color: var(--text-primary);
+  font-size: 13.5px;
+}
+
+.attendance-table td:first-child {
+  text-align: left;
+  padding-left: 22px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.attendance-table td:nth-child(2) {
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  font-family: 'DM Mono', monospace;
+}
+
+/* =============================================
+   PRESENT / ABSENT TOGGLE BUTTONS (inside table)
+   ============================================= */
+.present {
+  display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  background: var(--green-bg);
+  color: var(--green-soft);
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.15s, filter 0.15s;
+  box-shadow: 0 2px 10px rgba(74, 222, 128, 0.1);
+}
+
+.present:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(74, 222, 128, 0.2);
+}
+
+.absent {
+  display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  background: var(--red-bg);
+  color: var(--red-soft);
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.15s, filter 0.15s;
+  box-shadow: 0 2px 10px rgba(248, 113, 113, 0.1);
+}
+
+.absent:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(248, 113, 113, 0.2);
+}
+
+/* =============================================
+   SUBMIT BUTTON
+   ============================================= */
+.submit-btn {
+  margin-top: 26px;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, var(--gold-400) 0%, #a87820 100%);
+  border: none;
+  color: #07091a;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.1s ease, filter 0.2s ease, box-shadow 0.2s ease;
+  box-shadow:
+    0 4px 22px rgba(212, 168, 67, 0.38),
+    0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.submit-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 30px rgba(212, 168, 67, 0.45),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.submit-btn:active {
+  transform: translateY(1px);
+  filter: brightness(0.95);
+}
+
+.submit-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* =============================================
+   MESSAGE
+   ============================================= */
+.message {
+  margin-top: 18px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+/* =============================================
+   SCROLLBAR
+   ============================================= */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--navy-800); }
+::-webkit-scrollbar-thumb { background: rgba(212, 168, 67, 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(212, 168, 67, 0.5); }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 768px) {
+  .attendance-container { width: 95%; padding: 24px 18px; }
+  .info { gap: 12px; }
+  .attendance-table { font-size: 12px; }
+}

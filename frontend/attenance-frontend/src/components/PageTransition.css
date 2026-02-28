@@ -1,0 +1,12 @@
+.page-transition{
+  opacity: 0;
+  transform: translateY(8px) scale(0.995);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+.page-transition.enter{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* small tweak for smoother stacking */
+.page-transition{ will-change: transform, opacity; }
