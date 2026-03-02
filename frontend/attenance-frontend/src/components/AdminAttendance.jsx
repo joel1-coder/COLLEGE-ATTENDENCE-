@@ -1,69 +1,64 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import "./AttendanceForm.css";
+import React, { useEffect, useState, useContext } from 'react';
+import axios from 'axios';
+import Toast from './Toast';
+import useToast from '../Hooks/usetoast';
 
 const AdminAttendance = () => {
-  // default to today
-  const todayIso = new Date().toISOString().split('T')[0];
-  const [date, setDate] = useState(todayIso);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [records, setRecords] = useState([]);
-  const [department, setDepartment] = useState('');
-  const [section, setSection] = useState('');
+  const [loading, setLoading] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [sections, setSections] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [department, setDepartment] = useState('');
+  const [section, setSection] = useState('');
   const [togglingIds, setTogglingIds] = useState(new Set());
-  const [isAdmin, setIsAdmin] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [isAdmin] = useState(true);
+
+  // 💡 Replaced plain setError with toast notifications
+  const { toasts, toast, removeToast } = useToast();
+
+  const makeApi = () => {
+    const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
+    const stored = JSON.parse(localStorage.getItem('user')) || null;
+    if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
+    return api;
+  };
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('user')) || null;
-    setIsAdmin(stored?.role === 'admin');
-
     const fetchAttendance = async () => {
-      if (!date) return;
-
+      setLoading(true);
       try {
-        setLoading(true);
-        setError("");
-
-        const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
-        const stored = JSON.parse(localStorage.getItem('user')) || null;
-        if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-
-        const params = { date };
-        if (department) params.department = department;
-        if (section) params.section = section;
-
-        const res = await api.get('/attendance', { params });
-        const attendance = res.data || {};
-        const recs = Array.isArray(attendance.records) ? attendance.records : [];
+        const api = makeApi();
+        const res = await api.get(`/attendance?date=${date}`);
+        const attendance = Array.isArray(res.data) ? res.data[0] : res.data;
+        const recs = attendance?.records || [];
         setRecords(recs);
 
-        // If departments/sections not loaded, derive from returned records
         if (departments.length === 0 && recs.length > 0) {
-          const depts = Array.from(new Set(recs.map(r => r.student?.department).filter(Boolean)));
+          const depts = [...new Set(recs.map(r => r.student?.department).filter(Boolean))];
           setDepartments(depts);
         }
-        if ((sections.length === 0 || section) && recs.length > 0) {
-          const secs = Array.from(new Set(recs.map(r => r.student?.section).filter(Boolean)));
-          setSections(secs);
-        }
       } catch (err) {
-        setError("Failed to load attendance");
+        toast.error("Failed to load attendance");
       } finally {
         setLoading(false);
       }
     };
-
     fetchAttendance();
   }, [date]);
 
-  // safe debug: records is an array of attendance rows
-  // console.log example: records[0]?.status
+  const filteredRecords = records.filter(r => {
+    if (department && r.student?.department !== department) return false;
+    if (section && r.student?.section !== section) return false;
+    return true;
+  });
+
   return (
     <div className="attendance-container">
+      {/* Toast notifications */}
+      <Toast toasts={toasts} removeToast={removeToast} />
+
       <h2>Admin Attendance View</h2>
 
       <div className="filter-row">
@@ -81,6 +76,7 @@ const AdminAttendance = () => {
             return opts;
           })()}
         </select>
+
         <label style={{ marginLeft: 12 }}>Department:</label>
         <select value={department} onChange={(e) => { setDepartment(e.target.value); setSection(''); }}>
           <option value="">All</option>
@@ -92,22 +88,22 @@ const AdminAttendance = () => {
           <option value="">All</option>
           {sections.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
+
         {isAdmin && (
           <div style={{ marginLeft: 12 }}>
             <button
               disabled={actionLoading}
               onClick={async () => {
-                if (!window.confirm(`Reset attendance for ${date}? This will delete records.`)) return;
+                if (!window.confirm(`Reset attendance for ${date}?`)) return;
                 try {
                   setActionLoading(true);
-                  const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
-                  const stored = JSON.parse(localStorage.getItem('user')) || null;
-                  if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-                  await api.post('/attendance/reset', { date, action: 'reset' });
+                  await makeApi().post('/attendance/reset', { date, action: 'reset' });
                   setRecords([]);
+                  toast.success(`Attendance for ${date} has been reset`);
                 } catch (err) {
-                  setError('Failed to reset attendance');
-                  if (err?.response && (err.response.status === 401 || err.response.status === 403)) window.location.href = '/admin/login';
+                  toast.error('Failed to reset attendance');
+                  if (err?.response && (err.response.status === 401 || err.response.status === 403))
+                    window.location.href = '/admin/login';
                 } finally { setActionLoading(false); }
               }}
             >{actionLoading ? 'Processing...' : 'Reset'}</button>
@@ -116,17 +112,16 @@ const AdminAttendance = () => {
               disabled={actionLoading}
               style={{ marginLeft: 8 }}
               onClick={async () => {
-                if (!window.confirm(`Reopen attendance for ${date}? This clears records but keeps the entry.`)) return;
+                if (!window.confirm(`Reopen attendance for ${date}?`)) return;
                 try {
                   setActionLoading(true);
-                  const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
-                  const stored = JSON.parse(localStorage.getItem('user')) || null;
-                  if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-                  await api.post('/attendance/reset', { date, action: 'reopen' });
+                  await makeApi().post('/attendance/reset', { date, action: 'reopen' });
                   setRecords([]);
+                  toast.success(`Attendance for ${date} has been reopened`);
                 } catch (err) {
-                  setError('Failed to reopen attendance');
-                  if (err?.response && (err.response.status === 401 || err.response.status === 403)) window.location.href = '/admin/login';
+                  toast.error('Failed to reopen attendance');
+                  if (err?.response && (err.response.status === 401 || err.response.status === 403))
+                    window.location.href = '/admin/login';
                 } finally { setActionLoading(false); }
               }}
             >Reopen</button>
@@ -135,65 +130,59 @@ const AdminAttendance = () => {
       </div>
 
       {loading && <p>Loading attendance...</p>}
-      {error && <p className="error">{error}</p>}
 
-      {records.length > 0 && (
+      {filteredRecords.length > 0 && (
         <table className="attendance-table">
           <thead>
             <tr>
               <th>Student ID</th>
               <th>Name</th>
-                <th>Department</th>
+              <th>Department</th>
               <th>Section</th>
               <th>Status</th>
             </tr>
           </thead>
-            <tbody>
-            {records.map((row) => {
+          <tbody>
+            {filteredRecords.map((row) => {
               const sid = row._id || (row.student && row.student._id) || JSON.stringify(row);
               const isToggling = togglingIds.has(String(sid));
               const status = row.status || 'absent';
               return (
-              <tr key={sid}>
-                <td>{row.student?.studentId}</td>
-                <td>{row.student?.name}</td>
-                <td>{row.student?.department}</td>
-                <td>{row.student?.section}</td>
-                <td>
-                  <button
-                    disabled={isToggling}
-                    className={status === 'present' ? 'status-present' : 'status-absent'}
-                    onClick={async () => {
-                      try {
-                        const newStatus = status === 'present' ? 'absent' : 'present';
-                        // optimistic UI
-                        setRecords(prev => prev.map(r => (r === row ? { ...r, status: newStatus } : r)));
-                        setTogglingIds(prev => new Set([...prev, String(sid)]));
-
-                        const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
-                        const stored = JSON.parse(localStorage.getItem('user')) || null;
-                        if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-
-                        const studentId = row.student?._id || row.student || row.studentId || null;
-                        await api.post('/attendance', { date, records: [{ student: studentId, status: newStatus }] });
-                      } catch (err) {
-                        // revert on error
-                        setRecords(prev => prev.map(r => (r === row ? { ...r, status } : r)));
-                        setError('Failed to update attendance');
-                        if (err?.response && (err.response.status === 401 || err.response.status === 403)) window.location.href = '/admin/login';
-                      } finally {
-                        setTogglingIds(prev => {
-                          const s = new Set(prev);
-                          s.delete(String(sid));
-                          return s;
-                        });
-                      }
-                    }}
-                  >
-                    {isToggling ? 'Saving...' : status}
-                  </button>
-                </td>
-              </tr>
+                <tr key={sid}>
+                  <td>{row.student?.studentId}</td>
+                  <td>{row.student?.name}</td>
+                  <td>{row.student?.department}</td>
+                  <td>{row.student?.section}</td>
+                  <td>
+                    <button
+                      disabled={isToggling}
+                      className={status === 'present' ? 'status-present' : 'status-absent'}
+                      onClick={async () => {
+                        try {
+                          const newStatus = status === 'present' ? 'absent' : 'present';
+                          setRecords(prev => prev.map(r => (r === row ? { ...r, status: newStatus } : r)));
+                          setTogglingIds(prev => new Set([...prev, String(sid)]));
+                          const studentId = row.student?._id || row.student || row.studentId || null;
+                          await makeApi().post('/attendance', { date, records: [{ student: studentId, status: newStatus }] });
+                          toast.success(`Status changed to "${newStatus}" for ${row.student?.name}`);
+                        } catch (err) {
+                          setRecords(prev => prev.map(r => (r === row ? { ...r, status } : r)));
+                          toast.error('Failed to update attendance status');
+                          if (err?.response && (err.response.status === 401 || err.response.status === 403))
+                            window.location.href = '/admin/login';
+                        } finally {
+                          setTogglingIds(prev => {
+                            const s = new Set(prev);
+                            s.delete(String(sid));
+                            return s;
+                          });
+                        }
+                      }}
+                    >
+                      {isToggling ? 'Saving...' : status}
+                    </button>
+                  </td>
+                </tr>
               );
             })}
           </tbody>

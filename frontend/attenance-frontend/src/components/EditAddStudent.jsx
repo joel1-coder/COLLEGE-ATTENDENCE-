@@ -1,54 +1,66 @@
+// ============================================================
+// EditAddStudent.jsx — updated with toast notifications
+// ============================================================
 import React, { useState } from 'react';
 import api from '../api/api';
+import Toast from './Toast';
+import useToast from '../Hooks/usetoast';
 
-export default function EditAddStudent(){
+export default function EditAddStudent() {
   const [studentId, setStudentId] = useState('');
   const [student, setStudent] = useState(null);
-  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // 💡 Toast replaces plain setMessage
+  const { toasts, toast, removeToast } = useToast();
+
   const fetchStudent = async () => {
-    setMessage('');
-    if (!studentId) return setMessage('StudentID is required');
+    if (!studentId) { toast.warning('Student ID is required'); return; }
     setLoading(true);
     try {
       const stored = JSON.parse(localStorage.getItem('user')) || null;
-      const instance = api;
-      if (stored?.token) instance.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-      const resp = await instance.get(`/students/${encodeURIComponent(studentId)}`);
+      if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
+      const resp = await api.get(`/students/${encodeURIComponent(studentId)}`);
       const s = resp.data;
-      if (!s || !s.studentId) return setMessage('Student not found');
+      if (!s || !s.studentId) { toast.error('Student not found'); return; }
       setStudent(s);
-      setMessage('Student loaded');
+      toast.success('Student loaded successfully');
     } catch (err) {
       console.error(err);
-      setMessage(err?.response?.data?.message || err.message || 'Fetch failed');
+      toast.error(err?.response?.data?.message || err.message || 'Fetch failed');
     } finally { setLoading(false); }
   };
 
   const saveStudent = async () => {
-    setMessage('');
-    if (!studentId || !student || !student.department || !student.section) return setMessage('StudentID, Department and Section are required');
+    if (!studentId || !student || !student.department || !student.section) {
+      toast.warning('Student ID, Department and Section are required');
+      return;
+    }
     setLoading(true);
     try {
       const stored = JSON.parse(localStorage.getItem('user')) || null;
-      const instance = api;
-      if (stored?.token) instance.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-      const resp = await instance.put(`/students/${encodeURIComponent(studentId)}`, { name: student.name, department: student.department, section: student.section });
-      setMessage(resp.data?.message || 'Updated');
+      if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
+      await api.put(`/students/${encodeURIComponent(studentId)}`, {
+        name: student.name,
+        department: student.department,
+        section: student.section,
+      });
+      toast.success('Student details updated successfully ✅');
     } catch (err) {
       console.error(err);
-      setMessage(err?.response?.data?.message || err.message || 'Save failed');
+      toast.error(err?.response?.data?.message || err.message || 'Save failed');
     } finally { setLoading(false); }
   };
 
   return (
     <div style={{ padding: 16 }}>
+      <Toast toasts={toasts} removeToast={removeToast} />
+
       <h2>Editing & Adding (Edit student details)</h2>
       <div style={{ marginBottom: 12 }}>
         <label>Student ID: </label>
         <input value={studentId} onChange={e => setStudentId(e.target.value.toUpperCase())} style={{ marginLeft: 8 }} />
-        <button onClick={fetchStudent} style={{ marginLeft: 8 }}>Fetch</button>
+        <button onClick={fetchStudent} style={{ marginLeft: 8 }} disabled={loading}>Fetch</button>
       </div>
 
       {student && (
@@ -60,31 +72,26 @@ export default function EditAddStudent(){
                 <th style={{ border: '1px solid #ddd', padding: 8 }}>Name</th>
                 <th style={{ border: '1px solid #ddd', padding: 8 }}>Department</th>
                 <th style={{ border: '1px solid #ddd', padding: 8 }}>Section</th>
-                <th style={{ border: '1px solid #ddd', padding: 8 }}>Action</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td style={{ border: '1px solid #ddd', padding: 8 }}>{student.studentId}</td>
-                  <td style={{ border: '1px solid #ddd', padding: 8 }}>
-                    <input value={student.name || ''} onChange={e => setStudent({ ...student, name: e.target.value })} />
-                  </td>
+                <td style={{ border: '1px solid #ddd', padding: 8 }}>
+                  <input value={student.name || ''} onChange={e => setStudent({ ...student, name: e.target.value })} />
+                </td>
                 <td style={{ border: '1px solid #ddd', padding: 8 }}>
                   <input value={student.department || ''} onChange={e => setStudent({ ...student, department: e.target.value })} />
                 </td>
                 <td style={{ border: '1px solid #ddd', padding: 8 }}>
                   <input value={student.section || ''} onChange={e => setStudent({ ...student, section: e.target.value })} />
                 </td>
-                <td style={{ border: '1px solid #ddd', padding: 8 }}>
-                  <button onClick={saveStudent} disabled={loading}>Save</button>
-                </td>
               </tr>
             </tbody>
           </table>
+          <button onClick={saveStudent} style={{ marginTop: 12 }} disabled={loading}>Save Changes</button>
         </div>
       )}
-
-      {message && <div style={{ marginTop: 12 }}>{message}</div>}
     </div>
   );
 }

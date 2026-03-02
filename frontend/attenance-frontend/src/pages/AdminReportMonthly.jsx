@@ -147,7 +147,7 @@ export default function AdminReportMonthly(){
                 )}
                 <th style={{ border: '1px solid #ddd', padding: 8 }}>Sessions</th>
                 <th style={{ border: '1px solid #ddd', padding: 8 }}>Presents</th>
-                <th style={{ border: '1px solid #ddd', padding: 8 }}>Absents</th>
+                <th style={{ border: '1px solid #e90f0f', padding: 8 }}>Absents</th>
                 <th style={{ border: '1px solid #ddd', padding: 8 }}>Percent</th>
               </tr>
             </thead>

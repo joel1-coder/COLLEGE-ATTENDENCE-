@@ -1,48 +1,41 @@
-import React, { useEffect, useState, useCallback } from "react";
-import api from "../api/api";
-import "./PreviousAttendance.css";
+import React, { useState, useEffect, useCallback } from "react";
+import axios from "axios";
+import Toast from "./Toast";
+import useToast from "../Hooks/usetoast";
 
 export default function PreviousAttendance() {
-  /* ---------------- STATES ---------------- */
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [attendance, setAttendance] = useState([]);
-  const [updatingIds, setUpdatingIds] = useState({});
-
+  const [loading, setLoading] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [sections, setSections] = useState([]);
   const [department, setDepartment] = useState("");
   const [section, setSection] = useState("");
+  const [updatingIds, setUpdatingIds] = useState({});
 
-  const today = new Date().toISOString().split("T")[0];
+  // 💡 Replaced plain error/message state with toast
+  const { toasts, toast, removeToast } = useToast();
 
-  /* ---------------- API CLIENT ---------------- */
   const apiClient = useCallback(() => {
-    const instance = api;
-    const stored = JSON.parse(localStorage.getItem("user")) || null;
-    if (stored?.token) {
-      instance.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
-    }
-    return instance;
+    const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
+    const stored = JSON.parse(localStorage.getItem("user"));
+    if (stored?.token) api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
+    return api;
   }, []);
 
-  /* ---------------- HELPERS ---------------- */
-  const parseDate = (val) => (/^\d{4}-\d{2}-\d{2}$/.test(val) ? val : null);
-  const ordinal = (n) => {
-    const s = ["th", "st", "nd", "rd"];
-    const v = n % 100;
-    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  const parseDate = (val) => {
+    if (!val) return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val;
+    const d = new Date(val);
+    if (isNaN(d)) return null;
+    return d.toISOString().split("T")[0];
   };
 
-  /* ---------------- FETCH ATTENDANCE ---------------- */
   const fetchFor = async (rawDate) => {
-    setError("");
     setAttendance([]);
-
     const dateStr = parseDate(rawDate);
     if (!dateStr) {
-      setError("Please choose a valid date");
+      toast.warning("Please choose a valid date");
       return;
     }
 
@@ -55,26 +48,25 @@ export default function PreviousAttendance() {
 
       const res = await instance.get(url);
       const data = res.data;
-
       let items = [];
       if (Array.isArray(data)) items = data;
       else if (data?.records) items = [data];
 
       setAttendance(items);
-      if (items.length === 0) setError(`No attendance found for ${dateStr}`);
+      if (items.length === 0) toast.info(`No attendance found for ${dateStr}`);
+      else toast.success(`Loaded attendance for ${dateStr}`);
     } catch (err) {
       console.error(err);
-      setError(err?.response?.data?.message || "Failed to fetch attendance");
+      toast.error(err?.response?.data?.message || "Failed to fetch attendance");
     } finally {
       setLoading(false);
     }
   };
 
-  /* ---------------- EXPORT ---------------- */
   const downloadExcel = async () => {
     const dateStr = parseDate(input);
     if (!dateStr) {
-      alert("Choose a valid date first");
+      toast.warning("Choose a valid date first");
       return;
     }
 
@@ -86,7 +78,6 @@ export default function PreviousAttendance() {
 
       const res = await instance.get(url, { responseType: "blob" });
       const blobUrl = window.URL.createObjectURL(new Blob([res.data]));
-
       const link = document.createElement("a");
       link.href = blobUrl;
       link.download = `attendance-${dateStr}.xlsx`;
@@ -94,21 +85,18 @@ export default function PreviousAttendance() {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(blobUrl);
+      toast.success("Excel file downloaded successfully!");
     } catch (err) {
       console.error(err);
-      alert("Download failed");
+      toast.error("Download failed. Please try again.");
     }
   };
 
-  /* ---------------- UPDATE RECORD ---------------- */
   const updateRecordStatus = async (attendanceId, recordId, status) => {
     if (!attendanceId || !recordId) return;
-
     setUpdatingIds((s) => ({ ...s, [recordId]: true }));
-    setError("");
 
     try {
-      // optimistic UI update
       setAttendance((prev) =>
         prev.map((item) =>
           item._id !== attendanceId
@@ -124,8 +112,9 @@ export default function PreviousAttendance() {
 
       const instance = apiClient();
       await instance.put(`/attendance/${attendanceId}/records/${recordId}`, { status });
+      toast.success(`Status updated to "${status}"`);
     } catch (err) {
-      setError(err?.response?.data?.message || "Update failed");
+      toast.error(err?.response?.data?.message || "Update failed");
       await fetchFor(input);
     } finally {
       setUpdatingIds((s) => {
@@ -136,7 +125,6 @@ export default function PreviousAttendance() {
     }
   };
 
-  /* ---------------- LOAD DEPARTMENTS ---------------- */
   useEffect(() => {
     const loadDepartments = async () => {
       try {
@@ -149,17 +137,11 @@ export default function PreviousAttendance() {
     loadDepartments();
   }, [apiClient]);
 
-  /* ---------------- LOAD SECTIONS ---------------- */
   useEffect(() => {
     const loadSections = async () => {
-      if (!department) {
-        setSections([]);
-        return;
-      }
+      if (!department) { setSections([]); return; }
       try {
-        const res = await apiClient().get(
-          `/admin/sections?department=${encodeURIComponent(department)}`
-        );
+        const res = await apiClient().get(`/admin/sections?department=${encodeURIComponent(department)}`);
         setSections(Array.isArray(res.data) ? res.data : []);
       } catch {
         setSections([]);
@@ -168,9 +150,11 @@ export default function PreviousAttendance() {
     loadSections();
   }, [department, apiClient]);
 
-  /* ---------------- UI ---------------- */
   return (
     <div className="previous-attendance">
+      {/* Toast notifications */}
+      <Toast toasts={toasts} removeToast={removeToast} />
+
       <div className="header">
         <h2>Previous Attendance</h2>
         <button onClick={downloadExcel}>Download</button>
@@ -193,54 +177,43 @@ export default function PreviousAttendance() {
           })}
         </select>
 
-        <input type="date" value={input} max={today} onChange={(e) => setInput(e.target.value)} />
+        <input
+          type="date"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
         <button onClick={() => fetchFor(input)}>Fetch</button>
       </div>
 
       {loading && <p>Loading...</p>}
-      {error && <p className="error">{error}</p>}
 
-      {attendance.map((item, idx) => (
-        <div key={item._id || idx} className="attendance-card">
-          <h4>{ordinal(idx + 1)} Attendance</h4>
-          <p>{item.description || "—"}</p>
-
+      {attendance.map((item) => (
+        <div key={item._id} style={{ marginBottom: 24 }}>
+          <h3>{item.description} — {item.date}</h3>
           <table>
             <thead>
               <tr>
-                <th>Student ID</th>
-                <th>Name</th>
-                <th>Status</th>
+                <th>#</th><th>Student ID</th><th>Name</th><th>Status</th>
               </tr>
             </thead>
             <tbody>
-              {(item.records || []).map((r) => {
-                const s = r.student || {};
-                return (
-                  <tr key={r._id}>
-                    <td>{s.studentId || "-"}</td>
-                    <td>{s.name || "-"}</td>
-                    <td>
-                      <button
-                        onClick={() =>
-                          updateRecordStatus(
-                            item._id,
-                            r._id,
-                            r.status === "present" ? "absent" : "present"
-                          )
-                        }
-                        disabled={updatingIds[r._id]}
-                        style={{
-                          background: r.status === "present" ? "#2ecc71" : "#e74c3c",
-                          color: "#fff",
-                        }}
-                      >
-                        {updatingIds[r._id] ? "Updating…" : r.status}
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {(item.records || []).map((r, i) => (
+                <tr key={r._id}>
+                  <td>{i + 1}</td>
+                  <td>{r.student?.studentId}</td>
+                  <td>{r.student?.name}</td>
+                  <td>
+                    <select
+                      value={r.status}
+                      disabled={updatingIds[r._id]}
+                      onChange={(e) => updateRecordStatus(item._id, r._id, e.target.value)}
+                    >
+                      <option value="present">present</option>
+                      <option value="absent">absent</option>
+                    </select>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

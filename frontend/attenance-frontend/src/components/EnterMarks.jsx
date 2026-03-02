@@ -1,36 +1,31 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import "./PreviousAttendance.css";
+import Toast from "./Toast";
+import useToast from "../Hooks/usetoast";
 
 export default function EnterMarks() {
-  /* ---------------- STATES ---------------- */
   const [department, setDepartment] = useState("");
   const [section, setSection] = useState("");
   const [classesList, setClassesList] = useState([]);
   const [sectionsList, setSectionsList] = useState([]);
   const [students, setStudents] = useState([]);
-  const [description, setDescription] = useState("");
   const [marks, setMarks] = useState({});
+  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
-  /* ---------------- DATE ---------------- */
-  const today = new Date();
-  const displayDate = `${String(today.getMonth() + 1).padStart(2, "0")}-${String(
-    today.getDate()
-  ).padStart(2, "0")}-${today.getFullYear()}`;
+  // 💡 Replaced plain setMessage with toast notifications
+  const { toasts, toast, removeToast } = useToast();
 
-  /* ---------------- API CLIENT ---------------- */
+  const todayDate = new Date();
+  const displayDate = todayDate.toLocaleDateString();
+
   const apiClient = useCallback(() => {
     const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
-    const stored = JSON.parse(localStorage.getItem("user")) || null;
-    if (stored?.token) {
-      api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
-    }
+    const stored = JSON.parse(localStorage.getItem("user"));
+    if (stored?.token) api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
     return api;
   }, []);
 
-  /* ---------------- LOAD DEPARTMENTS ---------------- */
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -40,12 +35,12 @@ export default function EnterMarks() {
         if (!department && list.length) setDepartment(list[0]);
       } catch (err) {
         console.warn("Failed to load departments", err);
+        toast.error("Failed to load departments");
       }
     };
     fetchDepartments();
   }, [apiClient, department]);
 
-  /* ---------------- LOAD SECTIONS ---------------- */
   useEffect(() => {
     if (!department) return;
     const fetchSections = async () => {
@@ -62,39 +57,40 @@ export default function EnterMarks() {
     fetchSections();
   }, [department, section, apiClient]);
 
-  /* ---------------- LOAD STUDENTS ---------------- */
   useEffect(() => {
     if (!department || !section) return;
     setLoading(true);
-
     apiClient()
       .get("/students", { params: { department, section } })
       .then((res) => {
         const data = res.data || [];
         setStudents(data);
-
         const initialMarks = {};
-        data.forEach((s) => {
-          initialMarks[s._id] = "0";
-        });
+        data.forEach((s) => { initialMarks[s._id] = "0"; });
         setMarks(initialMarks);
       })
       .catch((err) => {
         console.error("Failed to load students", err);
+        toast.error("Failed to load students");
         setStudents([]);
       })
       .finally(() => setLoading(false));
   }, [department, section, apiClient]);
 
-  /* ---------------- SAVE MARKS ---------------- */
   const save = async (opts = {}) => {
-    setMessage("");
     const records = Object.keys(marks).map((id) => ({ student: id, mark: Number(marks[id]) }));
-    const payload = { date: new Date().toISOString().split("T")[0], department, section, description, records, merge: opts.merge };
+    const payload = {
+      date: new Date().toISOString().split("T")[0],
+      department,
+      section,
+      description,
+      records,
+      merge: opts.merge,
+    };
 
     try {
       const res = await apiClient().post("/marks", payload);
-      setMessage(res.data?.message || "Marks saved");
+      toast.success(res.data?.message || "Marks saved successfully! ✅");
     } catch (err) {
       const status = err?.response?.status;
       const body = err?.response?.data || {};
@@ -106,31 +102,29 @@ export default function EnterMarks() {
           return;
         }
       }
-      setMessage(body?.message || "Save failed");
+      toast.error(body?.message || "Save failed. Please try again.");
     }
   };
 
-  /* ---------------- UI ---------------- */
   return (
     <div style={{ padding: 16 }}>
+      {/* Toast notifications */}
+      <Toast toasts={toasts} removeToast={removeToast} />
+
       <h2>Enter Marks</h2>
 
       <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
         <label>
           Department:
           <select value={department} onChange={(e) => setDepartment(e.target.value)}>
-            {classesList.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
+            {classesList.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </label>
 
         <label>
           Section:
           <select value={section} onChange={(e) => setSection(e.target.value)}>
-            {sectionsList.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
+            {sectionsList.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </label>
 
@@ -171,7 +165,6 @@ export default function EnterMarks() {
       </table>
 
       <button onClick={save} style={{ marginTop: 12 }}>Save Marks</button>
-      {message && <p>{message}</p>}
     </div>
   );
 }
