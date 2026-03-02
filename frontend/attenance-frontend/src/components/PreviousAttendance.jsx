@@ -8,7 +8,7 @@ export default function PreviousAttendance() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [attendance, setAttendance] = useState([]);
+  const [Attendance, setAttendance] = useState([]);
   const [updatingIds, setUpdatingIds] = useState({});
 
   const [departments, setDepartments] = useState([]);
@@ -36,7 +36,7 @@ export default function PreviousAttendance() {
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
   };
 
-  /* ---------------- FETCH ATTENDANCE ---------------- */
+  /* ---------------- FETCH Attendance ---------------- */
   const fetchFor = async (rawDate) => {
     setError("");
     setAttendance([]);
@@ -50,7 +50,7 @@ export default function PreviousAttendance() {
     setLoading(true);
     try {
       const instance = apiClient();
-      let url = `/attendance?date=${dateStr}`;
+      let url = `/Attendance?date=${dateStr}`;
       if (department) url += `&department=${encodeURIComponent(department)}`;
       if (section) url += `&section=${encodeURIComponent(section)}`;
 
@@ -62,10 +62,10 @@ export default function PreviousAttendance() {
       else if (data?.records) items = [data];
 
       setAttendance(items);
-      if (items.length === 0) setError(`No attendance found for ${dateStr}`);
+      if (items.length === 0) setError(`No Attendance found for ${dateStr}`);
     } catch (err) {
       console.error(err);
-      setError(err?.response?.data?.message || "Failed to fetch attendance");
+      setError(err?.response?.data?.message || "Failed to fetch Attendance");
     } finally {
       setLoading(false);
     }
@@ -81,7 +81,7 @@ export default function PreviousAttendance() {
 
     try {
       const instance = apiClient();
-      let url = `/attendance/export?date=${dateStr}&format=xlsx`;
+      let url = `/Attendance/export?date=${dateStr}&format=xlsx`;
       if (department) url += `&department=${encodeURIComponent(department)}`;
       if (section) url += `&section=${encodeURIComponent(section)}`;
 
@@ -90,7 +90,7 @@ export default function PreviousAttendance() {
 
       const link = document.createElement("a");
       link.href = blobUrl;
-      link.download = `attendance-${dateStr}.xlsx`;
+      link.download = `Attendance-${dateStr}.xlsx`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -103,8 +103,8 @@ export default function PreviousAttendance() {
 
   /* ---------------- UPDATE RECORD ---------------- */
   // Called when user CLICKS the status button — flips present ↔ absent
-  const updateRecordStatus = async (attendanceId, recordId, status) => {
-    if (!attendanceId || !recordId) return;
+  const updateRecordStatus = async (AttendanceId, recordId, status) => {
+    if (!AttendanceId || !recordId) return;
 
     setUpdatingIds((s) => ({ ...s, [recordId]: true }));
     setError("");
@@ -113,7 +113,7 @@ export default function PreviousAttendance() {
       // Optimistic UI: update locally first so it feels instant
       setAttendance((prev) =>
         prev.map((item) =>
-          item._id !== attendanceId
+          item._id !== AttendanceId
             ? item
             : {
                 ...item,
@@ -125,7 +125,7 @@ export default function PreviousAttendance() {
       );
 
       const instance = apiClient();
-      await instance.put(`/attendance/${attendanceId}/records/${recordId}`, { status });
+      await instance.put(`/Attendance/${AttendanceId}/records/${recordId}`, { status });
     } catch (err) {
       setError(err?.response?.data?.message || "Update failed");
       await fetchFor(input);
@@ -172,7 +172,7 @@ export default function PreviousAttendance() {
 
   /* ---------------- UI ---------------- */
   return (
-    <div className="previous-attendance">
+    <div className="previous-Attendance">
       <div className="header">
         <h2>Previous Attendance</h2>
         <button onClick={downloadExcel}>Download</button>
@@ -202,8 +202,8 @@ export default function PreviousAttendance() {
       {loading && <p>Loading...</p>}
       {error && <p className="error">{error}</p>}
 
-      {attendance.map((item, idx) => (
-        <div key={item._id || idx} className="attendance-card">
+      {Attendance.map((item, idx) => (
+        <div key={item._id || idx} className="Attendance-card">
           <h4>{ordinal(idx + 1)} Attendance</h4>
           <p>{item.description || "—"}</p>
 

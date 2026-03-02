@@ -1,7 +1,7 @@
-.previous-attendance { padding: 18px; }
+.previous-Attendance { padding: 18px; }
 
 /* ── HEADER ROW ── */
-.previous-attendance .header {
+.previous-Attendance .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -9,7 +9,7 @@
 }
 
 /* ── CONTROLS: all in ONE horizontal row ── */
-.previous-attendance .controls {
+.previous-Attendance .controls {
   display: flex;
   flex-direction: row;        /* side by side, not stacked */
   align-items: center;
@@ -23,8 +23,8 @@
 }
 
 /* Each select and date input — fixed width so they don't stretch */
-.previous-attendance .controls select,
-.previous-attendance .controls input[type="date"] {
+.previous-Attendance .controls select,
+.previous-Attendance .controls input[type="date"] {
   padding: 8px 12px;
   border-radius: 6px;
   border: 1px solid rgba(0,0,0,0.15);
@@ -35,14 +35,14 @@
   outline: none;
 }
 
-.previous-attendance .controls select:focus,
-.previous-attendance .controls input[type="date"]:focus {
+.previous-Attendance .controls select:focus,
+.previous-Attendance .controls input[type="date"]:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(13,110,253,0.1);
 }
 
 /* Fetch button */
-.previous-attendance .controls button {
+.previous-Attendance .controls button {
   padding: 8px 20px;
   border-radius: 8px;
   background: var(--primary);
@@ -54,12 +54,12 @@
   white-space: nowrap;
 }
 
-.previous-attendance .controls button:hover {
+.previous-Attendance .controls button:hover {
   background: var(--primary-700);
 }
 
 /* Download button */
-.previous-attendance button {
+.previous-Attendance button {
   padding: 8px 16px;
   border-radius: 8px;
   background: var(--primary);
@@ -71,7 +71,7 @@
 }
 
 /* ── TABLE STYLES ── */
-.previous-attendance .attendance-card {
+.previous-Attendance .Attendance-card {
   background: rgba(255,255,255,0.95);
   padding: 12px;
   border-radius: 10px;
@@ -79,20 +79,20 @@
   margin-bottom: 12px;
 }
 
-.previous-attendance table th {
+.previous-Attendance table th {
   background: linear-gradient(90deg, var(--primary), var(--accent));
   color: #fff;
   text-align: left;
   padding: 10px 14px;
 }
 
-.previous-attendance table td {
+.previous-Attendance table td {
   padding: 10px 14px;
   border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 /* Status select inside table rows */
-.previous-attendance table td select {
+.previous-Attendance table td select {
   padding: 5px 10px;
   border-radius: 6px;
   border: 1px solid rgba(0,0,0,0.15);

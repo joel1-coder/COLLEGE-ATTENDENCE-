@@ -30,9 +30,9 @@ const AdminAttendance = () => {
       setLoading(true);
       try {
         const api = makeApi();
-        const res = await api.get(`/attendance?date=${date}`);
-        const attendance = Array.isArray(res.data) ? res.data[0] : res.data;
-        const recs = attendance?.records || [];
+        const res = await api.get(`/Attendance?date=${date}`);
+        const Attendance = Array.isArray(res.data) ? res.data[0] : res.data;
+        const recs = Attendance?.records || [];
         setRecords(recs);
 
         if (departments.length === 0 && recs.length > 0) {
@@ -40,7 +40,7 @@ const AdminAttendance = () => {
           setDepartments(depts);
         }
       } catch (err) {
-        toast.error("Failed to load attendance");
+        toast.error("Failed to load Attendance");
       } finally {
         setLoading(false);
       }
@@ -55,7 +55,7 @@ const AdminAttendance = () => {
   });
 
   return (
-    <div className="attendance-container">
+    <div className="Attendance-container">
       {/* Toast notifications */}
       <Toast toasts={toasts} removeToast={removeToast} />
 
@@ -94,14 +94,14 @@ const AdminAttendance = () => {
             <button
               disabled={actionLoading}
               onClick={async () => {
-                if (!window.confirm(`Reset attendance for ${date}?`)) return;
+                if (!window.confirm(`Reset Attendance for ${date}?`)) return;
                 try {
                   setActionLoading(true);
-                  await makeApi().post('/attendance/reset', { date, action: 'reset' });
+                  await makeApi().post('/Attendance/reset', { date, action: 'reset' });
                   setRecords([]);
                   toast.success(`Attendance for ${date} has been reset`);
                 } catch (err) {
-                  toast.error('Failed to reset attendance');
+                  toast.error('Failed to reset Attendance');
                   if (err?.response && (err.response.status === 401 || err.response.status === 403))
                     window.location.href = '/admin/login';
                 } finally { setActionLoading(false); }
@@ -112,14 +112,14 @@ const AdminAttendance = () => {
               disabled={actionLoading}
               style={{ marginLeft: 8 }}
               onClick={async () => {
-                if (!window.confirm(`Reopen attendance for ${date}?`)) return;
+                if (!window.confirm(`Reopen Attendance for ${date}?`)) return;
                 try {
                   setActionLoading(true);
-                  await makeApi().post('/attendance/reset', { date, action: 'reopen' });
+                  await makeApi().post('/Attendance/reset', { date, action: 'reopen' });
                   setRecords([]);
                   toast.success(`Attendance for ${date} has been reopened`);
                 } catch (err) {
-                  toast.error('Failed to reopen attendance');
+                  toast.error('Failed to reopen Attendance');
                   if (err?.response && (err.response.status === 401 || err.response.status === 403))
                     window.location.href = '/admin/login';
                 } finally { setActionLoading(false); }
@@ -129,10 +129,10 @@ const AdminAttendance = () => {
         )}
       </div>
 
-      {loading && <p>Loading attendance...</p>}
+      {loading && <p>Loading Attendance...</p>}
 
       {filteredRecords.length > 0 && (
-        <table className="attendance-table">
+        <table className="Attendance-table">
           <thead>
             <tr>
               <th>Student ID</th>
@@ -163,11 +163,11 @@ const AdminAttendance = () => {
                           setRecords(prev => prev.map(r => (r === row ? { ...r, status: newStatus } : r)));
                           setTogglingIds(prev => new Set([...prev, String(sid)]));
                           const studentId = row.student?._id || row.student || row.studentId || null;
-                          await makeApi().post('/attendance', { date, records: [{ student: studentId, status: newStatus }] });
+                          await makeApi().post('/Attendance', { date, records: [{ student: studentId, status: newStatus }] });
                           toast.success(`Status changed to "${newStatus}" for ${row.student?.name}`);
                         } catch (err) {
                           setRecords(prev => prev.map(r => (r === row ? { ...r, status } : r)));
-                          toast.error('Failed to update attendance status');
+                          toast.error('Failed to update Attendance status');
                           if (err?.response && (err.response.status === 401 || err.response.status === 403))
                             window.location.href = '/admin/login';
                         } finally {
@@ -190,7 +190,7 @@ const AdminAttendance = () => {
       )}
 
       {!loading && date && records.length === 0 && (
-        <p>No attendance found for this date.</p>
+        <p>No Attendance found for this date.</p>
       )}
     </div>
   );

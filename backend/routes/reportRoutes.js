@@ -29,7 +29,7 @@ router.get('/monthly', auth, requireRole('admin'), async (req, res) => {
     const pageNum = Math.max(1, Number(page) || 1);
     const lim = Math.max(1, Math.min(1000, Number(limit) || 50));
 
-    // match attendance docs by date range
+    // match Attendance docs by date range
     const match = { date: { $gte: start, $lte: end } };
 
     // pipeline: unwind records, lookup student, optional filter by dept/section, group

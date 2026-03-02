@@ -8,7 +8,7 @@ const dummyStudents = [
 ];
 
 export default function StudentAttendanceList({ onSubmit }) {
-  const [attendance, setAttendance] = useState({});
+  const [Attendance, setAttendance] = useState({});
 
   const toggleAttendance = (studentId) => {
     setAttendance((prev) => ({
@@ -20,7 +20,7 @@ export default function StudentAttendanceList({ onSubmit }) {
   const handleSubmit = () => {
     const result = dummyStudents.map((s) => ({
       studentId: s.id,
-      status: attendance[s.id] ? "Present" : "Absent",
+      status: Attendance[s.id] ? "Present" : "Absent",
     }));
 
     onSubmit(result);
@@ -35,7 +35,7 @@ export default function StudentAttendanceList({ onSubmit }) {
           <label>
             <input
               type="checkbox"
-              checked={attendance[student.id] || false}
+              checked={Attendance[student.id] || false}
               onChange={() => toggleAttendance(student.id)}
             />
             {"  "}

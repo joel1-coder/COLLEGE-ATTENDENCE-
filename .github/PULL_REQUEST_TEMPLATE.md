@@ -5,7 +5,7 @@ chore: untrack node_modules and add to .gitignore
 - Untracked committed `node_modules/` directories and ensured `node_modules/` is listed in `.gitignore`.
 
 ## What changed
-- Removed tracking of `backend/node_modules` and `frontend/attenance-frontend/node_modules` from the working tree (untracked via git).
+- Removed tracking of `backend/node_modules` and `frontend/Attendance-frontend/node_modules` from the working tree (untracked via git).
 - Added/validated `node_modules/` and `**/node_modules/` entries in the repository `.gitignore`.
 
 ## Why

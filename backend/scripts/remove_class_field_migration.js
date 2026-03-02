@@ -5,7 +5,7 @@ const Student = require('../models/Student');
 const Section = require('../models/Section');
 
 async function main() {
-  const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/attenance';
+  const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/Attendance';
   await mongoose.connect(uri);
   console.log('Connected to MongoDB', uri);
 

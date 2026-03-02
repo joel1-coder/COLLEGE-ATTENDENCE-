@@ -235,3 +235,9 @@
   .login-card { padding: 28px 22px; }
   .login-page { padding: 1.2rem; }
 }
+/* Favicon image inside the blue logo box */
+.logo-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}

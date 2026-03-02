@@ -31,21 +31,21 @@
     const studentId = students[0]._id;
     const today = new Date().toISOString().split('T')[0];
 
-    const attendancePayload = {
+    const AttendancePayload = {
       date: today,
       records: [
         { student: studentId, status: 'present' }
       ]
     };
 
-    const attRes = await fetch('http://localhost:5000/api/attendance', {
+    const attRes = await fetch('http://localhost:5000/api/Attendance', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-      body: JSON.stringify(attendancePayload),
+      body: JSON.stringify(AttendancePayload),
     });
 
     const attJson = await attRes.json();
-    console.log('ATTENDANCE RESPONSE:', JSON.stringify(attJson, null, 2));
+    console.log('Attendance RESPONSE:', JSON.stringify(attJson, null, 2));
   } catch (err) {
     console.error('Test error:', err);
     process.exit(1);

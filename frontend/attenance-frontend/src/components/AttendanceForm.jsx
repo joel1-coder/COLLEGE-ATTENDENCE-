@@ -4,7 +4,7 @@ import "./AttendanceForm.css";
 
 const AttendanceForm = () => {
   const [students, setStudents] = useState([]);
-  const [attendance, setAttendance] = useState({});
+  const [Attendance, setAttendance] = useState({});
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
   const [descError, setDescError] = useState(false);
@@ -143,19 +143,19 @@ const AttendanceForm = () => {
     }
     try {
       setDescError(false);
-      const records = Object.keys(attendance).map((studentId) => ({
+      const records = Object.keys(Attendance).map((studentId) => ({
         student: studentId,
-        status: attendance[studentId],
+        status: Attendance[studentId],
       }));
 
       const payload = { date: today, description, department, section, records };
-      console.log('Submitting attendance payload:', payload);
+      console.log('Submitting Attendance payload:', payload);
 
       const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
       const stored = JSON.parse(localStorage.getItem('user')) || null;
       if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
 
-      const resp = await api.post('/attendance', payload);
+      const resp = await api.post('/Attendance', payload);
       console.log('Attendance save response:', resp.data);
 
       if (resp.data && resp.data.file) {
@@ -166,7 +166,7 @@ const AttendanceForm = () => {
     } catch (error) {
       console.error('Attendance save error:', error);
       const errMsg =
-        error?.response?.data?.message || error.message || "Error saving attendance";
+        error?.response?.data?.message || error.message || "Error saving Attendance";
       setMessage(`❌ ${errMsg}`);
     }
   };
@@ -174,8 +174,8 @@ const AttendanceForm = () => {
   if (loading) return <p className="loading">Loading students...</p>;
 
   return (
-    <div className="attendance-container">
-      <h2>CS LAB ATTENDANCE</h2>
+    <div className="Attendance-container">
+      <h2>CS LAB Attendance</h2>
 
       <div className="info">
         <label>
@@ -212,7 +212,7 @@ const AttendanceForm = () => {
               setDescription(e.target.value);
               if (e.target.value && e.target.value.trim()) setDescError(false);
             }}
-            placeholder="Reason / notes for this attendance"
+            placeholder="Reason / notes for this Attendance"
             style={{ marginLeft: 6, verticalAlign: 'middle' }}
           />
           {descError && <span style={{ color: '#e74c3c', marginLeft: 8 }}>⚠️</span>}
@@ -221,7 +221,7 @@ const AttendanceForm = () => {
         <span style={{ marginLeft: 12 }}>Date: {displayDate}</span>
       </div>
 
-      <table className="attendance-table">
+      <table className="Attendance-table">
         <thead>
           <tr>
             <th>#</th>
@@ -240,17 +240,17 @@ const AttendanceForm = () => {
               <td>
                 {/*
                   🎨 HOW THE COLOR WORKS:
-                  - We check if this student's attendance is "present" or "absent"
+                  - We check if this student's Attendance is "present" or "absent"
                   - If "present" → className="present" → CSS gives it BLUE color
                   - If "absent"  → className="absent"  → CSS gives it RED color
                   - Clicking the button calls toggleAttendance() which flips the value
                   - No dropdown! Just one click to switch between present ↔ absent
                 */}
                 <button
-                  className={attendance[student._id] === "present" ? "present" : "absent"}
+                  className={Attendance[student._id] === "present" ? "present" : "absent"}
                   onClick={() => toggleAttendance(student._id)}
                 >
-                  {attendance[student._id] === "present" ? "✔ Present" : "✘ Absent"}
+                  {Attendance[student._id] === "present" ? "✔ Present" : "✘ Absent"}
                 </button>
               </td>
             </tr>

@@ -58,7 +58,7 @@ function NavBar() {
             <>
               <Link to="/">Home</Link>
               {user && <Link to="/creation">Session Setup</Link>}
-              <Link to="/previous-attendance">Attendance Records</Link>
+              <Link to="/previous-Attendance">Attendance Records</Link>
               {user && <Link to="/editing-adding">Manage Entries</Link>}
               {user && <Link to="/enter-marks">Marks Portal</Link>}
               {user && <Link to="/mark-record">Mark Record</Link>}
@@ -95,7 +95,7 @@ function NavBar() {
             <>
               <Link to="/">Home</Link>
               {user && <Link to="/creation">Session Setup</Link>}
-              <Link to="/previous-attendance">Attendance Records</Link>
+              <Link to="/previous-Attendance">Attendance Records</Link>
               {user && <Link to="/editing-adding">Manage Entries</Link>}
               {user && <Link to="/enter-marks">Marks Portal</Link>}
               {user && <Link to="/mark-record">Mark Record</Link>}

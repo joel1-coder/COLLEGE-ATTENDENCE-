@@ -1,7 +1,7 @@
 const Attendance = require("../models/Attendance");
 
 // ======================
-// MARK ATTENDANCE
+// MARK Attendance
 // ======================
 exports.markAttendance = async (req, res) => {
   try {
@@ -11,30 +11,30 @@ exports.markAttendance = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const attendanceDate = date ? new Date(date) : new Date();
-    attendanceDate.setHours(0, 0, 0, 0);
+    const AttendanceDate = date ? new Date(date) : new Date();
+    AttendanceDate.setHours(0, 0, 0, 0);
 
-    const attendance = new Attendance({
+    const Attendance = new Attendance({
       staff: staffId,
       studentId,
       status,
-      date: attendanceDate,
+      date: AttendanceDate,
     });
 
-    await attendance.save();
+    await Attendance.save();
 
     res.status(201).json({
       message: "Attendance marked successfully",
-      attendance,
+      Attendance,
     });
   } catch (error) {
-    console.error("Error marking attendance ❌", error);
+    console.error("Error marking Attendance ❌", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
 // ======================
-// GET ATTENDANCE BY DATE
+// GET Attendance BY DATE
 // ======================
 exports.getAttendanceByDate = async (req, res) => {
   try {
@@ -47,14 +47,14 @@ exports.getAttendanceByDate = async (req, res) => {
     const queryDate = new Date(date);
     queryDate.setHours(0, 0, 0, 0);
 
-    const attendance = await Attendance.find({
+    const Attendance = await Attendance.find({
       staff: staffId,
       date: queryDate,
     });
 
-    res.status(200).json(attendance);
+    res.status(200).json(Attendance);
   } catch (error) {
-    console.error("Fetch attendance error ❌", error);
+    console.error("Fetch Attendance error ❌", error);
     res.status(500).json({ message: "Server error" });
   }
 };

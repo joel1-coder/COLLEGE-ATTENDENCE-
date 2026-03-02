@@ -4,7 +4,7 @@ dotenv.config();
 const Student = require('../models/Student');
 
 async function main() {
-  const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/attenance';
+  const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/Attendance';
   await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   console.log('Connected to MongoDB', uri);
   const students = await Student.find().sort('studentId');

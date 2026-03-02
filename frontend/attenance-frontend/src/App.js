@@ -24,7 +24,7 @@ function App() {
         }
       />
       <Route
-        path="/admin/attendance"
+        path="/admin/Attendance"
         element={
           <Protected>
             <PageTransition>
@@ -41,7 +41,7 @@ function App() {
         </Protected>
       } />
       <Route
-        path="/previous-attendance"
+        path="/previous-Attendance"
         element={
           <Protected>
             <PageTransition>

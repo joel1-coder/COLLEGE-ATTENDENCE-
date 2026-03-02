@@ -9,7 +9,7 @@ async function run(){
       ]
     };
     console.log('Client: sending payload', payload);
-    const res = await axios.post('http://localhost:5000/api/attendance', payload);
+    const res = await axios.post('http://localhost:5000/api/Attendance', payload);
     console.log('Client: response', res.status, res.data);
   }catch(err){
     if(err.response){

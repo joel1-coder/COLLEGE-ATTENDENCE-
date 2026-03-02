@@ -58,7 +58,7 @@ function Layout() {
     // remove any previous page- classes
     document.body.classList.remove(
       'page-default',
-      'page-attendance',
+      'page-Attendance',
       'page-marks',
       'page-creation',
       'page-admin',
@@ -66,7 +66,7 @@ function Layout() {
     );
     let cls = 'page-default';
     const p = location.pathname || '/';
-    if (p.startsWith('/previous-attendance')) cls = 'page-attendance';
+    if (p.startsWith('/previous-Attendance')) cls = 'page-Attendance';
     else if (p.startsWith('/marks') || p.startsWith('/enter-marks')) cls = 'page-marks';
     else if (p.startsWith('/creation') || p.startsWith('/editing-adding')) cls = 'page-creation';
     else if (p.startsWith('/admin')) cls = 'page-admin';
@@ -101,11 +101,11 @@ const router = createBrowserRouter(
             { path: "report/monthly", element: <AdminReportMonthly /> },
             { path: "report/reset", element: <AdminReportReset /> },
             { path: "assign", element: <AdminAssign /> },
-            { path: "attendance", element: <AdminAttendance /> },
+            { path: "Attendance", element: <AdminAttendance /> },
           ],
         },
         { path: "admin/login", element: <AdminLogin /> },
-        { path: "previous-attendance", element: <Protected><PreviousAttendance /></Protected> },
+        { path: "previous-Attendance", element: <Protected><PreviousAttendance /></Protected> },
         { path: "editing-adding", element: <Protected><EditAddStudent /></Protected> },
         { path: "enter-marks", element: <Protected><EnterMarks /></Protected> },
           { path: "mark-record", element: <Protected><MarkRecord /></Protected> },

@@ -17,7 +17,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setError("");
     setLoading(true);
-        try {
+    try {
       const res = await axios.post('https://college-attendence.onrender.com/api/auth/login', { email: adminId, password });
       login({ userId: res.data.userId, role: res.data.role, email: adminId, token: res.data.token });
       if (res.data.role === 'admin') navigate('/admin');
@@ -36,7 +36,29 @@ export default function AdminLogin() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <h2>Admin Sign In</h2>
+
+        {/* 
+          FAVICON LOGO — same technique as Staff Login:
+          /favicon.ico serves your app's favicon from the /public folder.
+          Both login pages now show the same favicon logo for consistency.
+        */}
+        <div className="brand">
+          <div className="logo">
+            <img
+              src="/favicon.jpg"
+              alt="Logo"
+              className="logo-img"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'block';
+              }}
+            />
+            <span style={{ display: 'none' }}>A</span>
+          </div>
+          <div className="title">Attenance</div>
+        </div>
+
+        <h2 className="subtitle">Admin Sign In</h2>
 
         {error && <div className="message error">{error}</div>}
 

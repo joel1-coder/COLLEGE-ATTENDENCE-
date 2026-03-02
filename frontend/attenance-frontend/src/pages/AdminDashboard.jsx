@@ -38,14 +38,14 @@ const AdminDashboard = () => {
 
       <main className="admin-main">
         <section className="cards flashcards">
-          <div className="flashcard attendance-card">
+          <div className="flashcard Attendance-card">
             <div className="flashcard-body">
               <div className="flashcard-title">Today's Attendance</div>
               <div className="flashcard-stat">{(stats && (stats.presentsToday ?? stats.presents)) ?? 0}</div>
               <div className="flashcard-sub">of {(stats && (stats.sessionsToday ?? stats.sessions)) ?? 0} records</div>
             </div>
             <div className="flashcard-footer">
-              <a href="/admin/attendance">Open Attendance</a>
+              <a href="/admin/Attendance">Open Attendance</a>
               <a href="/admin/report/monthly">Reports</a>
             </div>
           </div>

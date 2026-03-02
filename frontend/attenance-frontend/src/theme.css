@@ -1,5 +1,5 @@
 /* ============================================================
-   ATTENANCE — LIGHT PROFESSIONAL THEME
+   Attendance — LIGHT PROFESSIONAL THEME
    Palette: Navy Blue · Slate Gray · Light Gray · White
    Font: Sora (headings) + Nunito (body)
    ============================================================ */
@@ -251,13 +251,13 @@ select option { background: #FFFFFF; color: var(--text); }
 .flashcard .muted           { font-size: 0.8rem; opacity: 0.75; margin-top: 4px; }
 
 /* Flashcard colors stay vibrant for contrast */
-.attendance-card { background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%); }
+.Attendance-card { background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%); }
 .staff-card      { background: linear-gradient(135deg, #16A34A 0%, #15803D 100%); }
 .students-card   { background: linear-gradient(135deg, #F59E0B 0%, #DC2626 100%); }
 
 /* ── MISC ────────────────────────────────────────────────── */
 .muted { color: var(--muted-text); }
-.previous-attendance, .card { background: var(--surface); }
+.previous-Attendance, .card { background: var(--surface); }
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 768px) {

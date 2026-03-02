@@ -13,7 +13,7 @@ export default function ChartAttendance({ limit = 8 }){
         const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
         const stored = JSON.parse(localStorage.getItem('user')) || null;
         if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-        const res = await api.get('/admin/charts/attendance', { params: { limit } });
+        const res = await api.get('/admin/charts/Attendance', { params: { limit } });
         const rows = res.data?.data || [];
         setData({ labels: rows.map(r => r.name || r.studentId), datasets: [{ label: 'Attendance %', data: rows.map(r => Number(r.percent || 0)), borderColor: 'rgba(75,192,192,1)', backgroundColor: 'rgba(75,192,192,0.2)' }] });
       } catch (err) { console.error('ChartAttendance fetch error', err); }
@@ -21,6 +21,6 @@ export default function ChartAttendance({ limit = 8 }){
     fetch();
   }, [limit]);
 
-  if (!data) return <div>Loading attendance chart...</div>;
+  if (!data) return <div>Loading Attendance chart...</div>;
   return <div style={{ maxWidth: 700 }}><Line data={data} options={{ responsive: true, plugins: { legend: { position: 'top' } } }} /></div>;
 }

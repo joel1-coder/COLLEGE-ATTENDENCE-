@@ -4,7 +4,7 @@ dotenv.config();
 const Department = require('../models/Department');
 
 async function main() {
-  const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/attenance';
+  const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/Attendance';
   await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   const depts = await Department.find().sort('name');
   console.log('Departments in DB:');

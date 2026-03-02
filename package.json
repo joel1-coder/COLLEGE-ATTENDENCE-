@@ -1,16 +1,16 @@
 	{
-		"name": "attenance-monorepo",
+		"name": "Attendance-monorepo",
 		"private": true,
 		"version": "1.0.0",
 		"workspaces": [
 			"backend",
-			"frontend/attenance-frontend"
+			"frontend/Attendance-frontend"
 		],
 		"scripts": {
-			"install:all": "npm --prefix backend install && npm --prefix frontend/attenance-frontend install",
+			"install:all": "npm --prefix backend install && npm --prefix frontend/Attendance-frontend install",
 			"start:backend": "node backend/server.js",
-			"start:frontend": "npm --prefix frontend/attenance-frontend start",
-			"build:frontend": "npm --prefix frontend/attenance-frontend run build",
+			"start:frontend": "npm --prefix frontend/Attendance-frontend start",
+			"build:frontend": "npm --prefix frontend/Attendance-frontend run build",
 			"start": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
 		},
 		"devDependencies": {

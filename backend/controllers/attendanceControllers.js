@@ -4,19 +4,19 @@ exports.markAttendance = async (req, res) => {
   try {
     const { records, date } = req.body;
 
-    const attendanceDate = new Date(date);
-    attendanceDate.setHours(0, 0, 0, 0);
+    const AttendanceDate = new Date(date);
+    AttendanceDate.setHours(0, 0, 0, 0);
 
     const operations = records.map((r) => ({
       updateOne: {
         filter: {
           student: r.student,
-          date: attendanceDate,
+          date: AttendanceDate,
         },
         update: {
           $set: {
             status: r.status,
-            date: attendanceDate,
+            date: AttendanceDate,
           },
         },
         upsert: true,

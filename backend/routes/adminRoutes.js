@@ -28,7 +28,7 @@ router.post('/departments', auth, async (req, res) => {
   }
 });
 
-// Charts: marks (avg per student) and attendance (percent per student)
+// Charts: marks (avg per student) and Attendance (percent per student)
 // GET /api/admin/charts/marks?limit=10&startDate=&endDate=&department=&section=
 router.get('/charts/marks', auth, requireAdmin, async (req, res) => {
   try {
@@ -59,8 +59,8 @@ router.get('/charts/marks', auth, requireAdmin, async (req, res) => {
   }
 });
 
-// GET /api/admin/charts/attendance?limit=10&startDate=&endDate=&department=&section=
-router.get('/charts/attendance', auth, requireAdmin, async (req, res) => {
+// GET /api/admin/charts/Attendance?limit=10&startDate=&endDate=&department=&section=
+router.get('/charts/Attendance', auth, requireAdmin, async (req, res) => {
   try {
     const { limit = 10, startDate, endDate, department, section } = req.query;
     let start = startDate, end = endDate;
@@ -100,7 +100,7 @@ router.get('/charts/attendance', auth, requireAdmin, async (req, res) => {
     const rows = await Attendance.aggregate(pipeline);
     return res.json({ data: rows });
   } catch (err) {
-    console.error('Charts attendance error', err);
+    console.error('Charts Attendance error', err);
     return res.status(500).json({ message: 'Server error' });
   }
 });
@@ -282,9 +282,9 @@ router.get('/stats', auth, requireAdmin, async (req, res) => {
     const staffCount = await User.countDocuments({ role: 'staff' });
     const studentCount = await Student.countDocuments();
     const todayIso = new Date().toISOString().split('T')[0];
-    const attendanceDoc = await Attendance.findOne({ date: todayIso });
-    const sessionsToday = attendanceDoc ? (attendanceDoc.records ? attendanceDoc.records.length : 0) : 0;
-    const presentsToday = attendanceDoc ? attendanceDoc.records.filter(r => r.status === 'present').length : 0;
+    const AttendanceDoc = await Attendance.findOne({ date: todayIso });
+    const sessionsToday = AttendanceDoc ? (AttendanceDoc.records ? AttendanceDoc.records.length : 0) : 0;
+    const presentsToday = AttendanceDoc ? AttendanceDoc.records.filter(r => r.status === 'present').length : 0;
 
     return res.json({ staffCount, studentCount, sessionsToday, presentsToday, date: todayIso });
   } catch (err) {

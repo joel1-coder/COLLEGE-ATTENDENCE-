@@ -17,7 +17,7 @@
 .flashcard .flashcard-sub{font-size:0.9rem;opacity:0.9}
 .flashcard .flashcard-footer{display:flex;gap:12px;font-size:0.9rem;margin-top:12px}
 
-.attendance-card{background:linear-gradient(135deg,#60a5fa,#7c3aed)}
+.Attendance-card{background:linear-gradient(135deg,#60a5fa,#7c3aed)}
 .staff-card{background:linear-gradient(135deg,#34d399,#10b981)}
 .students-card{background:linear-gradient(135deg,#f97316,#fb923c)}
 

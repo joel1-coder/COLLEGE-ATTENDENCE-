@@ -7,7 +7,7 @@ const AttendanceView = () => {
   const [section, setSection] = useState("");
   const [departments, setDepartments] = useState([]);
   const [sections, setSections] = useState([]);
-  const [attendanceDocs, setAttendanceDocs] = useState([]);
+  const [AttendanceDocs, setAttendanceDocs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -16,7 +16,7 @@ const AttendanceView = () => {
     setLoading(true);
     setErrorMessage("");
     try {
-      let url = `/attendance?date=${date}`;
+      let url = `/Attendance?date=${date}`;
       if (department) url += `&department=${encodeURIComponent(department)}`;
       if (section) url += `&section=${encodeURIComponent(section)}`;
       const stored = JSON.parse(localStorage.getItem('user')) || null;
@@ -24,8 +24,8 @@ const AttendanceView = () => {
       const res = await api.get(url, { headers });
       setAttendanceDocs(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      console.error('Fetch attendance error', err);
-      setErrorMessage(err?.response?.data?.message || err.message || 'Error fetching attendance');
+      console.error('Fetch Attendance error', err);
+      setErrorMessage(err?.response?.data?.message || err.message || 'Error fetching Attendance');
     } finally {
       setLoading(false);
     }
@@ -69,15 +69,15 @@ const AttendanceView = () => {
     - Gets called when user CLICKS the status button
     - Figures out the NEW status (opposite of current)
     - Sends a PUT request to the backend to save the change
-    - Then re-fetches attendance so the UI updates
+    - Then re-fetches Attendance so the UI updates
     - NO dropdown needed — one click does everything!
   */
-  const toggleStatus = async (attendanceId, recordId, currentStatus) => {
+  const toggleStatus = async (AttendanceId, recordId, currentStatus) => {
     const newStatus = currentStatus === 'present' ? 'absent' : 'present';
     try {
       const stored = JSON.parse(localStorage.getItem('user')) || null;
       const headers = stored?.token ? { Authorization: `Bearer ${stored.token}` } : {};
-      await api.put(`/attendance/${attendanceId}/records/${recordId}`, { status: newStatus }, { headers });
+      await api.put(`/Attendance/${AttendanceId}/records/${recordId}`, { status: newStatus }, { headers });
       await fetchAttendance();
     } catch (err) {
       console.error('Update status error', err);
@@ -85,12 +85,12 @@ const AttendanceView = () => {
     }
   };
 
-  const deleteRecord = async (attendanceId, recordId) => {
+  const deleteRecord = async (AttendanceId, recordId) => {
     if (!window.confirm('Delete this record? This cannot be undone.')) return;
     try {
       const stored = JSON.parse(localStorage.getItem('user')) || null;
       const headers = stored?.token ? { Authorization: `Bearer ${stored.token}` } : {};
-      await api.delete(`/attendance/${attendanceId}/records/${recordId}`, { headers });
+      await api.delete(`/Attendance/${AttendanceId}/records/${recordId}`, { headers });
       await fetchAttendance();
     } catch (err) {
       console.error('Delete record error', err);
@@ -129,7 +129,7 @@ const AttendanceView = () => {
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
       {/* ---- Attendance Tables ---- */}
-      {attendanceDocs.map((doc, di) => (
+      {AttendanceDocs.map((doc, di) => (
         <div key={doc._id || di} style={{ marginTop: 24 }}>
           <h4 style={{ marginBottom: 8 }}>
             {doc.department} — {doc.section} &nbsp;|&nbsp; {doc.date?.slice(0, 10)}

@@ -23,7 +23,7 @@ app.use((err, req, res, next) => {
 // Routes
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/attendance", require("./routes/attendanceRoutes"));
+app.use("/api/Attendance", require("./routes/AttendanceRoutes"));
 app.use("/api/staff", require("./routes/staffRoutes"));
 app.use("/api/students", require("./routes/studentRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
@@ -32,7 +32,7 @@ app.use('/api/reports', require('./routes/reportRoutes'));
 
 // Test route
 app.get("/", (req, res) => {
-  res.send("Attenance Backend Running ✅");
+  res.send("Attendance Backend Running ✅");
 });
 
 // MongoDB

@@ -36,7 +36,27 @@ const Login = () => {
     <div className="login-page">
       <div className="login-card">
         <div className="brand">
-          <div className="logo">A</div>
+
+          {/* 
+            FAVICON LOGO:
+            /favicon.ico = your app's own icon stored in the /public folder.
+            React automatically serves all files in /public at the root URL.
+            So /favicon.ico always points to your project's favicon image.
+            onError: if image fails to load, show fallback "A" text instead.
+          */}
+          <div className="logo">
+            <img
+              src="/favicon.jpg"
+              alt="Logo"
+              className="logo-img"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'block';
+              }}
+            />
+            <span style={{ display: 'none' }}>A</span>
+          </div>
+
           <div className="title">Attenance</div>
         </div>
 
@@ -81,4 +101,3 @@ const Login = () => {
 };
 
 export default Login;
-

@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Student = require('../models/Student');
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/attenance';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/Attendance';
 
 async function run() {
   await mongoose.connect(MONGO_URI);
