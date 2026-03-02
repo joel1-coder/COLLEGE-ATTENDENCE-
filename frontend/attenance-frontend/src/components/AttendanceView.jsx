@@ -21,9 +21,7 @@ const AttendanceView = () => {
       if (section) url += `&section=${encodeURIComponent(section)}`;
       const stored = JSON.parse(localStorage.getItem('user')) || null;
       const headers = stored?.token ? { Authorization: `Bearer ${stored.token}` } : {};
-      console.log('Fetching attendance', { url, headers });
       const res = await api.get(url, { headers });
-      // res.data is an array of attendance documents
       setAttendanceDocs(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error('Fetch attendance error', err);
@@ -38,9 +36,7 @@ const AttendanceView = () => {
       try {
         const stored = JSON.parse(localStorage.getItem('user')) || null;
         const headers = stored?.token ? { Authorization: `Bearer ${stored.token}` } : {};
-        console.log('Loading departments with headers', headers);
         const res = await api.get('/admin/departments', { headers });
-        console.log('Departments response', res.data);
         setDepartments(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error('Load departments error', err);
@@ -57,9 +53,7 @@ const AttendanceView = () => {
       try {
         const stored = JSON.parse(localStorage.getItem('user')) || null;
         const headers = stored?.token ? { Authorization: `Bearer ${stored.token}` } : {};
-        console.log('Loading sections for', department, headers);
         const res = await api.get(`/admin/sections?department=${encodeURIComponent(department)}`, { headers });
-        console.log('Sections response', res.data);
         setSections(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error('Load sections error', err);
@@ -70,13 +64,20 @@ const AttendanceView = () => {
     loadSections();
   }, [department]);
 
+  /*
+    ✅ toggleStatus:
+    - Gets called when user CLICKS the status button
+    - Figures out the NEW status (opposite of current)
+    - Sends a PUT request to the backend to save the change
+    - Then re-fetches attendance so the UI updates
+    - NO dropdown needed — one click does everything!
+  */
   const toggleStatus = async (attendanceId, recordId, currentStatus) => {
     const newStatus = currentStatus === 'present' ? 'absent' : 'present';
     try {
       const stored = JSON.parse(localStorage.getItem('user')) || null;
       const headers = stored?.token ? { Authorization: `Bearer ${stored.token}` } : {};
       await api.put(`/attendance/${attendanceId}/records/${recordId}`, { status: newStatus }, { headers });
-      // refresh
       await fetchAttendance();
     } catch (err) {
       console.error('Update status error', err);
@@ -99,15 +100,17 @@ const AttendanceView = () => {
 
   return (
     <div>
+      {/* ---- Filters ---- */}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+
         <select value={department} onChange={(e) => { setDepartment(e.target.value); setSection(''); }}>
           <option value="">All Departments</option>
           {departments.map((d) => {
-              const name = (typeof d === 'string') ? d : (d.name || d);
-              const key = (d && d._id) ? d._id : name;
-              return <option key={key} value={name}>{name}</option>;
-            })}
+            const name = (typeof d === 'string') ? d : (d.name || d);
+            const key = (d && d._id) ? d._id : name;
+            return <option key={key} value={name}>{name}</option>;
+          })}
         </select>
 
         <select value={section} onChange={(e) => setSection(e.target.value)}>
@@ -119,25 +122,23 @@ const AttendanceView = () => {
           })}
         </select>
 
-        <button onClick={fetchAttendance} disabled={loading}>Fetch</button>
+        <button onClick={fetchAttendance}>Fetch</button>
       </div>
 
-      {loading && <div>Loading...</div>}
-      {errorMessage && <div style={{ color: 'red', marginTop: 8 }}>{errorMessage}</div>}
+      {loading && <p>Loading...</p>}
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
-      {attendanceDocs.map((doc) => (
-        <div key={doc._id} style={{ border: '1px solid #ddd', marginTop: 12, padding: 8 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div>
-              <strong>{doc.description || 'Attendance'}</strong>
-              <div style={{ fontSize: 12, color: '#666' }}>{doc.date} {doc.department ? `• ${doc.department}` : ''} {doc.section ? `• ${doc.section}` : ''}</div>
-            </div>
-            <div style={{ fontSize: 12, color: '#666' }}>{doc.createdAt ? new Date(doc.createdAt).toLocaleString() : ''}</div>
-          </div>
+      {/* ---- Attendance Tables ---- */}
+      {attendanceDocs.map((doc, di) => (
+        <div key={doc._id || di} style={{ marginTop: 24 }}>
+          <h4 style={{ marginBottom: 8 }}>
+            {doc.department} — {doc.section} &nbsp;|&nbsp; {doc.date?.slice(0, 10)}
+            {doc.description && <span style={{ fontWeight: 400, marginLeft: 8, color: '#666' }}>({doc.description})</span>}
+          </h4>
 
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
+          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
             <thead>
-              <tr>
+              <tr style={{ background: '#f0f0f0' }}>
                 <th style={{ border: '1px solid #ddd', padding: 6 }}>#</th>
                 <th style={{ border: '1px solid #ddd', padding: 6 }}>Student ID</th>
                 <th style={{ border: '1px solid #ddd', padding: 6 }}>Name</th>
@@ -145,20 +146,70 @@ const AttendanceView = () => {
                 <th style={{ border: '1px solid #ddd', padding: 6 }}>Actions</th>
               </tr>
             </thead>
+
             <tbody>
               {(doc.records || []).map((r, i) => {
                 const s = r.student || {};
                 const sid = s.studentId || (s._id ? String(s._id) : '');
-                const name = (s.firstName || s.lastName) ? `${s.firstName || ''} ${s.lastName || ''}`.trim() : (s.name || '');
+                const name = (s.firstName || s.lastName)
+                  ? `${s.firstName || ''} ${s.lastName || ''}`.trim()
+                  : (s.name || '');
+
                 return (
                   <tr key={r._id || i}>
-                    <td style={{ border: '1px solid #ddd', padding: 6 }}>{i+1}</td>
+                    <td style={{ border: '1px solid #ddd', padding: 6, textAlign: 'center' }}>{i + 1}</td>
                     <td style={{ border: '1px solid #ddd', padding: 6 }}>{sid}</td>
                     <td style={{ border: '1px solid #ddd', padding: 6 }}>{name}</td>
-                    <td style={{ border: '1px solid #ddd', padding: 6 }}>{r.status}</td>
-                    <td style={{ border: '1px solid #ddd', padding: 6 }}>
-                      <button onClick={() => toggleStatus(doc._id, r._id, r.status)}>Toggle</button>
-                      <button style={{ marginLeft: 8 }} onClick={() => deleteRecord(doc._id, r._id)}>Delete</button>
+
+                    <td style={{ border: '1px solid #ddd', padding: 6, textAlign: 'center' }}>
+                      {/*
+                        🎨 HOW THE COLOR BUTTON WORKS HERE:
+                        - r.status is either "present" or "absent" (comes from the database)
+                        - We use inline styles to set background color:
+                            present → Blue  (#3b82f6)
+                            absent  → Red   (#ef4444)
+                        - Clicking calls toggleStatus() which flips present ↔ absent in the DB
+                        - The icon ✔ shows for present, ✘ shows for absent
+                        - No dropdown anywhere — just one click!
+                      */}
+                      <button
+                        onClick={() => toggleStatus(doc._id, r._id, r.status)}
+                        style={{
+                          background: r.status === 'present' ? '#3b82f6' : '#ef4444',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: 20,
+                          padding: '4px 16px',
+                          fontWeight: 700,
+                          fontSize: 12,
+                          letterSpacing: '0.06em',
+                          textTransform: 'uppercase',
+                          cursor: 'pointer',
+                          transition: 'background 0.2s, transform 0.1s',
+                          minWidth: 90,
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.07)'}
+                        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        {r.status === 'present' ? '✔ Present' : '✘ Absent'}
+                      </button>
+                    </td>
+
+                    <td style={{ border: '1px solid #ddd', padding: 6, textAlign: 'center' }}>
+                      <button
+                        style={{
+                          background: '#fee2e2',
+                          color: '#b91c1c',
+                          border: '1px solid #fca5a5',
+                          borderRadius: 6,
+                          padding: '3px 10px',
+                          cursor: 'pointer',
+                          fontSize: 12,
+                        }}
+                        onClick={() => deleteRecord(doc._id, r._id)}
+                      >
+                        🗑 Delete
+                      </button>
                     </td>
                   </tr>
                 );

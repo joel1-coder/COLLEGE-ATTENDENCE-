@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./AttendanceForm.css";
-import Toast from "./Toast";
-import useToast from "../Hooks/usetoast";
 
 const AttendanceForm = () => {
   const [students, setStudents] = useState([]);
@@ -11,10 +9,9 @@ const AttendanceForm = () => {
   const [description, setDescription] = useState("");
   const [descError, setDescError] = useState(false);
   const descRef = React.createRef();
+  const [message, setMessage] = useState("");
 
-  // 💡 We replaced setMessage (plain text) with toast (pop-up notifications)
-  const { toasts, toast, removeToast } = useToast();
-
+  // 🔒 Date locked to today
   const todayDate = new Date();
   const today = todayDate.toISOString().split("T")[0];
   const pad = (n) => (n < 10 ? `0${n}` : `${n}`);
@@ -38,7 +35,7 @@ const AttendanceForm = () => {
         if (!department && cls.length) setDepartment(cls[0]);
       } catch (err) {
         console.warn('Could not load classes', err);
-        toast.error('Could not load departments — please login or check server');
+        setMessage('Could not load classes — please login or check server');
       }
     };
 
@@ -48,26 +45,41 @@ const AttendanceForm = () => {
         const sRes = await api.get(`/admin/sections?department=${encodeURIComponent(forClass)}`);
         const secs = Array.isArray(sRes.data) ? sRes.data.map(s => s.name) : [];
         setSectionsList(secs);
-        setSection(secs[0] || "");
+        if (!section) {
+          setSection(secs[0]);
+        }
       } catch (err) {
-        setSectionsList([]);
-        setSection("");
+        console.warn('Could not load sections for class', forClass, err);
+        setMessage('Could not load sections — please login or check server');
       }
     };
 
-    fetchClasses().then(() => {
-      if (department) fetchSectionsForClass(department);
-    });
-  }, []);
+    fetchClasses();
+    if (department) fetchSectionsForClass(department);
+
+    const onDepartmentsUpdated = () => fetchClasses();
+    const onSectionsUpdated = () => fetchSectionsForClass(department);
+    window.addEventListener('departmentsUpdated', onDepartmentsUpdated);
+    window.addEventListener('sectionsUpdated', onSectionsUpdated);
+
+    return () => {
+      window.removeEventListener('departmentsUpdated', onDepartmentsUpdated);
+      window.removeEventListener('sectionsUpdated', onSectionsUpdated);
+    };
+  }, [department, section]);
 
   useEffect(() => {
     const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
     const stored = JSON.parse(localStorage.getItem("user")) || null;
-    if (stored?.token) api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
+    if (stored?.token) {
+      api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
+    }
 
     const fetchSections = async () => {
       try {
-        const res = await api.get(`/admin/sections?department=${encodeURIComponent(department)}`);
+        const res = await api.get(
+          `/admin/sections?department=${encodeURIComponent(department)}`
+        );
         const secs = res.data.map((s) => s.name);
         setSectionsList(secs);
         setSection(secs[0] || "");
@@ -76,32 +88,45 @@ const AttendanceForm = () => {
         setSection("");
       }
     };
-    if (department) fetchSections();
+
+    fetchSections();
   }, [department]);
 
   useEffect(() => {
     if (!department || !section) return;
+
     const fetchStudents = async () => {
       setLoading(true);
       try {
         const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
         const stored = JSON.parse(localStorage.getItem("user"));
-        if (stored?.token) api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
-        const res = await api.get(`/students?department=${encodeURIComponent(department)}&section=${encodeURIComponent(section)}`);
+        if (stored?.token) {
+          api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
+        }
+
+        const res = await api.get(
+          `/students?department=${encodeURIComponent(department)}&section=${encodeURIComponent(section)}`
+        );
+
         setStudents(res.data || []);
+
+        // Default every student to "present"
         const defaultAttendance = {};
-        res.data.forEach((s) => { defaultAttendance[s._id] = "present"; });
+        res.data.forEach((s) => {
+          defaultAttendance[s._id] = "present";
+        });
         setAttendance(defaultAttendance);
       } catch (err) {
         setStudents([]);
-        toast.error('Failed to load students');
       } finally {
         setLoading(false);
       }
     };
+
     fetchStudents();
   }, [department, section]);
 
+  // ✅ Toggle between present ↔ absent just by clicking
   const toggleAttendance = (studentId) => {
     setAttendance((prev) => ({
       ...prev,
@@ -112,7 +137,7 @@ const AttendanceForm = () => {
   const handleSubmit = async () => {
     if (!description || !description.trim()) {
       setDescError(true);
-      toast.warning("Please fill in the Description before submitting");
+      window.alert("You didn't put anything in the Description");
       if (descRef.current) descRef.current.focus();
       return;
     }
@@ -122,16 +147,27 @@ const AttendanceForm = () => {
         student: studentId,
         status: attendance[studentId],
       }));
+
       const payload = { date: today, description, department, section, records };
+      console.log('Submitting attendance payload:', payload);
+
       const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
       const stored = JSON.parse(localStorage.getItem('user')) || null;
       if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-      await api.post('/attendance', payload);
-      toast.success("Attendance saved successfully! 🎉");
+
+      const resp = await api.post('/attendance', payload);
+      console.log('Attendance save response:', resp.data);
+
+      if (resp.data && resp.data.file) {
+        setMessage(`✅ Attendance saved. Download: ${resp.data.file}`);
+      } else {
+        setMessage("✅ Attendance saved successfully");
+      }
     } catch (error) {
       console.error('Attendance save error:', error);
-      const errMsg = error?.response?.data?.message || error.message || "Error saving attendance";
-      toast.error(errMsg);
+      const errMsg =
+        error?.response?.data?.message || error.message || "Error saving attendance";
+      setMessage(`❌ ${errMsg}`);
     }
   };
 
@@ -139,9 +175,6 @@ const AttendanceForm = () => {
 
   return (
     <div className="attendance-container">
-      {/* 💡 Toast component renders all active notifications */}
-      <Toast toasts={toasts} removeToast={removeToast} />
-
       <h2>CS LAB ATTENDANCE</h2>
 
       <div className="info">
@@ -164,7 +197,9 @@ const AttendanceForm = () => {
         <label>
           Section:
           <select value={section} onChange={(e) => setSection(e.target.value)}>
-            {sectionsList.map((s) => <option key={s} value={s}>{s}</option>)}
+            {sectionsList.length && (
+              sectionsList.map((s) => <option key={s} value={s}>{s}</option>)
+            )}
           </select>
         </label>
 
@@ -173,7 +208,10 @@ const AttendanceForm = () => {
           <textarea
             ref={descRef}
             value={description}
-            onChange={(e) => { setDescription(e.target.value); if (e.target.value.trim()) setDescError(false); }}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              if (e.target.value && e.target.value.trim()) setDescError(false);
+            }}
             placeholder="Reason / notes for this attendance"
             style={{ marginLeft: 6, verticalAlign: 'middle' }}
           />
@@ -192,6 +230,7 @@ const AttendanceForm = () => {
             <th>Status</th>
           </tr>
         </thead>
+
         <tbody>
           {students.map((student, index) => (
             <tr key={student._id}>
@@ -199,11 +238,19 @@ const AttendanceForm = () => {
               <td>{student.studentId}</td>
               <td>{student.name}</td>
               <td>
+                {/*
+                  🎨 HOW THE COLOR WORKS:
+                  - We check if this student's attendance is "present" or "absent"
+                  - If "present" → className="present" → CSS gives it BLUE color
+                  - If "absent"  → className="absent"  → CSS gives it RED color
+                  - Clicking the button calls toggleAttendance() which flips the value
+                  - No dropdown! Just one click to switch between present ↔ absent
+                */}
                 <button
                   className={attendance[student._id] === "present" ? "present" : "absent"}
                   onClick={() => toggleAttendance(student._id)}
                 >
-                  {attendance[student._id]}
+                  {attendance[student._id] === "present" ? "✔ Present" : "✘ Absent"}
                 </button>
               </td>
             </tr>
@@ -214,6 +261,8 @@ const AttendanceForm = () => {
       <button className="submit-btn" onClick={handleSubmit}>
         Submit Attendance
       </button>
+
+      {message && <p className="message">{message}</p>}
     </div>
   );
 };

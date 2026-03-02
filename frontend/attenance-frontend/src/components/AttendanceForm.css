@@ -1,29 +1,34 @@
 /* ================================================
-   CS LAB ATTENDANCE — LIGHT PROFESSIONAL THEME
+   CS LAB ATTENDANCE — PREMIUM DARK NAVY + GOLD
    ================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-/* ---- ROOT VARIABLES ---- */
 :root {
-  --navy:         #1E3A8A;
-  --navy-light:   #1E40AF;
-  --navy-50:      #EFF6FF;
-  --slate:        #334155;
-  --bg:           #F8FAFC;
-  --surface:      #FFFFFF;
-  --border-color: #E2E8F0;
-  --text-primary: #1E293B;
-  --text-muted:   #64748B;
-  --text-dim:     #94A3B8;
-  --success:      #16A34A;
-  --success-bg:   rgba(22, 163, 74, 0.1);
-  --success-border: rgba(22, 163, 74, 0.25);
-  --danger:       #DC2626;
-  --danger-bg:    rgba(220, 38, 38, 0.08);
-  --danger-border: rgba(220, 38, 38, 0.2);
-  --warning:      #F59E0B;
-  --card-shadow:  0 2px 12px rgba(15, 23, 42, 0.06);
+  --navy-900: #0a0e1a;
+  --navy-800: #0f1628;
+  --navy-700: #151d35;
+  --navy-600: #1c2645;
+  --navy-500: #243055;
+  --gold-400: #d4a843;
+  --gold-300: #e8c06a;
+  --gold-200: #f5d98a;
+  --gold-glow: rgba(212, 168, 67, 0.18);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(212, 168, 67, 0.15);
+  --text-primary: #f0ede6;
+  --text-muted: #8b9ab8;
+  --text-dim: #5a6a88;
+
+  /* 🔴 ABSENT = RED */
+  --red-soft: #f87171;
+  --red-bg: rgba(248, 113, 113, 0.12);
+
+  /* 🔵 PRESENT = BLUE (was green before, now changed to blue) */
+  --blue-soft: #60a5fa;
+  --blue-bg: rgba(96, 165, 250, 0.12);
+
+  --shadow-gold: 0 0 40px rgba(212, 168, 67, 0.08);
 }
 
 /* ---- GLOBAL RESET ---- */
@@ -33,27 +38,22 @@
   padding: 0;
 }
 
-/* ---- BODY ---- */
 body {
   font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
+  background: var(--navy-900);
   color: var(--text-primary);
   min-height: 100vh;
-}
-
-/* ---- LOADING STATE ---- */
-.loading {
-  text-align: center;
-  margin-top: 80px;
-  font-size: 15px;
-  color: var(--text-muted);
-  letter-spacing: 0.05em;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(212, 168, 67, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(37, 99, 235, 0.08) 0%, transparent 55%);
 }
 
 /* ---- NAVIGATION ---- */
 nav {
-  background: var(--navy);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 14, 26, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(212, 168, 67, 0.12);
   padding: 0 40px;
   display: flex;
   align-items: center;
@@ -63,13 +63,13 @@ nav {
   top: 0;
   z-index: 100;
   height: 60px;
-  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
 }
 
 nav a {
+  font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--text-muted);
   text-decoration: none;
   padding: 7px 14px;
   border-radius: 6px;
@@ -77,24 +77,10 @@ nav a {
   transition: color 0.2s, background 0.2s;
 }
 
-nav a:hover {
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.12);
-}
-
-nav a.active {
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.18);
-}
-
-nav a.logout {
-  color: #FCA5A5;
-  margin-left: 8px;
-}
-
-nav a.logout:hover {
-  background: rgba(220, 38, 38, 0.2);
-}
+nav a:hover { color: var(--gold-300); background: var(--gold-glow); }
+nav a.active { color: var(--gold-400); background: var(--gold-glow); }
+nav a.logout { color: #ef4444; margin-left: 8px; }
+nav a.logout:hover { background: rgba(239, 68, 68, 0.1); }
 
 /* ---- MAIN CONTAINER ---- */
 .attendance-container {
@@ -102,23 +88,25 @@ nav a.logout:hover {
   max-width: 1200px;
   margin: 40px auto;
   padding: 36px 40px;
-  background: var(--surface);
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--card-shadow);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    var(--shadow-gold),
+    0 24px 64px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   position: relative;
   overflow: hidden;
 }
 
-/* Decorative top accent */
 .attendance-container::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--navy), var(--navy-light), var(--navy));
+  top: 0; left: 0;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle at top left, rgba(212, 168, 67, 0.12), transparent 70%);
   pointer-events: none;
 }
 
@@ -128,9 +116,12 @@ nav a.logout:hover {
   font-family: 'Playfair Display', serif;
   font-size: 26px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--navy);
+  color: transparent;
+  background: linear-gradient(135deg, var(--gold-200) 0%, var(--gold-400) 50%, var(--gold-300) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
   margin-bottom: 28px;
   position: relative;
 }
@@ -139,11 +130,9 @@ nav a.logout:hover {
   content: '';
   display: block;
   width: 60px;
-  height: 3px;
-  background: var(--navy);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
   margin: 10px auto 0;
-  border-radius: 2px;
-  opacity: 0.3;
 }
 
 /* ---- FILTER ROW ---- */
@@ -153,119 +142,37 @@ nav a.logout:hover {
   gap: 20px;
   flex-wrap: wrap;
   margin-bottom: 28px;
-  padding: 16px 20px;
-  background: #F8FAFC;
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-}
-
-.filter-row label {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-}
-
-.filter-row select,
-.filter-row input,
-.filter-row textarea {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text-primary);
-  background: #FFFFFF;
-  border: 1px solid #CBD5E1;
-  border-radius: 8px;
-  padding: 8px 12px;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-.filter-row select:focus,
-.filter-row input:focus,
-.filter-row textarea:focus {
-  border-color: var(--navy);
-  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
-}
-
-.filter-row select option {
-  background: #FFFFFF;
-  color: var(--text-primary);
-}
-
-.filter-row textarea {
-  resize: vertical;
-  min-height: 48px;
-  max-height: 120px;
-}
-
-.filter-row textarea::placeholder {
-  color: var(--text-dim);
-}
-
-.date-badge {
-  margin-left: auto;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--navy);
-  background: var(--navy-50);
-  border: 1px solid rgba(30, 58, 138, 0.2);
-  border-radius: 8px;
-  padding: 7px 14px;
-  white-space: nowrap;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
 }
 
 /* ---- TABLE ---- */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid var(--border-color);
-}
+table { width: 100%; border-collapse: collapse; }
 
 table thead tr {
-  background: var(--navy);
+  background: rgba(212, 168, 67, 0.08);
+  border-bottom: 1px solid rgba(212, 168, 67, 0.15);
 }
 
 table th {
-  padding: 14px 16px;
+  padding: 12px 16px;
   text-align: center;
   font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
+  font-weight: 600;
   letter-spacing: 0.1em;
-  color: #FFFFFF;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  text-transform: uppercase;
+  color: var(--gold-300);
 }
 
-table th:first-child {
-  text-align: left;
-  padding-left: 20px;
-}
-
-table tbody tr {
-  border-bottom: 1px solid var(--border-color);
+table tbody tr td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   transition: background 0.15s ease;
-  background: #FFFFFF;
 }
 
-table tbody tr:nth-child(even) {
-  background: #F8FAFC;
-}
-
-table tbody tr:hover td {
-  background: var(--navy-50);
-}
-
-table tbody tr:last-child td {
-  border-bottom: none;
-}
+table tbody tr:hover td { background: rgba(212, 168, 67, 0.04); }
+table tbody tr:last-child td { border-bottom: none; }
 
 table td {
   padding: 13px 16px;
@@ -290,76 +197,77 @@ table td.student-id {
   letter-spacing: 0.03em;
 }
 
-table td.name {
-  font-weight: 500;
-  text-align: left;
-}
+table td.name { font-weight: 500; text-align: left; }
 
-/* ---- STATUS BADGES ---- */
-.present,
-.status-badge.present {
+/* ====================================================
+   🔴 ABSENT = RED   |   🔵 PRESENT = BLUE
+   These styles apply to the clickable status buttons
+   in AttendanceForm.jsx via className="present" / "absent"
+   ==================================================== */
+
+.status-badge {
   display: inline-block;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: var(--success-bg);
-  color: var(--success);
-  border: 1px solid var(--success-border);
   border-radius: 20px;
   padding: 4px 14px;
-  cursor: pointer;
-  transition: transform 0.1s, box-shadow 0.15s;
 }
 
-.present:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.2);
-}
-
+/* 🔴 ABSENT */
 .absent,
 .status-badge.absent {
-  display: inline-block;
+  background: var(--red-bg);
+  color: var(--red-soft);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 20px;
+  padding: 6px 18px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  background: var(--danger-bg);
-  color: var(--danger);
-  border: 1px solid var(--danger-border);
-  border-radius: 20px;
-  padding: 4px 14px;
   cursor: pointer;
-  transition: transform 0.1s, box-shadow 0.15s;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
 }
 
-.absent:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(220, 38, 38, 0.15);
+.absent:hover,
+.status-badge.absent:hover {
+  background: rgba(248, 113, 113, 0.22);
+  transform: scale(1.06);
+  box-shadow: 0 2px 14px rgba(248, 113, 113, 0.3);
 }
 
-/* Late badge */
-.late,
-.status-badge.late {
-  display: inline-block;
+/* 🔵 PRESENT */
+.present,
+.status-badge.present {
+  background: var(--blue-bg);
+  color: var(--blue-soft);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 20px;
+  padding: 6px 18px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  background: rgba(245, 158, 11, 0.1);
-  color: var(--warning);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  border-radius: 20px;
-  padding: 4px 14px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
 }
 
-/* Status select inside table */
+.present:hover,
+.status-badge.present:hover {
+  background: rgba(96, 165, 250, 0.22);
+  transform: scale(1.06);
+  box-shadow: 0 2px 14px rgba(96, 165, 250, 0.3);
+}
+
+/* ---- Status select inside table ---- */
 table td select {
   font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   font-weight: 600;
-  background: #FFFFFF;
-  border: 1px solid #CBD5E1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   color: var(--text-primary);
   padding: 6px 10px;
@@ -370,23 +278,17 @@ table td select {
   transition: border-color 0.2s;
 }
 
-table td select:focus {
-  border-color: var(--navy);
-  box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
-}
-
-table td select option {
-  background: #FFFFFF;
-}
+table td select:focus { border-color: var(--gold-400); }
+table td select option { background: var(--navy-700); }
 
 /* ---- SUBMIT BUTTON ---- */
 button,
 .submit-btn {
   margin-top: 24px;
   padding: 12px 28px;
-  background: var(--navy);
+  background: linear-gradient(135deg, var(--gold-400) 0%, #b8882a 100%);
   border: none;
-  color: #FFFFFF;
+  color: #0a0e1a;
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 700;
@@ -394,8 +296,10 @@ button,
   text-transform: uppercase;
   cursor: pointer;
   border-radius: 10px;
-  transition: transform 0.1s ease, box-shadow 0.2s ease, background 0.2s ease;
-  box-shadow: 0 4px 14px rgba(30, 58, 138, 0.3);
+  transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow:
+    0 4px 20px rgba(212, 168, 67, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
 }
@@ -404,39 +308,23 @@ button::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
   pointer-events: none;
 }
 
 button:hover {
-  background: var(--navy-light);
-  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 28px rgba(212, 168, 67, 0.45), 0 2px 8px rgba(0,0,0,0.3);
   transform: translateY(-1px);
 }
 
-button:active {
-  transform: translateY(1px);
-  filter: brightness(0.95);
-}
+button:active { transform: translateY(1px); filter: brightness(0.95); }
 
 button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
   box-shadow: none;
   transform: none;
-}
-
-/* ---- MESSAGE ---- */
-.message {
-  margin-top: 18px;
-  padding: 12px 18px;
-  border-radius: 10px;
-  font-size: 13.5px;
-  font-weight: 500;
-  background: var(--navy-50);
-  border: 1px solid rgba(30, 58, 138, 0.15);
-  color: var(--navy);
-  letter-spacing: 0.02em;
 }
 
 /* ---- EMPTY STATE ---- */
@@ -450,26 +338,14 @@ button:disabled {
 
 /* ---- SCROLLBAR ---- */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #F1F5F9; }
-::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+::-webkit-scrollbar-track { background: var(--navy-800); }
+::-webkit-scrollbar-thumb { background: rgba(212, 168, 67, 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(212, 168, 67, 0.5); }
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 768px) {
-  .attendance-container {
-    width: 95%;
-    padding: 24px 20px;
-  }
-
-  .filter-row {
-    gap: 12px;
-  }
-
-  .date-badge {
-    margin-left: 0;
-  }
-
-  table {
-    font-size: 12px;
-  }
+  .attendance-container { width: 95%; padding: 24px 20px; }
+  .filter-row { gap: 12px; }
+  .date-badge { margin-left: 0; }
+  table { font-size: 12px; }
 }
