@@ -57,7 +57,7 @@ const Login = () => {
             <span style={{ display: 'none' }}>A</span>
           </div>
 
-          <div className="title">Attenance</div>
+          <div className="title">Attendance</div>
         </div>
 
         <h2 className="subtitle">Sign in to your account</h2>

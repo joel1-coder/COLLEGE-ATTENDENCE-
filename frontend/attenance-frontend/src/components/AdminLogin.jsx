@@ -55,7 +55,7 @@ export default function AdminLogin() {
             />
             <span style={{ display: 'none' }}>A</span>
           </div>
-          <div className="title">Attenance</div>
+          <div className="title">Attendance</div>
         </div>
 
         <h2 className="subtitle">Admin Sign In</h2>
