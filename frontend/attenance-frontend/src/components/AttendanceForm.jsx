@@ -299,9 +299,6 @@ const AttendanceForm = () => {
                   title={`${student.name} — click to toggle`}
                 >
                   <span className="att-chip-id">{student.studentId}</span>
-                  {student.name && (
-                    <span className="att-chip-name">{student.name}</span>
-                  )}
                 </button>
               );
             })}

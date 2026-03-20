@@ -211,14 +211,14 @@
 ──────────────────────────────────────────────────────── */
 .att-chips-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-bottom: 24px;
 }
 
 @media (max-width: 400px) {
   .att-chips-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -231,10 +231,8 @@
 ──────────────────────────────────────────────────────── */
 .att-chip {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
   padding: 12px 8px;
   background: var(--present-bg);
   border: 1.5px solid var(--present-border);
@@ -287,23 +285,10 @@
 .att-chip-id {
   font-size: 12px;
   font-weight: 700;
-  color: var();
-  background-color: #BBF7D0;
+  color: var(--primary-navy);
   letter-spacing: 0.03em;
   text-align: center;
   line-height: 1.3;
-  /* Prevent text from overflowing the chip */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-}
-
-.att-chip-name {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--muted);
-  text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
