@@ -128,7 +128,7 @@ a:hover { color: var(--primary-light); }
 }
 
 .btn:hover, button:not(.hamburger):not(.mobile-logout):not(.btn-logout):not(.btn-primary):hover {
-  background: rgb(67, 9, 226);
+  
   box-shadow: blue 0px 4px 12px -2px;
   transform: translateY(-1px);
 }
