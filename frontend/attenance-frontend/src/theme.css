@@ -122,14 +122,14 @@ a:hover { color: var(--primary-light); }
 }
 
 .btn, button:not(.hamburger):not(.mobile-logout):not(.btn-logout):not(.btn-primary) {
-  background: var(--primary);
+  background: var(white);
   color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
+  box-shadow: white 0px 0px 0px 0px;
 }
 
 .btn:hover, button:not(.hamburger):not(.mobile-logout):not(.btn-logout):not(.btn-primary):hover {
-  background: #1E40AF;
-  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.35);
+  background: rgb(67, 9, 226);
+  box-shadow: blue 0px 4px 12px -2px;
   transform: translateY(-1px);
 }
 

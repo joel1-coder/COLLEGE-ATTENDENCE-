@@ -287,7 +287,8 @@
 .att-chip-id {
   font-size: 12px;
   font-weight: 700;
-  color: var(--primary-navy);
+  color: var();
+  background-color: #BBF7D0;
   letter-spacing: 0.03em;
   text-align: center;
   line-height: 1.3;
