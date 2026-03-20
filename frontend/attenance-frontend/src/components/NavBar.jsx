@@ -10,12 +10,22 @@ function NavBar() {
   const buttonRef = useRef(null);
 
   const location = useLocation();
-  const isLoginPage = location.pathname === '/login' || location.pathname === '/admin/login';
+
+  // ✅ FIX #7 — Also hide navbar on forgot-password and reset-password pages.
+  // Previously only /login and /admin/login were covered.
+  // These pages are visited by unauthenticated users so they should not see nav links.
+  const isLoginPage = ['/login', '/admin/login', '/forgot-password', '/reset-password']
+    .some(p => location.pathname.startsWith(p));
+
   const isAdmin = user?.role === 'admin';
 
+  // ✅ FIX #10 — Logout redirects based on role.
+  // Before: always went to /login even for admins.
+  // After: admins go to /admin/login, staff go to /login.
   const handleLogout = () => {
+    const wasAdmin = user?.role === 'admin';
     logout();
-    window.location.href = "/login";
+    window.location.href = wasAdmin ? '/admin/login' : '/login';
   };
 
   useEffect(() => {
@@ -25,7 +35,10 @@ function NavBar() {
   useEffect(() => {
     function handleOutside(e) {
       if (!menuOpen) return;
-      if (menuRef.current && !menuRef.current.contains(e.target) && buttonRef.current && !buttonRef.current.contains(e.target)) {
+      if (
+        menuRef.current && !menuRef.current.contains(e.target) &&
+        buttonRef.current && !buttonRef.current.contains(e.target)
+      ) {
         setMenuOpen(false);
       }
     }
@@ -33,28 +46,41 @@ function NavBar() {
     return () => document.removeEventListener('mousedown', handleOutside);
   }, [menuOpen]);
 
+  // ✅ FIX #1 (from earlier audit) — Hide the entire navbar on login pages.
+  // Previously the navbar was visible on /login and /admin/login.
+  if (isLoginPage) return null;
+
+  // ✅ FIX #5 — Remove "Attendance" logo text for admin.
+  // Before: logoText was 'Attendance' for admin. Now it's empty so nothing shows.
   const logoLink = isAdmin ? '/admin' : '/';
-  const logoText = isAdmin && 'Attendance';
+  const logoText = ''; // Removed the logo text for all users (cleaner look)
 
   return (
     <nav className={`navbar ${isAdmin ? 'admin' : 'user'}`}>
       <div className="nav-container">
         <Link to={logoLink} className="nav-logo">{logoText}</Link>
+
+        {/* ── DESKTOP NAV LINKS ── */}
         <div className="nav-links">
-          {isLoginPage ? (
-            <>
-              <Link to="/admin">Admin</Link>
-              <Link to="/login">Login</Link>
-            </>
-          ) : isAdmin ? (
+          {isAdmin ? (
+            // ✅ Admin nav — clean set of links, no duplicate logout
             <>
               <Link to="/admin">Dashboard</Link>
               <Link to="/admin/staff">Staff</Link>
               <Link to="/admin/student">Student</Link>
               <Link to="/admin/report">Report</Link>
-              <button onClick={handleLogout} type="button" style={{ cursor: "pointer", color: "#000", marginLeft: 12, background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}>Logout</button>
+              {/* ✅ FIX #9 — Added Assign to desktop nav (was only in mobile before) */}
+              <Link to="/admin/assign">Assign</Link>
+              <button
+                onClick={handleLogout}
+                type="button"
+                style={{ cursor: "pointer", color: "#000", marginLeft: 12, background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}
+              >
+                Logout
+              </button>
             </>
           ) : (
+            // ✅ Staff/user nav — "Admin Panel" link removed (Fix #4)
             <>
               <Link to="/">Home</Link>
               {user && <Link to="/creation">Session Setup</Link>}
@@ -62,27 +88,38 @@ function NavBar() {
               {user && <Link to="/editing-adding">Manage Entries</Link>}
               {user && <Link to="/enter-marks">Marks Portal</Link>}
               {user && <Link to="/mark-record">Mark Record</Link>}
-              <Link to="/admin">Admin Panel</Link>
+              {/* ✅ FIX #4 — Removed <Link to="/admin">Admin Panel</Link> from staff nav */}
               {user ? (
-                <button onClick={handleLogout} type="button" style={{ cursor: "pointer", color: "#000", marginLeft: 12, background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}>Logout</button>
+                <button
+                  onClick={handleLogout}
+                  type="button"
+                  style={{ cursor: "pointer", color: "#000", marginLeft: 12, background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}
+                >
+                  Logout
+                </button>
               ) : (
                 <Link to="/login">Login</Link>
               )}
             </>
           )}
         </div>
-        <button ref={buttonRef} className={`hamburger ${menuOpen ? 'open' : ''}`} aria-label="Toggle menu" onClick={() => setMenuOpen(v => !v)}>
+
+        {/* ── HAMBURGER BUTTON (mobile) ── */}
+        <button
+          ref={buttonRef}
+          className={`hamburger ${menuOpen ? 'open' : ''}`}
+          aria-label="Toggle menu"
+          onClick={() => setMenuOpen(v => !v)}
+        >
           <span className="bar" />
           <span className="bar" />
           <span className="bar" />
         </button>
+
+        {/* ── MOBILE MENU ── */}
         <div ref={menuRef} className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
-          {isLoginPage ? (
-            <>
-              <Link to="/admin">Admin</Link>
-              <Link to="/login">Login</Link>
-            </>
-          ) : isAdmin ? (
+          {isAdmin ? (
+            // ✅ Admin mobile nav — matches desktop now (Assign included)
             <>
               <Link to="/admin">Dashboard</Link>
               <Link to="/admin/staff">Staff</Link>
@@ -92,6 +129,7 @@ function NavBar() {
               <button onClick={handleLogout} type="button" className="mobile-logout">Logout</button>
             </>
           ) : (
+            // ✅ Staff mobile nav — "Admin Panel" link also removed here
             <>
               <Link to="/">Home</Link>
               {user && <Link to="/creation">Session Setup</Link>}
@@ -99,7 +137,7 @@ function NavBar() {
               {user && <Link to="/editing-adding">Manage Entries</Link>}
               {user && <Link to="/enter-marks">Marks Portal</Link>}
               {user && <Link to="/mark-record">Mark Record</Link>}
-              <Link to="/admin/login">Admin Panel</Link>
+              {/* ✅ FIX #4 — Removed Admin Panel link from mobile staff nav too */}
               {user ? (
                 <button onClick={handleLogout} type="button" className="mobile-logout">Logout</button>
               ) : (

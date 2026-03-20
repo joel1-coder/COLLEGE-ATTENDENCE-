@@ -13,9 +13,12 @@ export default function AdminStaff() {
   const [editingData, setEditingData] = useState({ staffId: "", name: "", email: "", department: "", password: "" });
   const [newStaff, setNewStaff] = useState({ staffId: "", name: "", email: "", department: "", password: "" });
 
-  // 💡 Replaced setError / plain alerts with toast notifications
   const { toasts, toast, removeToast } = useToast();
 
+  // 💡 Beginner tip: useCallback prevents this function from being re-created
+  // on every render. It only changes if its dependencies change.
+  // This is important because it's used inside useEffect — without useCallback
+  // it would cause an infinite loop.
   const apiClient = useCallback(() => {
     const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
     const stored = JSON.parse(localStorage.getItem("user"));
@@ -26,8 +29,16 @@ export default function AdminStaff() {
   const fetchStaff = useCallback(async (p = 1, q = "") => {
     setLoading(true);
     try {
-      const res = await apiClient().get("/staff", { params: { page: p, limit: 10, search: q } });
-      setStaff(res.data.staff || res.data || []);
+      // ✅ FIX #2 (search param) — Backend expects "q" not "search".
+      // Before: { page: p, limit: 10, search: q } — backend ignored "search", never filtered.
+      // After:  { page: p, limit: 10, q }         — matches backend's req.query.q.
+      //
+      // ✅ FIX #6 (data field) — Backend returns { data: [...], pages, total }.
+      // Before: res.data.staff || res.data — "staff" key doesn't exist,
+      //         fallback to res.data returns the whole object {data,pages,total}, not an array.
+      // After:  res.data.data — correctly reads the staff array.
+      const res = await apiClient().get("/staff", { params: { page: p, limit: 10, q } });
+      setStaff(res.data.data || []);   // ✅ was: res.data.staff || res.data || []
       setPages(res.data.pages || 1);
       setPage(p);
     } catch (err) {
@@ -40,6 +51,7 @@ export default function AdminStaff() {
     }
   }, [apiClient]);
 
+  // Load staff list on first render
   useEffect(() => { fetchStaff(1, search); }, []);
 
   const createStaff = async (e) => {
@@ -109,10 +121,10 @@ export default function AdminStaff() {
         <button type="submit">Add Staff</button>
       </form>
 
-      {/* SEARCH */}
+      {/* SEARCH — pressing Enter or clicking Search triggers fetchStaff */}
       <div style={{ marginBottom: 12 }}>
         <input
-          placeholder="Search..."
+          placeholder="Search by name, email, ID..."
           value={search}
           onChange={e => setSearch(e.target.value)}
           onKeyDown={e => e.key === "Enter" && fetchStaff(1, search)}
@@ -120,11 +132,17 @@ export default function AdminStaff() {
         <button onClick={() => fetchStaff(1, search)} style={{ marginLeft: 8 }}>Search</button>
       </div>
 
+      {/* STAFF TABLE */}
       {loading ? <p>Loading...</p> : (
         <table width="100%" border="1" cellPadding="6">
           <thead>
             <tr>
-              <th>#</th><th>Staff ID</th><th>Name</th><th>Email</th><th>Department</th><th>Actions</th>
+              <th>#</th>
+              <th>Staff ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Department</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -142,7 +160,12 @@ export default function AdminStaff() {
                 <td>
                   {editingId === u._id ? (
                     <>
-                      <input type="password" placeholder="New password" value={editingData.password} onChange={e => setEditingData({ ...editingData, password: e.target.value })} />
+                      <input
+                        type="password"
+                        placeholder="New password"
+                        value={editingData.password}
+                        onChange={e => setEditingData({ ...editingData, password: e.target.value })}
+                      />
                       <button onClick={saveEdit}>Save</button>
                       <button onClick={cancelEdit}>Cancel</button>
                     </>
@@ -159,6 +182,7 @@ export default function AdminStaff() {
         </table>
       )}
 
+      {/* PAGINATION */}
       <div style={{ marginTop: 12 }}>
         <button disabled={page <= 1} onClick={() => fetchStaff(page - 1, search)}>Prev</button>
         <span style={{ margin: "0 10px" }}>Page {page} / {pages}</span>

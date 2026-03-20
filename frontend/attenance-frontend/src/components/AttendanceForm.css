@@ -1,226 +1,409 @@
-/* ================================================
-   CS LAB Attendance — PREMIUM DARK NAVY + GOLD
-   ================================================ */
+/* =====================================================
+   AttendanceForm.css — Chip/Card UI (matches screenshot)
+   
+   CONCEPT: CSS Variables (Custom Properties)
+   --primary-navy  = the dark navy blue used everywhere
+   --gold          = the gold/amber accent color
+   Using variables means: change ONE value, it updates EVERYWHERE.
+   ===================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 :root {
-  --navy-900: #0a0e1a;
-  --navy-800: #0f1628;
-  --navy-700: #151d35;
-  --navy-600: #1c2645;
-  --navy-500: #243055;
-  --gold-400: #d4a843;
-  --gold-300: #e8c06a;
-  --gold-200: #f5d98a;
-  --gold-glow: rgba(212, 168, 67, 0.18);
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(212, 168, 67, 0.15);
-  --text-primary: #f0ede6;
-  --text-muted: #8b9ab8;
-  --text-dim: #5a6a88;
-
-  /* 🔴 ABSENT = RED */
-  --red-soft: #f87171;
-  --red-bg: rgba(248, 113, 113, 0.12);
-
-  /* 🔵 PRESENT = BLUE (was green before, now changed to blue) */
-  --blue-soft: #60a5fa;
-  --blue-bg: rgba(96, 165, 250, 0.12);
-
-  --shadow-gold: 0 0 40px rgba(212, 168, 67, 0.08);
+  --primary-navy: #1E3A8A;
+  --primary-navy-dark: #152D6E;
+  --gold: #c9973f;
+  --gold-light: #e8c06a;
+  --absent-red: #DC2626;
+  --absent-red-bg: #FEF2F2;
+  --absent-red-border: #FCA5A5;
+  --present-bg: #FFFFFF;
+  --present-border: #CBD5E1;
+  --surface: #FFFFFF;
+  --bg: #F1F5F9;
+  --text: #1E293B;
+  --muted: #64748B;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(30, 58, 138, 0.10);
 }
 
-/* ---- GLOBAL RESET ---- */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--navy-900);
-  color: var(--text-primary);
+/* ── WRAPPER: centers everything on the page ──────────── */
+.att-wrapper {
   min-height: 100vh;
-  background-image:
-    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(212, 168, 67, 0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(37, 99, 235, 0.08) 0%, transparent 55%);
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px 48px;
+  font-family: 'DM Sans', sans-serif;
 }
 
-/* ---- NAVIGATION ---- */
-nav {
-  background: rgba(10, 14, 26, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(212, 168, 67, 0.12);
-  padding: 0 40px;
+/* ── MAIN CARD ────────────────────────────────────────── */
+.att-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(30, 58, 138, 0.10);
+  width: 100%;
+  max-width: 680px;
+  padding: 28px 24px 32px;
+  /* The border-top gold line, just like in the screenshot */
+  border-top: 3px solid var(--gold);
+}
+
+/* ── TITLE ROW ────────────────────────────────────────── */
+.att-title-row {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(201, 151, 63, 0.25);
+}
+
+/* 
+  The gold letter-spaced heading — matches screenshot exactly 
+  "letter-spacing" spreads the characters apart for that UPPERCASE look
+*/
+.att-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 4vw, 24px); /* clamp = responsive sizing */
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0;
+}
+
+.att-date {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  background: #F1F5F9;
+  padding: 6px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ── FILTERS SECTION ──────────────────────────────────── */
+/* 
+  "display: flex; flex-direction: column" = stacks items vertically
+  gap = space between each item
+*/
+.att-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.att-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Makes description take more visual space */
+.att-field--desc {
+  flex: 1;
+}
+
+.att-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+/* 
+  Shared styles for select dropdowns.
+  "appearance: none" removes the browser's default arrow styling.
+*/
+.att-select {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  padding: 11px 14px;
+  background: #F8FAFC;
+  border: 1.5px solid var(--present-border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  width: 100%;
+}
+
+.att-select:focus {
+  border-color: var(--primary-navy);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.10);
+}
+
+.att-textarea {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 11px 14px;
+  background: #F8FAFC;
+  border: 1.5px solid var(--present-border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  line-height: 1.5;
+}
+
+.att-textarea:focus {
+  border-color: var(--primary-navy);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.10);
+}
+
+/* Red border when description is empty and submit was clicked */
+.att-textarea--error {
+  border-color: var(--absent-red) !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.10) !important;
+}
+
+.att-error-hint {
+  font-size: 12px;
+  color: var(--absent-red);
+  font-weight: 500;
+}
+
+/* ── LEGEND BAR ───────────────────────────────────────── */
+.att-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  background: #F8FAFC;
+  border-radius: var(--radius-sm);
+  border: 1px solid #E2E8F0;
+}
+
+.att-legend-item {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.att-legend-present {
+  color: var(--primary-navy);
+}
+
+.att-legend-absent {
+  color: var(--absent-red);
+}
+
+.att-legend-hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: auto; /* pushes hint to the right */
+}
+
+/* ── CHIPS GRID ───────────────────────────────────────── 
+   CSS Grid: automatically arranges chips in rows of 3.
+   "repeat(3, 1fr)" = 3 equal columns.
+   "auto-fill" = fill as many as fit, then wrap.
+   On very small screens, we switch to 2 columns.
+──────────────────────────────────────────────────────── */
+.att-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 400px) {
+  .att-chips-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── BASE CHIP STYLE (Present = white) ────────────────── 
+   A "chip" is the little clickable card showing student ID.
+   By default it's white/light — meaning PRESENT.
+   
+   "transition" makes the color change smooth (0.18s).
+   "cursor: pointer" shows the hand icon on hover.
+──────────────────────────────────────────────────────── */
+.att-chip {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  height: 60px;
-}
-
-nav a {
+  gap: 3px;
+  padding: 12px 8px;
+  background: var(--present-bg);
+  border: 1.5px solid var(--present-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.12s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  /* IMPORTANT: override the global button styles */
+  margin-top: 0 !important;
+  color: var(--text) !important;
   font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-muted);
-  text-decoration: none;
-  padding: 7px 14px;
-  border-radius: 6px;
-  letter-spacing: 0.02em;
-  transition: color 0.2s, background 0.2s;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
-nav a:hover { color: var(--gold-300); background: var(--gold-glow); }
-nav a.active { color: var(--gold-400); background: var(--gold-glow); }
-nav a.logout { color: #ef4444; margin-left: 8px; }
-nav a.logout:hover { background: rgba(239, 68, 68, 0.1); }
-
-/* ---- MAIN CONTAINER ---- */
-.Attendance-container {
-  width: 92%;
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 36px 40px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px;
-  border: 1px solid var(--glass-border);
-  box-shadow:
-    var(--shadow-gold),
-    0 24px 64px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  position: relative;
-  overflow: hidden;
+.att-chip:hover {
+  border-color: var(--primary-navy);
+  box-shadow: 0 2px 10px rgba(30, 58, 138, 0.15);
+  transform: translateY(-2px);
 }
 
-.Attendance-container::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  width: 120px; height: 120px;
-  background: radial-gradient(circle at top left, rgba(212, 168, 67, 0.12), transparent 70%);
-  pointer-events: none;
+.att-chip:active {
+  transform: translateY(0);
 }
 
-/* ---- HEADING ---- */
-.Attendance-container h2 {
-  text-align: center;
-  font-family: 'Playfair Display', serif;
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: transparent;
-  background: linear-gradient(135deg, var(--gold-200) 0%, var(--gold-400) 50%, var(--gold-300) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  margin-bottom: 28px;
-  position: relative;
+/* ── ABSENT CHIP (Red) ───────────────────────────────── 
+   When the chip has BOTH classes "att-chip" AND "att-chip--absent",
+   these styles override the base styles above.
+   The double class selector (no space) = "element must have both"
+──────────────────────────────────────────────────────── */
+.att-chip.att-chip--absent {
+  background: var(--absent-red-bg) !important;
+  border-color: var(--absent-red-border) !important;
+  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.15) !important;
 }
 
-.Attendance-container h2::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
-  margin: 10px auto 0;
+.att-chip.att-chip--absent .att-chip-id {
+  color: var(--absent-red) !important;
 }
 
-/* ---- FILTER ROW ---- */
-.filter-row {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-bottom: 28px;
-  padding: 18px 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
+.att-chip.att-chip--absent .att-chip-name {
+  color: #EF4444;
 }
 
-/* ---- TABLE ---- */
-table { width: 100%; border-collapse: collapse; }
-
-table thead tr {
-  background: rgba(212, 168, 67, 0.08);
-  border-bottom: 1px solid rgba(212, 168, 67, 0.15);
-}
-
-table th {
-  padding: 12px 16px;
-  text-align: center;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--gold-300);
-}
-
-table tbody tr td {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  transition: background 0.15s ease;
-}
-
-table tbody tr:hover td { background: rgba(212, 168, 67, 0.04); }
-table tbody tr:last-child td { border-bottom: none; }
-
-table td {
-  padding: 13px 16px;
-  text-align: center;
-  color: var(--text-primary);
-  font-size: 13.5px;
-  font-weight: 400;
-}
-
-table td:first-child {
-  text-align: left;
-  padding-left: 20px;
-  color: var(--text-muted);
+/* ── CHIP TEXT STYLES ─────────────────────────────────── */
+.att-chip-id {
   font-size: 12px;
-  font-weight: 500;
-}
-
-table td.student-id {
-  font-family: 'DM Sans', monospace;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: 700;
+  color: var(--primary-navy);
   letter-spacing: 0.03em;
+  text-align: center;
+  line-height: 1.3;
+  /* Prevent text from overflowing the chip */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
-table td.name { font-weight: 500; text-align: left; }
+.att-chip-name {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
 
-/* ====================================================
-   🔴 ABSENT = RED   |   🔵 PRESENT = BLUE
-   These styles apply to the clickable status buttons
-   in AttendanceForm.jsx via className="present" / "absent"
-   ==================================================== */
-
-.status-badge {
-  display: inline-block;
-  font-size: 11px;
+/* ── SUBMIT BUTTON ────────────────────────────────────── */
+.att-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary-navy);
+  color: #FFFFFF !important;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  border-radius: 20px;
-  padding: 4px 14px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.25);
+  margin-top: 0 !important;
 }
 
-/* 🔴 ABSENT */
-.absent,
-.status-badge.absent {
-  background: var(--red-bg);
-  color: var(--red-soft);
-  border: 1px solid rgba(248, 113, 113, 0.3);
+.att-submit-btn:hover {
+  background: var(--primary-navy-dark);
+  box-shadow: 0 6px 24px rgba(30, 58, 138, 0.35);
+  transform: translateY(-1px);
+}
+
+.att-submit-btn:active {
+  transform: translateY(1px);
+}
+
+/* ── STATUS MESSAGE ───────────────────────────────────── */
+.att-message {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.att-message--success {
+  background: #F0FDF4;
+  color: #16A34A;
+  border: 1px solid #BBF7D0;
+}
+
+.att-message--error {
+  background: #FEF2F2;
+  color: var(--absent-red);
+  border: 1px solid #FCA5A5;
+}
+
+/* ── LOADING STATE ────────────────────────────────────── */
+.att-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: 12px;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* 
+  CSS-only spinner — just a circle with one colored border segment
+  that spins thanks to the "spin" keyframe animation 
+*/
+.att-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #E2E8F0;
+  border-top-color: var(--primary-navy);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── EMPTY STATE ──────────────────────────────────────── */
+.att-empty {
+  text-align: center;
+  padding: 32px;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* ──────────────────────────────────────────────────────
+   BACKWARD COMPATIBILITY — keep .present / .absent classes
+   working for PreviousAttendance.jsx which imports this file
+────────────────────────────────────────────────────── */
+.present {
+  background: rgba(96, 165, 250, 0.12) !important;
+  color: #60a5fa !important;
+  border: 1px solid rgba(96, 165, 250, 0.3) !important;
   border-radius: 20px;
   padding: 6px 18px;
   font-size: 11px;
@@ -229,123 +412,32 @@ table td.name { font-weight: 500; text-align: left; }
   text-transform: uppercase;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  margin-top: 0 !important;
 }
 
-.absent:hover,
-.status-badge.absent:hover {
-  background: rgba(248, 113, 113, 0.22);
-  transform: scale(1.06);
-  box-shadow: 0 2px 14px rgba(248, 113, 113, 0.3);
-}
-
-/* 🔵 PRESENT */
-.present,
-.status-badge.present {
-  background: var(--blue-bg);
-  color: var(--blue-soft);
-  border: 1px solid rgba(96, 165, 250, 0.3);
-  border-radius: 20px;
-  padding: 6px 18px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-}
-
-.present:hover,
-.status-badge.present:hover {
-  background: rgba(96, 165, 250, 0.22);
+.present:hover {
+  background: rgba(96, 165, 250, 0.22) !important;
   transform: scale(1.06);
   box-shadow: 0 2px 14px rgba(96, 165, 250, 0.3);
 }
 
-/* ---- Status select inside table ---- */
-table td select {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  color: var(--text-primary);
-  padding: 6px 10px;
-  cursor: pointer;
-  outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-  transition: border-color 0.2s;
-}
-
-table td select:focus { border-color: var(--gold-400); }
-table td select option { background: var(--navy-700); }
-
-/* ---- SUBMIT BUTTON ---- */
-button,
-.submit-btn {
-  margin-top: 24px;
-  padding: 12px 28px;
-  background: linear-gradient(135deg, var(--gold-400) 0%, #b8882a 100%);
-  border: none;
-  color: #0a0e1a;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
+.absent {
+  background: rgba(248, 113, 113, 0.12) !important;
+  color: #f87171 !important;
+  border: 1px solid rgba(248, 113, 113, 0.3) !important;
+  border-radius: 20px;
+  padding: 6px 18px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   cursor: pointer;
-  border-radius: 10px;
-  transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
-  box-shadow:
-    0 4px 20px rgba(212, 168, 67, 0.35),
-    0 2px 6px rgba(0, 0, 0, 0.3);
-  position: relative;
-  overflow: hidden;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  margin-top: 0 !important;
 }
 
-button::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
-  pointer-events: none;
-}
-
-button:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 6px 28px rgba(212, 168, 67, 0.45), 0 2px 8px rgba(0,0,0,0.3);
-  transform: translateY(-1px);
-}
-
-button:active { transform: translateY(1px); filter: brightness(0.95); }
-
-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-}
-
-/* ---- EMPTY STATE ---- */
-.empty-state {
-  text-align: center;
-  padding: 48px 20px;
-  color: var(--text-dim);
-  font-size: 14px;
-  font-style: italic;
-}
-
-/* ---- SCROLLBAR ---- */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--navy-800); }
-::-webkit-scrollbar-thumb { background: rgba(212, 168, 67, 0.3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(212, 168, 67, 0.5); }
-
-/* ---- RESPONSIVE ---- */
-@media (max-width: 768px) {
-  .Attendance-container { width: 95%; padding: 24px 20px; }
-  .filter-row { gap: 12px; }
-  .date-badge { margin-left: 0; }
-  table { font-size: 12px; }
+.absent:hover {
+  background: rgba(248, 113, 113, 0.22) !important;
+  transform: scale(1.06);
+  box-shadow: 0 2px 14px rgba(248, 113, 113, 0.3);
 }
