@@ -122,9 +122,9 @@ a:hover { color: var(--primary-light); }
 }
 
 .btn, button:not(.hamburger):not(.mobile-logout):not(.btn-logout):not(.btn-primary) {
-  background: var(white);
-  color: #FFFFFF;
-  box-shadow: white 0px 0px 0px 0px;
+  background: var(blue);
+  color: white;
+  box-shadow: blue 0px 0px 0px 0px;
 }
 
 .btn:hover, button:not(.hamburger):not(.mobile-logout):not(.btn-logout):not(.btn-primary):hover {
