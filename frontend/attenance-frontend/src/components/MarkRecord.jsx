@@ -1,60 +1,127 @@
-// ===========================================================
-// MarkRecord.jsx — View and Edit Saved Marks
-//
-// 💡 BEGINNER EXPLANATION OF CHANGES MADE:
-//
-// BUG 1 — "Save failed. Please try again."
-//   CAUSE: The saveTable() function was calling PUT /marks/:id,
-//   but that route didn't exist in the backend (marksRoutes.js).
-//   FIX: We added the PUT route in marksRoutes.js. Now saves work!
-//
-// BUG 2 — Download button not on the left
-//   FIX: We moved the download icon (📥) to the LEFT of the Save button.
-//   We also made it more visible with a green background.
-//
-// NEW FEATURE: Save button now shows ✅ checkmark after successful save.
-// ===========================================================
-
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
-import './MarkRecord.css';
+
+// ── What is this page? ────────────────────────────────────────────────────
+// MarkRecord lets teachers VIEW and EDIT marks they previously entered.
+// It fetches marks from the backend by date/dept/section, shows them in
+// a table, and lets the teacher update + save them.
+// ─────────────────────────────────────────────────────────────────────────
+
+// Shared styles so every page looks the same
+const pageStyle = {
+  maxWidth: 1000,
+  margin: '32px auto',
+  padding: '0 20px',
+  fontFamily: "'Nunito', system-ui, sans-serif",
+};
+
+const cardStyle = {
+  background: '#FFFFFF',
+  border: '1px solid rgba(30,58,138,0.12)',
+  borderRadius: 12,
+  padding: '20px 24px',
+  marginBottom: 16,
+  boxShadow: '0 2px 8px rgba(15,23,42,0.05)',
+};
+
+const labelStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 4,
+  fontFamily: "'Nunito', system-ui, sans-serif",
+  fontSize: '0.75rem',
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  letterSpacing: '0.06em',
+  color: '#64748B',
+};
+
+const inputStyle = {
+  fontFamily: "'Nunito', system-ui, sans-serif",
+  fontSize: '0.9rem',
+  padding: '9px 12px',
+  background: '#F8FAFC',
+  border: '1px solid #CBD5E1',
+  borderRadius: 8,
+  color: '#1E293B',
+  outline: 'none',
+};
+
+const primaryBtn = {
+  fontFamily: "'Nunito', system-ui, sans-serif",
+  fontSize: '0.85rem',
+  fontWeight: 700,
+  cursor: 'pointer',
+  border: 'none',
+  borderRadius: 8,
+  padding: '9px 18px',
+  background: '#1E3A8A',
+  color: '#FFFFFF',
+  boxShadow: '0 2px 8px rgba(30,58,138,0.25)',
+  transition: 'all 0.18s ease',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 6,
+};
+
+const greenBtn = {
+  ...primaryBtn,
+  background: '#16A34A',
+  boxShadow: '0 2px 8px rgba(22,163,74,0.25)',
+};
+
+const thStyle = {
+  padding: '11px 14px',
+  textAlign: 'left',
+  background: '#1E3A8A',
+  color: '#FFFFFF',
+  fontFamily: "'Sora', system-ui, sans-serif",
+  fontSize: '0.72rem',
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  letterSpacing: '0.08em',
+};
+
+const tdStyle = {
+  padding: '10px 14px',
+  borderBottom: '1px solid #E2E8F0',
+  fontFamily: "'Nunito', system-ui, sans-serif",
+  fontSize: '0.88rem',
+  color: '#1E293B',
+  background: '#FFFFFF',
+};
 
 export default function MarkRecord() {
-
-  // ── STATE ──
-  // 💡 State = variables React "watches". When they change, screen updates.
   const [department, setDepartment] = useState('');
   const [section, setSection] = useState('');
   const [classesList, setClassesList] = useState([]);
   const [sectionsList, setSectionsList] = useState([]);
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const getLocalDate = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const [date, setDate] = useState(getLocalDate());
   const [markTables, setMarkTables] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ text: '', type: '' });
+  const [message, setMessage] = useState('');
   const [fetchAttempted, setFetchAttempted] = useState(false);
-  const [savingId, setSavingId] = useState(null); // Tracks which table is saving
 
-  // ── API CLIENT ──
-  // 💡 useCallback = memoized function. Doesn't get recreated on every render.
+  // ── API Client ───────────────────────────────────────────────────────────
+  // useCallback means this function is only recreated when dependencies change,
+  // saving memory by not creating a new function on every re-render.
   const apiClient = useCallback(() => {
-    const api = axios.create({
-      baseURL: 'https://college-attendence.onrender.com/api'
-    });
+    const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
     const stored = JSON.parse(localStorage.getItem('user'));
-    if (stored?.token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-    }
+    if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
     return api;
   }, []);
 
-  // ── HELPER: Show message ──
-  const showMsg = (text, type = 'success') => {
-    setMessage({ text, type });
-    setTimeout(() => setMessage({ text: '', type: '' }), 5000);
-  };
-
-  // ── LOAD DEPARTMENTS ──
+  // ── Load Departments ─────────────────────────────────────────────────────
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -69,7 +136,7 @@ export default function MarkRecord() {
     fetchDepartments();
   }, [apiClient, department]);
 
-  // ── LOAD SECTIONS ──
+  // ── Load Sections ────────────────────────────────────────────────────────
   useEffect(() => {
     if (!department) return;
     const fetchSections = async () => {
@@ -85,40 +152,48 @@ export default function MarkRecord() {
     fetchSections();
   }, [department, apiClient, section]);
 
-  // ── FETCH MARKS ──
-  // Called when user clicks "Fetch" button.
-  // Gets students + their marks for the selected date/dept/section.
+  // ── Fetch Marks ──────────────────────────────────────────────────────────
+  const getUtcDate = () => {
+    return new Date().toISOString().slice(0, 10);
+  };
+
   const fetchMarks = async () => {
     if (!date || !department || !section) {
-      return showMsg('Please select date, department and section', 'error');
+      setMessage('Please select date, department and section');
+      return;
     }
-
     setLoading(true);
-    setMessage({ text: '', type: '' });
+    setMessage('');
     setMarkTables([]);
     setFetchAttempted(false);
-
     try {
       const api = apiClient();
 
-      // 1. Get students list
+      // 1. Get the students for this dept/section
       const studentRes = await api.get('/students', { params: { department, section } });
       const students = Array.isArray(studentRes.data) ? studentRes.data : [];
 
-      // 2. Get marks documents for this date/dept/section
-      const marksRes = await api.get('/marks', { params: { date, department, section } });
-      const markDocs = Array.isArray(marksRes.data) ? marksRes.data : [];
+      // 2. Get all mark documents for this date/dept/section
+      let marksRes = await api.get('/marks', { params: { date, department, section } });
+      let markDocs = Array.isArray(marksRes.data) ? marksRes.data : [];
 
-      // 3. Merge: for each marks doc, match students to their marks
+      // 3. Fallback: if no local-date marks found, try UTC-based date (older saved marks may use UTC date)
+      const utcDate = getUtcDate();
+      if (markDocs.length === 0 && utcDate !== date) {
+        const fallbackRes = await api.get('/marks', { params: { date: utcDate, department, section } });
+        markDocs = Array.isArray(fallbackRes.data) ? fallbackRes.data : [];
+        if (markDocs.length > 0) {
+          setMessage(`Showing marks saved under UTC date ${utcDate}.`);
+        }
+      }
+
+      // 4. Merge: match each mark entry with the student's name/ID
       const tables = markDocs.map(doc => {
-        // Build a lookup: { studentObjectId → mark }
         const marksMap = {};
         doc.records.forEach(r => {
-          // r.student might be a full object (if populated) or just an ID
           const id = r.student?._id || r.student;
-          marksMap[String(id)] = r.mark;
+          marksMap[id] = r.mark;
         });
-
         return {
           _id: doc._id,
           description: doc.description || 'No description',
@@ -127,226 +202,240 @@ export default function MarkRecord() {
             id: s._id,
             studentId: s.studentId,
             name: s.name,
-            mark: marksMap[String(s._id)] ?? 0,
+            mark: marksMap[s._id] ?? 0
           }))
         };
       });
 
       setMarkTables(tables);
-
       if (tables.length === 0) {
-        showMsg(`No marks found for ${department} - ${section} on ${date}`, 'error');
+        setMessage(`No marks found for ${department} — ${section} on ${date}.`);
       }
     } catch (err) {
       console.error('Fetch marks error:', err);
-      showMsg(err?.response?.data?.message || 'Failed to fetch marks', 'error');
+      setMessage(err?.response?.data?.message || 'Failed to fetch marks.');
     } finally {
       setLoading(false);
       setFetchAttempted(true);
     }
   };
 
-  // ── UPDATE MARK (local state) ──
-  // When teacher types a new number in the mark input,
-  // we update our local copy (not saved to server yet).
+  // ── Update Mark in Local State ───────────────────────────────────────────
+  // When a teacher types a new mark, we update it locally first.
+  // This is called "optimistic update" — changes happen instantly in the UI.
   const updateMark = (tableIndex, recordIndex, value) => {
     const updated = [...markTables];
     updated[tableIndex].records[recordIndex].mark = value;
     setMarkTables(updated);
   };
 
-  // ── SAVE TABLE ──
-  // 💡 FIXED: Now calls PUT /api/marks/:id which we added to marksRoutes.js
-  // Previously this was failing because PUT route didn't exist on backend.
+  // ── Save Table ───────────────────────────────────────────────────────────
+  // ✅ FIXED: Now calls PUT /api/marks/:id which we added to the backend.
+  // PUT means "update this existing document" — we send the full updated list.
   const saveTable = async (table) => {
-    setSavingId(table._id); // Show loading state on this specific table
+    setMessage('');
     try {
       await apiClient().put(`/marks/${table._id}`, {
         records: table.records.map(r => ({
           student: r.id,
-          mark: Number(r.mark)  // Convert to number (inputs return strings)
+          mark: Number(r.mark) // Always send a number, not a string
         }))
       });
-      showMsg(`✅ Saved marks for: ${table.description}`);
+      setMessage(`✅ Saved: "${table.description}"`);
     } catch (err) {
       console.error('Save error:', err);
-      showMsg(
-        err?.response?.data?.message || 'Save failed. Check your connection and try again.',
-        'error'
-      );
-    } finally {
-      setSavingId(null);
+      const errMsg = err?.response?.data?.message || 'Save failed. Check your connection and try again.';
+      setMessage(`❌ ${errMsg}`);
     }
   };
 
-  // ── DOWNLOAD EXCEL ──
-  // 💡 Uses the xlsx library to convert our data to a downloadable Excel file.
-  // This runs entirely in the browser — no server needed for downloading!
+  // ── Download Excel ───────────────────────────────────────────────────────
   const downloadExcel = (table) => {
-    // Build rows array for the spreadsheet
     const data = table.records.map((r, i) => ({
       '#': i + 1,
       'Student ID': r.studentId,
       'Name': r.name,
       'Mark': r.mark
     }));
-
-    // Create workbook + worksheet
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Marks');
-
-    // Auto-size columns for better readability
-    ws['!cols'] = [
-      { wch: 5 },   // # column
-      { wch: 14 },  // Student ID
-      { wch: 22 },  // Name
-      { wch: 8 },   // Mark
-    ];
-
-    // Trigger browser download
-    XLSX.writeFile(wb, `${table.description}_${date}.xlsx`);
+    XLSX.utils.book_append_sheet(wb, ws, table.description.slice(0, 31));
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([wbout], { type: 'application/octet-stream' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${table.description}-${date}.xlsx`;
+    link.click();
   };
 
-  // ── RENDER (What appears on screen) ──
+  // ── RENDER ───────────────────────────────────────────────────────────────
   return (
-    <div className="mark-record-page">
-      <h2>📊 Mark Record</h2>
+    <div style={pageStyle}>
+      {/* ── PAGE HEADER ── */}
+      <h2 style={{
+        fontFamily: "'Sora', system-ui, sans-serif",
+        fontSize: '1.6rem',
+        fontWeight: 800,
+        color: '#1E3A8A',
+        marginBottom: 24,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10
+      }}>
+        📊 Mark Record
+      </h2>
 
-      {/* ── FILTER ROW ── */}
-      <div className="mr-filters">
-        <label className="mr-label">
-          Department
-          <select
-            value={department}
-            onChange={e => {
-              setDepartment(e.target.value);
-              setSection('');
-              setMarkTables([]);
-              setFetchAttempted(false);
-              setMessage({ text: '', type: '' });
-            }}
-            className="mr-select"
+      {/* ── FILTER CARD ── */}
+      <div style={cardStyle}>
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+          <label style={labelStyle}>
+            Department
+            <select
+              value={department}
+              style={inputStyle}
+              onChange={e => {
+                setDepartment(e.target.value);
+                setSection('');
+                setMarkTables([]);
+                setFetchAttempted(false);
+                setMessage('');
+              }}
+            >
+              {classesList.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+          </label>
+
+          <label style={labelStyle}>
+            Section
+            <select
+              value={section}
+              style={inputStyle}
+              onChange={e => {
+                setSection(e.target.value);
+                setMarkTables([]);
+                setFetchAttempted(false);
+                setMessage('');
+              }}
+            >
+              {sectionsList.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </label>
+
+          <label style={labelStyle}>
+            Date
+            <input
+              type="date"
+              value={date}
+              style={inputStyle}
+              onChange={e => {
+                setDate(e.target.value);
+                setMarkTables([]);
+                setFetchAttempted(false);
+                setMessage('');
+              }}
+            />
+          </label>
+
+          <button
+            style={{ ...primaryBtn, alignSelf: 'flex-end' }}
+            onClick={fetchMarks}
+            disabled={loading}
+            onMouseEnter={e => !loading && (e.currentTarget.style.background = '#1E40AF')}
+            onMouseLeave={e => !loading && (e.currentTarget.style.background = '#1E3A8A')}
           >
-            {classesList.map(d => <option key={d} value={d}>{d}</option>)}
-          </select>
-        </label>
-
-        <label className="mr-label">
-          Section
-          <select
-            value={section}
-            onChange={e => {
-              setSection(e.target.value);
-              setMarkTables([]);
-              setFetchAttempted(false);
-              setMessage({ text: '', type: '' });
-            }}
-            className="mr-select"
-          >
-            {sectionsList.map(s => <option key={s} value={s}>{s}</option>)}
-          </select>
-        </label>
-
-        <label className="mr-label">
-          Date
-          <input
-            type="date"
-            value={date}
-            onChange={e => {
-              setDate(e.target.value);
-              setMarkTables([]);
-              setFetchAttempted(false);
-              setMessage({ text: '', type: '' });
-            }}
-            className="mr-input"
-          />
-        </label>
-
-        <button
-          onClick={fetchMarks}
-          disabled={loading}
-          className="mr-btn-fetch"
-        >
-          {loading ? '⏳ Fetching...' : '🔍 Fetch'}
-        </button>
+            {loading ? '⏳ Fetching...' : '🔍 Fetch'}
+          </button>
+        </div>
       </div>
 
       {/* ── STATUS MESSAGE ── */}
-      {loading && (
-        <div className="mr-loading">⏳ Loading marks...</div>
-      )}
-
-      {message.text && (
-        <div className={`mr-message ${message.type === 'error' ? 'mr-message--error' : 'mr-message--success'}`}>
-          {message.text}
+      {message && (
+        <div style={{
+          padding: '11px 16px',
+          borderRadius: 8,
+          marginBottom: 16,
+          fontFamily: "'Nunito', system-ui, sans-serif",
+          fontSize: '0.85rem',
+          fontWeight: 600,
+          background: message.startsWith('✅') ? 'rgba(22,163,74,0.08)' : 'rgba(220,38,38,0.08)',
+          color: message.startsWith('✅') ? '#16A34A' : '#DC2626',
+          border: `1px solid ${message.startsWith('✅') ? 'rgba(22,163,74,0.2)' : 'rgba(220,38,38,0.2)'}`,
+        }}>
+          {message}
         </div>
       )}
 
       {/* ── MARK TABLES ── */}
       {markTables.map((table, tableIndex) => (
-        <div key={table._id} className="mr-table-card">
-
-          {/* Card header: description + entered date */}
-          <div className="mr-card-header">
+        <div key={table._id} style={cardStyle}>
+          {/* Table header with description */}
+          <div style={{ marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 10 }}>
             <div>
-              <span className="mr-card-icon">📝</span>
-              <span className="mr-card-title">{table.description}</span>
-              <span className="mr-card-date">
+              <h3 style={{
+                fontFamily: "'Sora', system-ui, sans-serif",
+                fontSize: '1rem',
+                fontWeight: 700,
+                color: '#1E3A8A',
+                margin: '0 0 4px 0'
+              }}>
+                📝 {table.description}
+              </h3>
+              <span style={{ fontSize: '0.78rem', color: '#94A3B8', fontFamily: "'Nunito', system-ui, sans-serif" }}>
                 Entered: {new Date(table.createdAt).toLocaleString()}
               </span>
             </div>
+            {/* Action buttons */}
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                style={greenBtn}
+                onClick={() => downloadExcel(table)}
+                onMouseEnter={e => e.currentTarget.style.background = '#15803D'}
+                onMouseLeave={e => e.currentTarget.style.background = '#16A34A'}
+              >
+                📥 Download Excel
+              </button>
+              <button
+                style={primaryBtn}
+                onClick={() => saveTable(table)}
+                onMouseEnter={e => e.currentTarget.style.background = '#1E40AF'}
+                onMouseLeave={e => e.currentTarget.style.background = '#1E3A8A'}
+              >
+                💾 Save Changes
+              </button>
+            </div>
           </div>
 
-          {/* ── ACTION BUTTONS ──
-              📥 Download is on the LEFT (as requested!)
-              💾 Save is on the RIGHT
-          */}
-          <div className="mr-action-row">
-            {/* DOWNLOAD BUTTON — LEFT SIDE */}
-            <button
-              className="mr-btn-download"
-              onClick={() => downloadExcel(table)}
-              title="Download as Excel file"
-            >
-              📥 Download Excel
-            </button>
-
-            {/* SAVE BUTTON — RIGHT SIDE */}
-            <button
-              className="mr-btn-save"
-              onClick={() => saveTable(table)}
-              disabled={savingId === table._id}
-            >
-              {savingId === table._id ? '⏳ Saving...' : '💾 Save Changes'}
-            </button>
-          </div>
-
-          {/* ── MARKS TABLE ── */}
-          <div className="mr-table-wrapper">
-            <table className="mr-table">
+          {/* Marks Table */}
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Student ID</th>
-                  <th>Name</th>
-                  <th>Mark</th>
+                  <th style={{ ...thStyle, borderRadius: '8px 0 0 0' }}>#</th>
+                  <th style={thStyle}>Student ID</th>
+                  <th style={thStyle}>Name</th>
+                  <th style={{ ...thStyle, borderRadius: '0 8px 0 0' }}>Mark</th>
                 </tr>
               </thead>
               <tbody>
                 {table.records.map((r, recordIndex) => (
                   <tr key={r.id}>
-                    <td className="mr-td-num">{recordIndex + 1}</td>
-                    <td className="mr-td-id">{r.studentId}</td>
-                    <td className="mr-td-name">{r.name}</td>
-                    <td className="mr-td-mark">
-                      {/* Editable number input — type new mark here */}
+                    <td style={{ ...tdStyle, color: '#94A3B8', fontSize: '0.8rem', fontWeight: 600 }}>
+                      {recordIndex + 1}
+                    </td>
+                    <td style={{ ...tdStyle, fontWeight: 600 }}>{r.studentId}</td>
+                    <td style={tdStyle}>{r.name}</td>
+                    <td style={tdStyle}>
                       <input
                         type="number"
                         value={r.mark}
                         min={0}
-                        max={100}
-                        className="mr-mark-input"
+                        style={{
+                          ...inputStyle,
+                          width: 80,
+                          padding: '6px 10px',
+                          textAlign: 'center',
+                          fontWeight: 700,
+                        }}
                         onChange={e => updateMark(tableIndex, recordIndex, e.target.value)}
                       />
                     </td>
@@ -357,16 +446,6 @@ export default function MarkRecord() {
           </div>
         </div>
       ))}
-
-      {/* ── EMPTY STATE: shown when fetch done but no marks ── */}
-      {fetchAttempted && markTables.length === 0 && !loading && !message.text && (
-        <div className="mr-empty">
-          <p>📭 No mark records found for the selected filters.</p>
-          <p style={{ fontSize: 13, color: '#6b7280', marginTop: 6 }}>
-            Try a different date or make sure marks were entered using the "Marks Portal" page.
-          </p>
-        </div>
-      )}
     </div>
   );
 }

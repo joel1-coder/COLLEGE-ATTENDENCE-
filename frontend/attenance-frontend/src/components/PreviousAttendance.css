@@ -1,134 +1,180 @@
-.previous-Attendance { padding: 18px; }
+/* PreviousAttendance.css — Light Professional Theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Nunito:wght@400;500;600;700&display=swap');
+
+.previous-Attendance {
+  max-width: 1100px;
+  margin: 32px auto;
+  padding: 0 20px;
+  font-family: 'Nunito', system-ui, sans-serif;
+}
 
 /* ── HEADER ROW ── */
 .previous-Attendance .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
-/* ── CONTROLS: all in ONE horizontal row ── */
+.previous-Attendance .header h2 {
+  font-family: 'Sora', system-ui, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1E3A8A;
+  margin: 0;
+}
+
+.previous-Attendance .header button {
+  background: #1E3A8A;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 20px;
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
+  transition: all 0.18s ease;
+  margin-top: 0;
+}
+
+.previous-Attendance .header button:hover {
+  background: #1E40AF;
+  transform: translateY(-1px);
+}
+
+/* ── CONTROLS: horizontal row ── */
 .previous-Attendance .controls {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
-  padding: 12px 16px;
-  background: rgba(255,255,255,0.95);
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-bottom: 24px;
+  padding: 14px 18px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid rgba(30, 58, 138, 0.12);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
-/* Selects and date input */
 .previous-Attendance .controls select,
 .previous-Attendance .controls input[type="date"] {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid rgba(0,0,0,0.15);
-  font-size: 13px;
-  width: 180px;
-  background: #fff;
-  color: #222;
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 0.88rem;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid #CBD5E1;
+  background: #F8FAFC;
+  color: #1E293B;
   outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 160px;
 }
 
 .previous-Attendance .controls select:focus,
 .previous-Attendance .controls input[type="date"]:focus {
   border-color: #1E3A8A;
-  box-shadow: 0 0 0 3px rgba(13,110,253,0.1);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+  background: #FFFFFF;
 }
 
-/* ── FETCH BUTTON — explicitly navy, stays navy on hover ──
-   We use !important to override any global theme.css rules
-   that might be making it turn white.
-*/
 .previous-Attendance .controls button {
-  padding: 9px 22px !important;
-  border-radius: 8px !important;
-  background: #1E3A8A !important;
-  color: #FFFFFF !important;
-  border: none !important;
-  font-size: 13px !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  white-space: nowrap !important;
-  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.28) !important;
-  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease !important;
-  letter-spacing: 0.03em !important;
-}
-
-/* ── HOVER STATE — stays dark navy, NOT white ── */
-.previous-Attendance .controls button:hover {
-  background: #1E40AF !important;
-  color: #FFFFFF !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 6px 18px rgba(30, 58, 138, 0.38) !important;
-}
-
-.previous-Attendance .controls button:active {
-  transform: translateY(1px) !important;
-  filter: brightness(0.95) !important;
-}
-
-/* ── DOWNLOAD BUTTON in header ── */
-.previous-Attendance .header button,
-.previous-Attendance > button {
-  padding: 9px 18px;
+  padding: 9px 20px;
   border-radius: 8px;
   background: #1E3A8A;
-  color: #fff;
+  color: #FFFFFF;
   border: none;
-  cursor: pointer;
-  font-size: 13px;
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 0.88rem;
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.28);
-  transition: background 0.2s ease, transform 0.15s ease;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
+  transition: all 0.18s ease;
+  margin-top: 0;
 }
 
-.previous-Attendance .header button:hover,
-.previous-Attendance > button:hover {
-  background: #1E40AF !important;
-  color: #FFFFFF !important;
+.previous-Attendance .controls button:hover {
+  background: #1E40AF;
   transform: translateY(-1px);
 }
 
-/* ── TABLE STYLES ── */
-.previous-Attendance .Attendance-card {
-  background: rgba(255,255,255,0.95);
-  padding: 12px;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(16,24,40,0.06);
+/* ── ERROR MESSAGE ── */
+.previous-Attendance .error {
+  background: rgba(220, 38, 38, 0.08);
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
   margin-bottom: 12px;
 }
 
-.previous-Attendance table th {
-  background: #1E3A8A;
-  color: #fff;
-  text-align: left;
-  padding: 10px 14px;
+/* ── ATTENDANCE CARD ── */
+.previous-Attendance .Attendance-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(30, 58, 138, 0.12);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
+
+.previous-Attendance .Attendance-card h4 {
+  font-family: 'Sora', system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1E3A8A;
+  margin: 0 0 4px 0;
+}
+
+.previous-Attendance .Attendance-card p {
+  color: #64748B;
+  font-size: 0.85rem;
+  margin: 0 0 14px 0;
+}
+
+/* ── TABLE ── */
+.previous-Attendance table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.previous-Attendance table th {
+  padding: 11px 14px;
+  text-align: left;
+  background: #1E3A8A;
+  color: #FFFFFF;
+  font-family: 'Sora', system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.previous-Attendance table th:first-child { border-radius: 8px 0 0 0; }
+.previous-Attendance table th:last-child  { border-radius: 0 8px 0 0; }
 
 .previous-Attendance table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding: 11px 14px;
+  border-bottom: 1px solid #E2E8F0;
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 0.88rem;
+  color: #1E293B;
+  background: #FFFFFF;
 }
 
-/* Status select inside table rows */
-.previous-Attendance table td select {
-  padding: 5px 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(0,0,0,0.15);
-  font-size: 12px;
-  width: auto;
-  background: #fff;
-}
+.previous-Attendance table tbody tr:hover td { background: #EFF6FF; }
+.previous-Attendance table tbody tr:last-child td { border-bottom: none; }
 
-/* ── ERROR TEXT ── */
-.previous-Attendance .error {
-  color: #dc2626;
-  font-size: 0.9rem;
-  font-weight: 600;
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .previous-Attendance { padding: 12px; }
+  .previous-Attendance .controls { gap: 8px; }
+  .previous-Attendance .controls select,
+  .previous-Attendance .controls input[type="date"] { min-width: 130px; }
 }

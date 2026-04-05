@@ -1,423 +1,512 @@
-/* =====================================================
-   AttendanceForm.css — Chip/Card UI (matches screenshot)
-   
-   CONCEPT: CSS Variables (Custom Properties)
-   --primary-navy  = the dark navy blue used everywhere
-   --gold          = the gold/amber accent color
-   Using variables means: change ONE value, it updates EVERYWHERE.
-   ===================================================== */
+/* ================================================
+   CS LAB Attendance — LIGHT PROFESSIONAL THEME
+   Matches Login.css / theme.css exactly
+   ================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Nunito:wght@400;500;600;700&display=swap');
 
+/* ---- CSS VARIABLES (same as theme.css) ---- */
 :root {
-  --primary-navy: #1E3A8A;
-  --primary-navy-dark: #152D6E;
-  --gold: #c9973f;
-  --gold-light: #e8c06a;
-  --absent-red: #DC2626;
-  --absent-red-bg: #FEF2F2;
-  --absent-red-border: #FCA5A5;
-  --present-bg: #FFFFFF;
-  --present-border: #CBD5E1;
+  --primary: #1E3A8A;
+  --primary-light: #3B82F6;
+  --primary-hover: #1E40AF;
+  --bg: #F8FAFC;
   --surface: #FFFFFF;
-  --bg: #F1F5F9;
+  --border: rgba(30, 58, 138, 0.12);
+  --border-strong: rgba(30, 58, 138, 0.25);
   --text: #1E293B;
-  --muted: #64748B;
+  --text-muted: #64748B;
+  --font-sans: 'Nunito', system-ui, sans-serif;
+  --font-heading: 'Sora', system-ui, sans-serif;
   --radius: 12px;
   --radius-sm: 8px;
-  --shadow: 0 4px 24px rgba(30, 58, 138, 0.10);
+  --shadow: 0 4px 6px rgba(15, 23, 42, 0.04), 0 10px 30px rgba(15, 23, 42, 0.08);
+
+  /* Status colors */
+  --red-soft: #DC2626;
+  --red-bg: rgba(220, 38, 38, 0.08);
+  --blue-soft: #2563EB;
+  --blue-bg: rgba(37, 99, 235, 0.08);
 }
 
-/* ── WRAPPER: centers everything on the page ──────────── */
-.att-wrapper {
-  min-height: 100vh;
-  background: var(--bg);
-  display: flex;
-  justify-content: center;
-  padding: 24px 16px 48px;
-  font-family: 'DM Sans', sans-serif;
-}
-
-/* ── MAIN CARD ────────────────────────────────────────── */
-.att-card {
+/* ---- MAIN CONTAINER ---- */
+.Attendance-container {
+  width: 92%;
+  max-width: 1100px;
+  margin: 32px auto;
+  padding: 32px 36px;
   background: var(--surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(30, 58, 138, 0.10);
-  width: 100%;
-  max-width: 680px;
-  padding: 20px 14px 28px;
-  border-top: 3px solid var(--gold);
-}
-
-/* ── TITLE ROW ────────────────────────────────────────── */
-.att-title-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid rgba(201, 151, 63, 0.25);
-}
-
-/* 
-  The gold letter-spaced heading — matches screenshot exactly 
-  "letter-spacing" spreads the characters apart for that UPPERCASE look
-*/
-.att-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(18px, 4vw, 24px); /* clamp = responsive sizing */
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin: 0;
-}
-
-.att-date {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  background: #F1F5F9;
-  padding: 6px 14px;
   border-radius: 20px;
-  white-space: nowrap;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
-/* ── FILTERS SECTION ──────────────────────────────────── */
-/* 
-  "display: flex; flex-direction: column" = stacks items vertically
-  gap = space between each item
-*/
-.att-filters {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+/* ---- HEADING ---- */
+.Attendance-container h2 {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--primary);
   margin-bottom: 24px;
+  letter-spacing: -0.01em;
+  margin: 0 0 20px 0;
 }
 
-.att-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* Makes description take more visual space */
-.att-field--desc {
-  flex: 1;
-}
-
-.att-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  letter-spacing: 0.02em;
-}
-
-/* 
-  Shared styles for select dropdowns.
-  "appearance: none" removes the browser's default arrow styling.
-*/
-.att-select {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  padding: 11px 14px;
-  background: #F8FAFC;
-  border: 1.5px solid var(--present-border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-  width: 100%;
-}
-
-.att-select:focus {
-  border-color: var(--primary-navy);
-  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.10);
-}
-
-.att-textarea {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  padding: 11px 14px;
-  background: #F8FAFC;
-  border: 1.5px solid var(--present-border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  outline: none;
-  resize: vertical;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  line-height: 1.5;
-}
-
-.att-textarea:focus {
-  border-color: var(--primary-navy);
-  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.10);
-}
-
-/* Red border when description is empty and submit was clicked */
-.att-textarea--error {
-  border-color: var(--absent-red) !important;
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.10) !important;
-}
-
-.att-error-hint {
-  font-size: 12px;
-  color: var(--absent-red);
-  font-weight: 500;
-}
-
-/* ── LEGEND BAR ───────────────────────────────────────── */
-.att-legend {
+/* ---- INFO / FILTER ROW ---- */
+.info,
+.filter-row {
   display: flex;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
-  padding: 10px 14px;
-  background: #F8FAFC;
-  border-radius: var(--radius-sm);
-  border: 1px solid #E2E8F0;
-}
-
-.att-legend-item {
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.att-legend-present {
-  color: var(--primary-navy);
-}
-
-.att-legend-absent {
-  color: var(--absent-red);
-}
-
-.att-legend-hint {
-  font-size: 12px;
-  color: var(--muted);
-  margin-left: auto; /* pushes hint to the right */
-}
-
-/* ── CHIPS GRID ───────────────────────────────────────── 
-   CSS Grid: arranges chips in exactly 4 columns per row.
-   "repeat(4, 1fr)" = 4 equal columns, each 1 fraction wide.
-   On very small screens, falls back to 3 columns.
-──────────────────────────────────────────────────────── */
-.att-chips-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
   margin-bottom: 24px;
+  padding: 16px 20px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-sm);
 }
 
-/* Always 4 columns on all screen sizes */
-
-/* ── BASE CHIP STYLE (Present = white) ────────────────── 
-   A "chip" is the little clickable card showing student ID.
-   By default it's white/light — meaning PRESENT.
-   
-   "transition" makes the color change smooth (0.18s).
-   "cursor: pointer" shows the hand icon on hover.
-──────────────────────────────────────────────────────── */
-.att-chip {
+.info label,
+.filter-row label {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 10px 4px;
-  background: var(--present-bg);
-  border: 1.5px solid var(--present-border);
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ---- SELECTS & INPUTS ---- */
+.Attendance-container select,
+.Attendance-container input[type="date"],
+.Attendance-container textarea {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  padding: 9px 12px;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
   border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition:
-    background 0.18s ease,
-    border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    transform 0.12s ease;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  /* IMPORTANT: override the global button styles */
-  margin-top: 0 !important;
-  color: var(--text) !important;
-  font-family: 'DM Sans', sans-serif;
-  text-transform: none;
-  letter-spacing: 0;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.att-chip:hover {
-  border-color: var(--primary-navy);
-  box-shadow: 0 2px 10px rgba(30, 58, 138, 0.15);
-  transform: translateY(-2px);
+.Attendance-container select:focus,
+.Attendance-container input[type="date"]:focus,
+.Attendance-container textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
 }
 
-.att-chip:active {
-  transform: translateY(0);
-}
-
-/* ── ABSENT CHIP (Red) ───────────────────────────────── 
-   When the chip has BOTH classes "att-chip" AND "att-chip--absent",
-   these styles override the base styles above.
-   The double class selector (no space) = "element must have both"
-──────────────────────────────────────────────────────── */
-.att-chip.att-chip--absent {
-  background: var(--absent-red-bg) !important;
-  border-color: var(--absent-red-border) !important;
-  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.15) !important;
-}
-
-.att-chip.att-chip--absent .att-chip-id {
-  color: var(--absent-red) !important;
-}
-
-.att-chip.att-chip--absent .att-chip-name {
-  color: #EF4444;
-}
-
-/* ── CHIP TEXT STYLES ─────────────────────────────────── */
-.att-chip-id {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--primary-navy);
-  letter-spacing: 0.01em;
-  text-align: center;
-  line-height: 1.3;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-}
-
-/* ── SUBMIT BUTTON ────────────────────────────────────── */
-.att-submit-btn {
+/* ---- TABLE ---- */
+table {
   width: 100%;
-  padding: 14px;
-  background: var(--primary-navy);
-  color: #FFFFFF !important;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+table thead tr {
+  background: var(--primary);
+}
+
+table th {
+  padding: 12px 16px;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+table th:last-child  { border-radius: 0 var(--radius-sm) 0 0; }
+
+table td {
+  padding: 12px 16px;
+  text-align: center;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  border-bottom: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  transition: background 0.15s;
+}
+
+table tbody tr:hover td {
+  background: #EFF6FF;
+}
+
+table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+table td:first-child { text-align: left; padding-left: 20px; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; }
+table td.name { font-weight: 600; text-align: left; }
+
+/* ====================================================
+   STATUS BUTTONS — Present (Blue) | Absent (Red)
+   ==================================================== */
+
+/* 🔵 PRESENT */
+.present,
+.status-badge.present {
+  display: inline-block;
+  background: var(--blue-bg);
+  color: var(--blue-soft);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  border-radius: 20px;
+  padding: 6px 18px;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.present:hover,
+.status-badge.present:hover {
+  background: rgba(37, 99, 235, 0.15);
+  transform: scale(1.04);
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.2);
+}
+
+/* 🔴 ABSENT */
+.absent,
+.status-badge.absent {
+  display: inline-block;
+  background: var(--red-bg);
+  color: var(--red-soft);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: 20px;
+  padding: 6px 18px;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.absent:hover,
+.status-badge.absent:hover {
+  background: rgba(220, 38, 38, 0.15);
+  transform: scale(1.04);
+  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.2);
+}
+
+/* ---- SUBMIT / PRIMARY BUTTON ---- */
+button,
+.submit-btn {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.25);
-  margin-top: 0 !important;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 22px;
+  background: var(--primary);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
+  transition: all 0.18s ease;
+  margin-top: 16px;
 }
 
-.att-submit-btn:hover {
-  background: var(--primary-navy-dark);
-  box-shadow: 0 6px 24px rgba(30, 58, 138, 0.35);
+button:hover {
+  background: var(--primary-hover);
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.35);
   transform: translateY(-1px);
 }
 
-.att-submit-btn:active {
-  transform: translateY(1px);
+button:active { transform: translateY(1px); filter: brightness(0.95); }
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-/* ── STATUS MESSAGE ───────────────────────────────────── */
-.att-message {
-  margin-top: 16px;
-  padding: 12px 16px;
+/* ---- MESSAGE / STATUS ---- */
+.message,
+p.message {
+  padding: 11px 14px;
   border-radius: var(--radius-sm);
-  font-size: 14px;
+  margin-top: 14px;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
-.att-message--success {
-  background: #F0FDF4;
+p.message,
+.message {
+  background: rgba(22, 163, 74, 0.08);
   color: #16A34A;
-  border: 1px solid #BBF7D0;
+  border: 1px solid rgba(22, 163, 74, 0.2);
 }
 
-.att-message--error {
-  background: #FEF2F2;
-  color: var(--absent-red);
-  border: 1px solid #FCA5A5;
+.error {
+  background: rgba(220, 38, 38, 0.08);
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
-/* ── LOADING STATE ────────────────────────────────────── */
-.att-loading {
+/* ---- LOADING ---- */
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+}
+
+/* ---- EMPTY STATE ---- */
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* ---- STATUS SELECT INSIDE TABLE ---- */
+table td select {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 5px 10px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+table td select:focus { border-color: var(--primary); }
+
+/* ---- GRID LAYOUT FOR STUDENTS (4 COLUMNS) ---- */
+.students-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+  min-width: 0;
+}
+
+/* ---- STUDENT BOX ---- */
+.student-box {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
-  gap: 12px;
-  color: var(--muted);
-  font-family: 'DM Sans', sans-serif;
+  width: 100%;
+  min-width: 0;
+  background: var(--blue-bg);
+  border: 1px solid var(--blue-soft);
+  border-radius: 8px;
+  padding: 2px 4px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  min-height: 30px;
+  height: 30px;
+  overflow-wrap: anywhere;
 }
 
-/* 
-  CSS-only spinner — just a circle with one colored border segment
-  that spins thanks to the "spin" keyframe animation 
-*/
-.att-spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid #E2E8F0;
-  border-top-color: var(--primary-navy);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+/* 🔵 PRESENT BOX (Blue) */
+.student-box.present {
+  background: var(--blue-bg);
+  border-color: var(--blue-soft);
+  color: var(--blue-soft);
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.student-box.present:hover {
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  transform: scale(1.05);
+  background: rgba(37, 99, 235, 0.15);
 }
 
-/* ── EMPTY STATE ──────────────────────────────────────── */
-.att-empty {
+/* 🔴 ABSENT BOX (Red) */
+.student-box.absent {
+  background: var(--red-bg);
+  border-color: var(--red-soft);
+  color: var(--red-soft);
+}
+
+.student-box.absent:hover {
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  transform: scale(1.05);
+  background: rgba(220, 38, 38, 0.15);
+}
+
+/* ---- STUDENT ID TEXT ---- */
+.student-box .student-id-text {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
   text-align: center;
-  padding: 32px;
-  color: var(--muted);
-  font-style: italic;
-  font-size: 14px;
+  word-break: break-word;
+  line-height: 1;
 }
 
-/* ──────────────────────────────────────────────────────
-   BACKWARD COMPATIBILITY — keep .present / .absent classes
-   working for PreviousAttendance.jsx which imports this file
-────────────────────────────────────────────────────── */
-.present {
-  background: rgba(96, 165, 250, 0.12) !important;
-  color: #60a5fa !important;
-  border: 1px solid rgba(96, 165, 250, 0.3) !important;
-  border-radius: 20px;
-  padding: 6px 18px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-  margin-top: 0 !important;
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #F1F5F9; }
+::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #64748B; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 1024px) {
+  .Attendance-container { 
+    width: 95%; 
+    padding: 24px 20px;
+  }
+  
+  .Attendance-container h2 {
+    font-size: 1.4rem;
+  }
+  
+  .students-grid { 
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  
+  .student-box { 
+    min-height: 40px;
+    padding: 4px;
+  }
+  
+  .student-box .student-id-text { 
+    font-size: 0.6rem;
+  }
+  .Attendance-container { 
+    width: 96%; 
+    padding: 20px 12px;
+    margin: 16px auto;
+    border-radius: 16px;
+  }
+  
+  .Attendance-container h2 {
+    font-size: 1.2rem;
+    margin-bottom: 14px;
+  }
+  
+  .info, .filter-row { 
+    gap: 8px;
+    padding: 12px 12px;
+    flex-wrap: wrap;
+  }
+  
+  .info label, .filter-row label {
+    font-size: 0.75rem;
+    min-width: auto;
+    flex: 1 1 auto;
+  }
+  
+  .Attendance-container select,
+  .Attendance-container input[type="date"],
+  .Attendance-container textarea {
+    font-size: 0.85rem;
+    padding: 8px 10px;
+    min-width: 120px;
+  }
+  
+  .students-grid { 
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  
+  .student-box { 
+    min-height: 34px;
+    height: 34px;
+    padding: 3px 4px;
+    border-radius: 6px;
+  }
+  
+  .student-box .student-id-text { 
+    font-size: 0.58rem;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    margin-top: 16px;
+  }
 }
 
-.present:hover {
-  background: rgba(96, 165, 250, 0.22) !important;
-  transform: scale(1.06);
-  box-shadow: 0 2px 14px rgba(96, 165, 250, 0.3);
-}
-
-.absent {
-  background: rgba(248, 113, 113, 0.12) !important;
-  color: #f87171 !important;
-  border: 1px solid rgba(248, 113, 113, 0.3) !important;
-  border-radius: 20px;
-  padding: 6px 18px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-  margin-top: 0 !important;
-}
-
-.absent:hover {
-  background: rgba(248, 113, 113, 0.22) !important;
-  transform: scale(1.06);
-  box-shadow: 0 2px 14px rgba(248, 113, 113, 0.3);
+@media (max-width: 480px) {
+  .Attendance-container {
+    width: 97%;
+    padding: 14px 8px;
+    margin: 8px auto;
+    border-radius: 12px;
+  }
+  
+  .Attendance-container h2 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  
+  .info, .filter-row {
+    padding: 10px 8px;
+    gap: 6px;
+  }
+  
+  .info label, .filter-row label {
+    font-size: 0.7rem;
+    gap: 4px;
+  }
+  
+  .Attendance-container select,
+  .Attendance-container input[type="date"],
+  .Attendance-container textarea {
+    font-size: 14px;
+    padding: 6px 8px;
+    min-width: 100px;
+  }
+  
+  .students-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  
+  .student-box {
+    min-height: 32px;
+    height: 32px;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+  
+  .student-box .student-id-text {
+    font-size: 0.52rem;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 0.75rem;
+    margin-top: 12px;
+  }
+  
+  button {
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
 }

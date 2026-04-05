@@ -1,49 +1,47 @@
-/* ============================================================
-   Creation.css — Session Setup Page Styles
-   FIXED: All buttons now have visible colors with proper contrast
-   NEW:   Import panel styles added
-   ============================================================ */
+/* Creation.css — Light Professional Theme (matches Login.css / theme.css) */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Nunito:wght@400;500;600;700&display=swap');
 
 .creation-page {
   max-width: 900px;
-  margin: 20px auto;
-  padding: 12px;
+  margin: 32px auto;
+  padding: 0 20px;
+  font-family: 'Nunito', system-ui, sans-serif;
 }
 
-/* ── STATUS MESSAGE ── */
-.creation-message {
-  background: #e6ffed;
-  padding: 10px 14px;
-  border: 1px solid #6ee7a0;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  color: #15803d;
-  font-weight: 600;
-  font-size: 14px;
+.creation-page h2 {
+  font-family: 'Sora', system-ui, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1E3A8A;
+  margin-bottom: 24px;
+  letter-spacing: -0.01em;
 }
 
-/* Red version for errors */
-.creation-message--error {
-  background: #fef2f2;
-  border-color: #fca5a5;
-  color: #dc2626;
-}
-
-/* ── PANELS ── */
+/* ── PANEL (card) ── */
 .creation-panel {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #FFFFFF;
+  border: 1px solid rgba(30, 58, 138, 0.12);
   border-radius: 12px;
-  padding: 20px;
+  padding: 20px 24px;
   margin-bottom: 16px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+.creation-panel:hover {
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
 }
 
 .creation-panel h3 {
-  margin: 0 0 14px 0;
-  color: #1e3a8a;
-  font-size: 16px;
+  font-family: 'Sora', system-ui, sans-serif;
+  font-size: 1rem;
   font-weight: 700;
+  color: #1E3A8A;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .creation-panel form {
@@ -56,252 +54,115 @@
 /* ── INPUTS & SELECTS ── */
 .creation-panel input,
 .creation-panel select {
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 0.9rem;
   padding: 9px 12px;
-  border: 1.5px solid #cbd5e1;
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
   border-radius: 8px;
-  font-size: 14px;
-  background: #f8fafc;
-  color: #1e293b;
+  color: #1E293B;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 180px;
 }
+
+.creation-panel input::placeholder { color: #94A3B8; }
 
 .creation-panel input:focus,
 .creation-panel select:focus {
-  border-color: #1e3a8a;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(30,58,138,0.1);
+  border-color: #1E3A8A;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
 }
 
-/* ── PRIMARY BUTTON — Navy blue, always visible ── */
-.btn-primary {
+/* ── BUTTON ── */
+.creation-panel button {
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   padding: 9px 20px;
-  background: #1e3a8a;          /* Navy blue — matches your navbar */
-  color: #ffffff;                /* White text — always readable */
+  background: #1E3A8A;
+  color: #FFFFFF;
   border: none;
   border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
   cursor: pointer;
-  letter-spacing: 0.03em;
-  transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
-  box-shadow: 0 2px 8px rgba(30,58,138,0.3);
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
+  transition: all 0.18s ease;
+  margin-top: 0;
   white-space: nowrap;
 }
 
-.btn-primary:hover {
-  background: #1e40af;
+.creation-panel button:hover {
+  background: #1E40AF;
+  box-shadow: 0 4px 14px rgba(30, 58, 138, 0.35);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(30,58,138,0.4);
 }
 
-.btn-primary:active {
+.creation-panel button:active {
   transform: translateY(1px);
-  filter: brightness(0.95);
 }
 
-.btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* ── OUTLINE BUTTON — Template download ── */
-.btn-outline {
-  padding: 8px 16px;
-  background: transparent;
-  color: #1e3a8a;
-  border: 2px solid #1e3a8a;
+/* ── SUCCESS / ERROR MESSAGE ── */
+.creation-message {
+  padding: 11px 16px;
   border-radius: 8px;
-  font-size: 13px;
+  margin-bottom: 16px;
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 0.85rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.18s;
+  background: rgba(22, 163, 74, 0.08);
+  color: #16A34A;
+  border: 1px solid rgba(22, 163, 74, 0.2);
 }
 
-.btn-outline:hover {
-  background: #1e3a8a;
-  color: #ffffff;
-}
-
-/* ── IMPORT BUTTON — Green, prominent ── */
-.btn-import {
-  padding: 11px 28px;
-  background: #16a34a;          /* Green — "go ahead and import" */
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 12px;
-  transition: background 0.18s, transform 0.1s;
-  box-shadow: 0 2px 8px rgba(22,163,74,0.3);
-}
-
-.btn-import:hover {
-  background: #15803d;
-  transform: translateY(-1px);
-}
-
-.btn-import:disabled {
-  background: #9ca3af;          /* Grey when disabled */
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* ── FILE PICKER ── */
-/* Hide the ugly default file input */
-input[type="file"].file-input {
-  display: none;
-}
-
-/* Style the label to look like a button */
-.btn-file-pick {
-  display: inline-block;
-  padding: 9px 16px;
-  background: #475569;          /* Slate color for "pick file" */
-  color: #ffffff;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.18s;
-  border: none;
-}
-
-.btn-file-pick:hover {
-  background: #334155;
-}
-
-.file-name {
-  margin-left: 10px;
-  font-size: 13px;
-  color: #64748b;
-  font-style: italic;
-}
-
-/* ── IMPORT PANEL ── */
-.import-panel {
-  border: 2px dashed #93c5fd;   /* Dashed blue border = "upload zone" feel */
-  background: #eff6ff;
-}
-
-.import-hint {
-  font-size: 13px;
-  color: #475569;
-  margin-bottom: 14px;
-  line-height: 1.6;
-  background: #fff;
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-}
-
-.import-controls {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  margin-bottom: 14px;
-}
-
-.import-controls label {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-}
-
-.import-controls select,
-.import-controls input {
-  padding: 8px 12px;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 13px;
-  background: #ffffff;
-  color: #1e293b;
-  outline: none;
-}
-
-.import-file-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-
-/* ── IMPORT PREVIEW TABLE ── */
-.import-preview {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 14px;
-}
-
-/* ── IMPORT RESULT BANNER ── */
-.import-result {
-  margin-top: 12px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.import-result--ok {
-  background: #e6ffed;
-  color: #15803d;
-  border: 1px solid #6ee7a0;
-}
-
-.import-result--fail {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fca5a5;
+.creation-message.error {
+  background: rgba(220, 38, 38, 0.08);
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 /* ── TABLE ── */
-.table-responsive {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
+.table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 .table-responsive table {
   width: 100%;
-  min-width: 520px;
+  min-width: 580px;
   border-collapse: collapse;
 }
 
-.table-responsive th,
-.table-responsive td {
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  font-size: 13px;
-  text-align: left;
-}
-
 .table-responsive th {
-  background: #1e3a8a;
-  color: #ffffff;
-  font-weight: 600;
+  padding: 11px 14px;
+  text-align: left;
+  background: #1E3A8A;
+  color: #FFFFFF;
+  font-family: 'Sora', system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
-.table-responsive tbody tr:nth-child(even) {
-  background: #f8fafc;
+.table-responsive th:first-child { border-radius: 8px 0 0 0; }
+.table-responsive th:last-child  { border-radius: 0 8px 0 0; }
+
+.table-responsive td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #E2E8F0;
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 0.88rem;
+  color: #1E293B;
+  background: #FFFFFF;
 }
+
+.table-responsive tbody tr:hover td { background: #EFF6FF; }
+.table-responsive tbody tr:last-child td { border-bottom: none; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 700px) {
-  .creation-page { padding: 10px; }
-  .creation-panel form { flex-direction: column; align-items: stretch; }
-  .btn-primary, .btn-import, .btn-outline { width: 100%; text-align: center; }
-  .import-controls { flex-direction: column; }
-  .import-file-row { flex-direction: column; align-items: flex-start; }
-  .btn-file-pick { width: 100%; text-align: center; }
+  .creation-page { padding: 12px; }
+  .creation-panel { padding: 16px; }
+  .creation-panel form { gap: 8px; }
+  .creation-panel input,
+  .creation-panel select { min-width: 140px; }
 }

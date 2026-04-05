@@ -1,120 +1,90 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import "./AttendanceForm.css";
 
+// ── What is a "component"? ──────────────────────────────────────────────────
+// A component is just a JavaScript function that returns HTML-like code (JSX).
+// React calls this function every time something changes (like a click) and
+// updates only the parts of the screen that need to change.
+// ────────────────────────────────────────────────────────────────────────────
+
 const AttendanceForm = () => {
+  // useState is a React "hook" — it lets us store values that,
+  // when changed, automatically update what's shown on screen.
   const [students, setStudents] = useState([]);
-  // ── WHAT IS "Attendance" STATE? ──────────────────────────────
-  // It's an object (like a dictionary) where:
-  //   key   = student's MongoDB _id
-  //   value = "present" or "absent"
-  // Example: { "abc123": "present", "def456": "absent" }
   const [Attendance, setAttendance] = useState({});
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
   const [descError, setDescError] = useState(false);
-  const descRef = React.createRef();
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState(""); // "success" | "error"
+  const descRef = useRef(null);
 
-  // 🔒 Date locked to today — we build a nicely formatted string
+  // 🔒 Date locked to today
   const todayDate = new Date();
   const today = todayDate.toISOString().split("T")[0];
   const pad = (n) => (n < 10 ? `0${n}` : `${n}`);
-  const displayDate = `${pad(todayDate.getMonth() + 1)}-${pad(
-    todayDate.getDate()
-  )}-${todayDate.getFullYear()}`;
+  const displayDate = `${pad(todayDate.getDate())}-${pad(todayDate.getMonth() + 1)}-${todayDate.getFullYear()}`;
 
   const [department, setDepartment] = useState("");
   const [section, setSection] = useState("");
   const [classesList, setClassesList] = useState([]);
   const [sectionsList, setSectionsList] = useState([]);
 
-  // ── LOAD DEPARTMENTS ─────────────────────────────────────────
-  // This runs once when the page loads (empty dependency = [])
-  useEffect(() => {
-    const api = axios.create({
-      baseURL: "https://college-attendence.onrender.com/api",
-    });
-    const stored = JSON.parse(localStorage.getItem("user")) || null;
-    if (stored?.token)
-      api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
+  // Helper to build an API client with auth token
+  const makeApi = () => {
+    const api = axios.create({ baseURL: "https://college-attendence.onrender.com/api" });
+    const stored = JSON.parse(localStorage.getItem('user')) || null;
+    if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
+    return api;
+  };
 
+  // Load departments on mount
+  useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const cRes = await api.get("/admin/departments");
-        const cls = Array.isArray(cRes.data)
-          ? cRes.data.map((c) => c.name)
-          : [];
+        const res = await makeApi().get('/admin/departments');
+        const cls = Array.isArray(res.data) ? res.data.map(c => c.name) : [];
         setClassesList(cls);
         if (!department && cls.length) setDepartment(cls[0]);
       } catch (err) {
-        console.warn("Could not load classes", err);
-        setMessage("Could not load classes — please login or check server");
-        setMessageType("error");
+        console.warn('Could not load classes', err);
+        setMessage('Could not load classes — please login or check server');
       }
     };
-
     fetchClasses();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── LOAD SECTIONS WHEN DEPARTMENT CHANGES ────────────────────
-  // The [department] at the end means: "re-run when department changes"
+  // Load sections whenever department changes
   useEffect(() => {
     if (!department) return;
-    const api = axios.create({
-      baseURL: "https://college-attendence.onrender.com/api",
-    });
-    const stored = JSON.parse(localStorage.getItem("user")) || null;
-    if (stored?.token)
-      api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
-
     const fetchSections = async () => {
       try {
-        const res = await api.get(
-          `/admin/sections?department=${encodeURIComponent(department)}`
-        );
-        const secs = res.data.map((s) => s.name);
+        const res = await makeApi().get(`/admin/sections?department=${encodeURIComponent(department)}`);
+        const secs = Array.isArray(res.data) ? res.data.map(s => s.name) : [];
         setSectionsList(secs);
         setSection(secs[0] || "");
       } catch (err) {
+        console.warn('Could not load sections', err);
         setSectionsList([]);
         setSection("");
       }
     };
-
     fetchSections();
-  }, [department]);
+  }, [department]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── LOAD STUDENTS WHEN DEPT + SECTION BOTH SET ───────────────
+  // Load students whenever department OR section changes
   useEffect(() => {
     if (!department || !section) return;
-
     const fetchStudents = async () => {
       setLoading(true);
       try {
-        const api = axios.create({
-          baseURL: "https://college-attendence.onrender.com/api",
-        });
-        const stored = JSON.parse(localStorage.getItem("user"));
-        if (stored?.token)
-          api.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${stored.token}`;
-
-        const res = await api.get(
-          `/students?department=${encodeURIComponent(
-            department
-          )}&section=${encodeURIComponent(section)}`
+        const res = await makeApi().get(
+          `/students?department=${encodeURIComponent(department)}&section=${encodeURIComponent(section)}`
         );
-
         setStudents(res.data || []);
-
-        // ── DEFAULT: everyone starts as PRESENT ──────────────
+        // Default every student to "present"
         const defaultAttendance = {};
-        res.data.forEach((s) => {
-          defaultAttendance[s._id] = "present";
-        });
+        (res.data || []).forEach((s) => { defaultAttendance[s._id] = "present"; });
         setAttendance(defaultAttendance);
       } catch (err) {
         setStudents([]);
@@ -122,14 +92,10 @@ const AttendanceForm = () => {
         setLoading(false);
       }
     };
-
     fetchStudents();
-  }, [department, section]);
+  }, [department, section]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── TOGGLE ATTENDANCE ────────────────────────────────────────
-  // This is the KEY function — clicking a chip calls this.
-  // It uses the "spread operator" (...prev) to copy the old state
-  // and just flip the one student who was clicked.
+  // Toggle between present ↔ absent on single click
   const toggleAttendance = (studentId) => {
     setAttendance((prev) => ({
       ...prev,
@@ -137,188 +103,167 @@ const AttendanceForm = () => {
     }));
   };
 
-  // ── SUBMIT ATTENDANCE ────────────────────────────────────────
+  const presentCount = Object.values(Attendance).filter(s => s === "present").length;
+  const absentCount = Object.values(Attendance).filter(s => s === "absent").length;
+
   const handleSubmit = async () => {
     if (!description || !description.trim()) {
       setDescError(true);
-      window.alert("You didn't put anything in the Description");
       if (descRef.current) descRef.current.focus();
       return;
     }
     try {
       setDescError(false);
-      // Convert our attendance object into an array of { student, status }
       const records = Object.keys(Attendance).map((studentId) => ({
         student: studentId,
         status: Attendance[studentId],
       }));
-
       const payload = { date: today, description, department, section, records };
-
-      const api = axios.create({
-        baseURL: "https://college-attendence.onrender.com/api",
-      });
-      const stored = JSON.parse(localStorage.getItem("user")) || null;
-      if (stored?.token)
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${stored.token}`;
-
-      await api.post("/Attendance", payload);
-      setMessage("Attendance saved successfully!");
-      setMessageType("success");
+      const resp = await makeApi().post('/Attendance', payload);
+      if (resp.data && resp.data.file) {
+        setMessage(`✅ Attendance saved. Download: ${resp.data.file}`);
+      } else {
+        setMessage("✅ Attendance saved successfully");
+      }
     } catch (error) {
-      const errMsg =
-        error?.response?.data?.message ||
-        error.message ||
-        "Error saving Attendance";
-      setMessage(errMsg);
-      setMessageType("error");
+      const errMsg = error?.response?.data?.message || error.message || "Error saving Attendance";
+      setMessage(`❌ ${errMsg}`);
     }
   };
 
-  // ── COUNTS: how many present / absent ───────────────────────
-  const presentCount = Object.values(Attendance).filter(
-    (v) => v === "present"
-  ).length;
-  const absentCount = Object.values(Attendance).filter(
-    (v) => v === "absent"
-  ).length;
-
-  if (loading)
-    return (
-      <div className="att-loading">
-        <div className="att-spinner" />
-        <p>Loading students...</p>
-      </div>
-    );
+  if (loading) return (
+    <div className="Attendance-container">
+      <p className="loading">⏳ Loading students...</p>
+    </div>
+  );
 
   return (
-    <div className="att-wrapper">
-      {/* ── TOP CARD ─────────────────────────────────────── */}
-      <div className="att-card">
-        <div className="att-title-row">
-          <h2 className="att-title">CS LAB ATTENDANCE</h2>
-          <span className="att-date">Date: {displayDate}</span>
-        </div>
+    <div className="Attendance-container">
+      {/* ── HEADER ── */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
+        <h2 style={{ margin: 0 }}>CS LAB Attendance</h2>
+        <span style={{
+          background: '#EFF6FF',
+          color: '#1E3A8A',
+          border: '1px solid rgba(30,58,138,0.2)',
+          borderRadius: 8,
+          padding: '6px 14px',
+          fontFamily: 'var(--font-sans)',
+          fontWeight: 700,
+          fontSize: '0.85rem'
+        }}>
+          📅 Date: {displayDate}
+        </span>
+      </div>
 
-        {/* ── FILTERS ROW ──────────────────────────────────── */}
-        <div className="att-filters">
-          {/* Department dropdown */}
-          <div className="att-field">
-            <label className="att-label">Department:</label>
-            <select
-              className="att-select"
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
-            >
-              {classesList.length ? (
-                classesList.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))
-              ) : (
-                <>
-                  <option value="BSc">BSc</option>
-                  <option value="MSc">MSc</option>
-                </>
-              )}
-            </select>
-          </div>
-
-          {/* Section dropdown */}
-          <div className="att-field">
-            <label className="att-label">Section:</label>
-            <select
-              className="att-select"
-              value={section}
-              onChange={(e) => setSection(e.target.value)}
-            >
-              {sectionsList.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Description textarea */}
-          <div className="att-field att-field--desc">
-            <label className="att-label">Description:</label>
-            <textarea
-              ref={descRef}
-              className={`att-textarea${descError ? " att-textarea--error" : ""}`}
-              value={description}
-              onChange={(e) => {
-                setDescription(e.target.value);
-                if (e.target.value.trim()) setDescError(false);
-              }}
-              placeholder="Reason / notes for this Attendance"
-              rows={3}
-            />
-            {descError && (
-              <span className="att-error-hint">⚠ Description is required</span>
+      {/* ── FILTERS ── */}
+      <div className="info">
+        <label>
+          Department:
+          <select value={department} onChange={(e) => setDepartment(e.target.value)} style={{ marginLeft: 8 }}>
+            {classesList.length ? (
+              classesList.map((c) => <option key={c} value={c}>{c}</option>)
+            ) : (
+              <>
+                <option value="BSc">BSc</option>
+                <option value="BA">BA</option>
+              </>
             )}
-          </div>
-        </div>
+          </select>
+        </label>
 
-        {/* ── LEGEND + COUNTS ──────────────────────────────── */}
-        <div className="att-legend">
-          <span className="att-legend-item att-legend-present">
-            ● Present: {presentCount}
+        <label>
+          Section:
+          <select value={section} onChange={(e) => setSection(e.target.value)} style={{ marginLeft: 8 }}>
+            {sectionsList.map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </label>
+
+        <label style={{ flex: 1 }}>
+          Description:
+          <textarea
+            ref={descRef}
+            value={description}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              if (e.target.value.trim()) setDescError(false);
+            }}
+            placeholder="Reason / notes for this session (required)"
+            rows={1}
+            style={{
+              marginLeft: 8,
+              verticalAlign: 'middle',
+              resize: 'none',
+              minWidth: 220,
+              border: descError ? '1.5px solid #DC2626' : '1px solid #CBD5E1'
+            }}
+          />
+          {descError && (
+            <span style={{ color: '#DC2626', marginLeft: 6, fontSize: '0.8rem', fontWeight: 700 }}>
+              ⚠ Required
+            </span>
+          )}
+        </label>
+      </div>
+
+      {/* ── STATS BADGE ── */}
+      {students.length > 0 && (
+        <div style={{
+          display: 'flex', gap: 12, marginBottom: 20,
+          padding: '10px 16px',
+          background: '#F8FAFC',
+          borderRadius: 8,
+          border: '1px solid #E2E8F0',
+          alignItems: 'center'
+        }}>
+          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', fontWeight: 700, color: '#2563EB' }}>
+            🔵 Present: {presentCount}
           </span>
-          <span className="att-legend-item att-legend-absent">
-            ● Absent: {absentCount}
+          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', fontWeight: 700, color: '#DC2626' }}>
+            🔴 Absent: {absentCount}
           </span>
-          <span className="att-legend-hint">
+          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: '#94A3B8', marginLeft: 'auto' }}>
             Tap a chip to mark absent (red)
           </span>
         </div>
+      )}
 
-        {/* ── STUDENT CHIPS GRID ────────────────────────────
-            This is the MAIN UI — a CSS grid of clickable chips.
-            Each chip shows the student ID.
-            Clicking toggles between present (white) and absent (red).
-        ────────────────────────────────────────────────── */}
-        {students.length === 0 ? (
-          <p className="att-empty">
-            No students found for {department} — Section {section}
-          </p>
-        ) : (
-          <div className="att-chips-grid">
-            {students.map((student) => {
-              const isAbsent = Attendance[student._id] === "absent";
-              return (
-                <button
-                  key={student._id}
-                  // ── className changes based on absent/present ──
-                  // This is "conditional classNames" — a very common React pattern
-                  className={`att-chip${isAbsent ? " att-chip--absent" : ""}`}
-                  onClick={() => toggleAttendance(student._id)}
-                  title={`${student.name} — click to toggle`}
-                >
-                  <span className="att-chip-id">{student.studentId}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
+      {/* ── STUDENT GRID ── */}
+      {students.length > 0 ? (
+        <div className="students-grid">
+          {students.map((student) => (
+            <div
+              key={student._id}
+              className={`student-box ${Attendance[student._id] === "present" ? "present" : "absent"}`}
+              onClick={() => toggleAttendance(student._id)}
+              title={Attendance[student._id] === "present" ? "✔ Present" : "✘ Absent"}
+            >
+              <span className="student-id-text">{student.studentId}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="empty-state">
+          No students found for {department} — Section {section}
+        </div>
+      )}
 
-        {/* ── SUBMIT BUTTON ─────────────────────────────────── */}
-        {students.length > 0 && (
-          <button className="att-submit-btn" onClick={handleSubmit}>
-            Submit Attendance
-          </button>
-        )}
+      {/* ── SUBMIT ── */}
+      {students.length > 0 && (
+        <button className="submit-btn" onClick={handleSubmit} style={{ marginTop: 20 }}>
+          Submit Attendance
+        </button>
+      )}
 
-        {/* ── STATUS MESSAGE ────────────────────────────────── */}
-        {message && (
-          <div className={`att-message att-message--${messageType}`}>
-            {messageType === "success" ? "✅" : "❌"} {message}
-          </div>
-        )}
-      </div>
+      {message && (
+        <p className="message" style={{
+          color: message.startsWith('✅') ? '#16A34A' : '#DC2626',
+          background: message.startsWith('✅') ? 'rgba(22,163,74,0.08)' : 'rgba(220,38,38,0.08)',
+          border: `1px solid ${message.startsWith('✅') ? 'rgba(22,163,74,0.2)' : 'rgba(220,38,38,0.2)'}`
+        }}>
+          {message}
+        </p>
+      )}
     </div>
   );
 };
