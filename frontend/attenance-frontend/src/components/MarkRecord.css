@@ -1,0 +1,317 @@
+/* ============================================================
+   MarkRecord.css — Styles for the Mark Record page
+   All buttons are clearly visible with strong contrast colors.
+   ============================================================ */
+
+.mark-record-page {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 16px;
+  font-family: 'Nunito', sans-serif;
+}
+
+.mark-record-page h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+}
+
+/* ── FILTER ROW ── */
+.mr-filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  background: #ffffff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  margin-bottom: 20px;
+}
+
+.mr-label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+}
+
+.mr-select,
+.mr-input {
+  padding: 9px 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #f8fafc;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 110px;
+}
+
+.mr-select:focus,
+.mr-input:focus {
+  border-color: #1e3a8a;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(30,58,138,0.1);
+}
+
+/* ── FETCH BUTTON — Navy blue, clearly visible ── */
+.mr-btn-fetch {
+  padding: 10px 22px;
+  background: #1e3a8a;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+  box-shadow: 0 2px 8px rgba(30,58,138,0.3);
+  align-self: flex-end;
+}
+
+.mr-btn-fetch:hover {
+  background: #1e40af;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(30,58,138,0.4);
+}
+
+.mr-btn-fetch:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── STATUS MESSAGES ── */
+.mr-loading {
+  text-align: center;
+  color: #64748b;
+  font-size: 15px;
+  padding: 20px;
+}
+
+.mr-message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.mr-message--success {
+  background: #e6ffed;
+  color: #15803d;
+  border: 1px solid #6ee7a0;
+}
+
+.mr-message--error {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+/* ── TABLE CARD ── */
+.mr-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.mr-card-header {
+  margin-bottom: 14px;
+}
+
+.mr-card-icon {
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.mr-card-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.mr-card-date {
+  display: block;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 3px;
+  margin-left: 26px;
+}
+
+/* ── ACTION BUTTONS ROW ──
+   Download on LEFT, Save on RIGHT — as requested! ── */
+.mr-action-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+/* DOWNLOAD BUTTON — Green, left side */
+.mr-btn-download {
+  padding: 9px 20px;
+  background: #16a34a;          /* Green = download/export */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+  box-shadow: 0 2px 8px rgba(22,163,74,0.35);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mr-btn-download:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(22,163,74,0.4);
+}
+
+/* SAVE BUTTON — Blue, right side */
+.mr-btn-save {
+  padding: 9px 20px;
+  background: #1e3a8a;          /* Navy blue = save/action */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+  box-shadow: 0 2px 8px rgba(30,58,138,0.3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mr-btn-save:hover {
+  background: #1e40af;
+  transform: translateY(-1px);
+}
+
+.mr-btn-save:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── MARKS TABLE ── */
+.mr-table-wrapper {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.mr-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 400px;
+}
+
+.mr-table thead tr {
+  background: linear-gradient(135deg, #1e3a8a, #1e40af);
+}
+
+.mr-table th {
+  padding: 11px 16px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.mr-table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+  color: #1e293b;
+  background: #ffffff;
+}
+
+.mr-table tbody tr:hover td {
+  background: #f0f9ff;
+}
+
+.mr-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Column-specific styles */
+.mr-td-num { color: #94a3b8; font-size: 13px; width: 40px; }
+.mr-td-id  { font-family: monospace; font-weight: 600; }
+.mr-td-name { font-weight: 500; }
+.mr-td-mark { width: 120px; }
+
+/* ── MARK INPUT ── */
+.mr-mark-input {
+  width: 80px;
+  padding: 7px 10px;
+  border: 2px solid #cbd5e1;
+  border-radius: 7px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e3a8a;
+  background: #f0f9ff;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.mr-mark-input:focus {
+  border-color: #1e3a8a;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(30,58,138,0.15);
+}
+
+/* ── EMPTY STATE ── */
+.mr-empty {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f8fafc;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  color: #64748b;
+  font-size: 15px;
+  margin-top: 8px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .mr-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mr-btn-fetch {
+    width: 100%;
+  }
+
+  .mr-action-row {
+    flex-direction: column;
+  }
+
+  .mr-btn-download,
+  .mr-btn-save {
+    width: 100%;
+    justify-content: center;
+  }
+}

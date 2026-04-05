@@ -1,12 +1,18 @@
 /* ============================================================
-   Attendance — LIGHT PROFESSIONAL THEME
-   Palette: Navy Blue · Slate Gray · Light Gray · White
-   Font: Sora (headings) + Nunito (body)
+   theme.css — Global Light Professional Theme
+   FIXED: Button colors are now clearly visible on all pages.
+   
+   💡 BEGINNER: This file applies styles to EVERY page.
+   CSS variables (--primary etc.) let us change one value
+   and it updates everywhere at once.
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Nunito:wght@400;500;600;700&display=swap');
 
-/* ── DESIGN TOKENS ───────────────────────────────────────── */
+/* ── DESIGN TOKENS (CSS Variables) ──
+   Think of these as "named colors" we reuse everywhere.
+   Change a variable here = changes everywhere instantly.
+*/
 :root {
   /* Backgrounds */
   --bg:          #F8FAFC;
@@ -31,16 +37,17 @@
   --slate-700:   #1E293B;
 
   /* Semantic aliases */
-  --primary:       #1E3A8A;
-  --primary-light: #3B82F6;
-  --sidebar:       #334155;
-  --accent:        #F59E0B;
-  --success:       #16A34A;
-  --warning:       #F59E0B;
-  --danger:        #DC2626;
-  --muted:         #94A3B8;
+  --primary:        #1E3A8A;
+  --primary-light:  #3B82F6;
+  --primary-hover:  #1E40AF;
+  --sidebar:        #334155;
+  --accent:         #F59E0B;
+  --success:        #16A34A;
+  --warning:        #F59E0B;
+  --danger:         #DC2626;
+  --muted:          #94A3B8;
 
-  /* Text — dark on light */
+  /* Text */
   --text:               #1E293B;
   --heading:            #0F172A;
   --link:               #1E3A8A;
@@ -70,11 +77,9 @@
   --h3-size: 1.2rem;
 }
 
-/* ── RESET & BASE ────────────────────────────────────────── */
+/* ── RESET & BASE ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { scroll-behavior: smooth; }
-
 body {
   font-family: var(--font-sans);
   font-size: var(--base-font-size);
@@ -85,7 +90,7 @@ body {
   min-height: 100vh;
 }
 
-/* ── TYPOGRAPHY ──────────────────────────────────────────── */
+/* ── TYPOGRAPHY ── */
 h1,h2,h3,h4,h5,h6 {
   font-family: var(--font-heading);
   color: var(--heading);
@@ -94,53 +99,116 @@ h1,h2,h3,h4,h5,h6 {
 h1 { font-size: var(--h1-size); font-weight: 800; margin-bottom: 14px; }
 h2 { font-size: var(--h2-size); font-weight: 700; margin-bottom: 10px; }
 h3 { font-size: var(--h3-size); font-weight: 600; margin-bottom: 8px; }
-
 p, li, td, th { letter-spacing: 0.15px; line-height: 1.6; }
-
 a { color: var(--link); text-decoration: none; transition: color 0.2s; }
 a:hover { color: var(--primary-light); }
 
-/* ── SCROLLBAR ───────────────────────────────────────────── */
+/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-2); }
 ::-webkit-scrollbar-thumb { background: var(--slate-400); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--slate-600); }
 
-/* ── BUTTONS ─────────────────────────────────────────────── */
-.btn, button {
+/* ══════════════════════════════════════════════════════════
+   BUTTONS — FIXED FOR VISIBILITY
+   
+   💡 PROBLEM: The old button styles used gold/amber colors
+   which were hard to see on some pages, or the text color
+   was wrong making buttons look invisible.
+   
+   SOLUTION: All buttons now use Navy Blue (#1E3A8A) as the
+   default. This matches the navbar and is ALWAYS visible.
+   Special variants (green for success, red for danger) use
+   strong colors that are clearly distinguishable.
+   ══════════════════════════════════════════════════════════ */
+
+/* Base button reset — applies to ALL buttons globally */
+button, .btn {
   font-family: var(--font-sans);
   font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   cursor: pointer;
   border: none;
   border-radius: var(--radius-sm);
   padding: 9px 18px;
   transition: all 0.18s ease;
-  position: relative;
-  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  text-decoration: none;
 }
 
-.btn, button:not(.hamburger):not(.mobile-logout):not(.btn-logout):not(.btn-primary) {
-  background: var(blue);
-  color: white;
-  box-shadow: blue 0px 0px 0px 0px;
+/* ── DEFAULT BUTTON ── Navy blue, white text */
+button:not(.hamburger):not(.mobile-logout):not(.btn-logout):not(.btn-primary):not([class*="btn-"]),
+.btn {
+  background: var(--primary);           /* Navy #1E3A8A */
+  color: #FFFFFF;                        /* White text — always readable! */
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.28);
 }
 
-.btn:hover, button:not(.hamburger):not(.mobile-logout):not(.btn-logout):not(.btn-primary):hover {
-  
-  box-shadow: blue 0px 4px 12px -2px;
+button:not(.hamburger):not(.mobile-logout):not(.btn-logout):not(.btn-primary):not([class*="btn-"]):hover,
+.btn:hover {
+  background: var(--primary-hover);     /* Slightly lighter navy */
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.38);
   transform: translateY(-1px);
 }
 
-.btn:active { transform: translateY(1px); filter: brightness(0.95); }
-.btn:disabled, button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+button:active, .btn:active {
+  transform: translateY(1px);
+  filter: brightness(0.95);
+}
 
-.btn.secondary { background: var(--warning); color: #FFFFFF; box-shadow: 0 2px 8px rgba(245,158,11,0.3); }
-.btn.ghost { background: transparent; border: 1px solid var(--border-strong); color: var(--text-muted); box-shadow: none; }
-.btn.ghost:hover { border-color: var(--primary); color: var(--primary); background: var(--navy-50); }
+button:disabled, .btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
 
-/* ── CARDS ───────────────────────────────────────────────── */
+/* ── SECONDARY (warning/amber) ── */
+.btn.secondary {
+  background: var(--warning);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(245,158,11,0.3);
+}
+
+/* ── GHOST BUTTON ── */
+.btn.ghost {
+  background: transparent;
+  border: 1.5px solid var(--border-strong);
+  color: var(--text-muted);
+  box-shadow: none;
+}
+.btn.ghost:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--navy-50);
+  transform: none;
+}
+
+/* ── DANGER/DELETE BUTTON ── Red */
+.btn.danger, button.btn-danger {
+  background: #DC2626;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(220,38,38,0.28);
+}
+.btn.danger:hover, button.btn-danger:hover {
+  background: #B91C1C;
+}
+
+/* ── SUCCESS BUTTON ── Green */
+.btn.success, button.btn-success {
+  background: #16A34A;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(22,163,74,0.28);
+}
+.btn.success:hover, button.btn-success:hover {
+  background: #15803D;
+}
+
+/* ── CARDS ── */
 .card {
   background: var(--surface);
   border-radius: var(--radius);
@@ -151,7 +219,7 @@ a:hover { color: var(--primary-light); }
 }
 .card:hover { transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
 
-/* ── TABLES ──────────────────────────────────────────────── */
+/* ── TABLES ── */
 table { width: 100%; border-collapse: collapse; background: transparent; }
 
 table th {
@@ -162,8 +230,8 @@ table th {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: var(--primary);
-  color: #FFFFFF;
+  background: var(--primary);           /* Navy header — always visible */
+  color: #FFFFFF;                        /* White text on navy */
   border-bottom: 2px solid var(--border-strong);
 }
 
@@ -181,13 +249,13 @@ table td {
 
 table tbody tr:hover td { background: var(--navy-50); }
 
-/* ── FORM CONTROLS ───────────────────────────────────────── */
+/* ── FORM CONTROLS ── */
 input, select, textarea {
   font-family: var(--font-sans);
   font-size: 0.9rem;
   background: #FFFFFF;
   color: var(--text);
-  border: 1px solid #CBD5E1;
+  border: 1.5px solid #CBD5E1;
   border-radius: var(--radius-sm);
   padding: 9px 12px;
   outline: none;
@@ -203,16 +271,25 @@ input:focus, select:focus, textarea:focus {
 }
 select option { background: #FFFFFF; color: var(--text); }
 
-/* ── CONTAINER ───────────────────────────────────────────── */
+/* ── CONTAINER ── */
 .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
 .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .table-responsive table { min-width: 700px; }
 
-/* ── FORM ROWS ───────────────────────────────────────────── */
+/* ── FORM ROWS ── */
 .form-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.form-row label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+.form-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
 
-/* ── FLASHCARDS (Admin) ──────────────────────────────────── */
+/* ── FLASHCARDS (Admin dashboard) ── */
 .flashcards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -244,22 +321,23 @@ select option { background: #FFFFFF; color: var(--text); }
 }
 
 .flashcard:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.18); }
-
 .flashcard .flashcard-title { font-size: 0.85rem; font-weight: 600; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.06em; }
 .flashcard .flashcard-stat  { font-family: var(--font-heading); font-size: 2.5rem; font-weight: 800; margin-top: 8px; line-height: 1; }
 .flashcard .flashcard-sub   { font-size: 0.85rem; opacity: 0.8; margin-top: 6px; }
 .flashcard .muted           { font-size: 0.8rem; opacity: 0.75; margin-top: 4px; }
 
-/* Flashcard colors stay vibrant for contrast */
-.Attendance-card { background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%); }
+/* Flashcard color variants */
+.attendance-card { background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%); }
 .staff-card      { background: linear-gradient(135deg, #16A34A 0%, #15803D 100%); }
 .students-card   { background: linear-gradient(135deg, #F59E0B 0%, #DC2626 100%); }
 
-/* ── MISC ────────────────────────────────────────────────── */
-.muted { color: var(--muted-text); }
-.previous-Attendance, .card { background: var(--surface); }
+/* Legacy class names (used in AdminDashboard.css) */
+.Attendance-card { background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%); }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+/* ── MISC ── */
+.muted { color: var(--muted-text); }
+
+/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   :root { --base-font-size: 15px; }
   .container { padding: 14px; }
@@ -267,10 +345,10 @@ select option { background: #FFFFFF; color: var(--text); }
   h2 { font-size: 1.2rem; }
   .form-row { flex-direction: column; align-items: stretch; }
   input, select, textarea { width: 100%; }
-  .nav-links { display: none; }
   .table-responsive table { min-width: 100%; }
   table th, table td { padding: 10px 8px; font-size: 0.85rem; }
   .card { padding: 14px; }
+  button:not(.hamburger) { font-size: 0.85rem; }
 }
 
 @media (max-width: 480px) {

@@ -11,10 +11,10 @@
 /* ── CONTROLS: all in ONE horizontal row ── */
 .previous-Attendance .controls {
   display: flex;
-  flex-direction: row;        /* side by side, not stacked */
+  flex-direction: row;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap;            /* wraps on small screens only */
+  flex-wrap: wrap;
   margin-bottom: 20px;
   padding: 12px 16px;
   background: rgba(255,255,255,0.95);
@@ -22,14 +22,14 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
-/* Each select and date input — fixed width so they don't stretch */
+/* Selects and date input */
 .previous-Attendance .controls select,
 .previous-Attendance .controls input[type="date"] {
   padding: 8px 12px;
   border-radius: 6px;
   border: 1px solid rgba(0,0,0,0.15);
   font-size: 13px;
-  width: 180px;               /* fixed width — not full screen */
+  width: 180px;
   background: #fff;
   color: #222;
   outline: none;
@@ -37,37 +37,62 @@
 
 .previous-Attendance .controls select:focus,
 .previous-Attendance .controls input[type="date"]:focus {
-  border-color: var(--primary);
+  border-color: #1E3A8A;
   box-shadow: 0 0 0 3px rgba(13,110,253,0.1);
 }
 
-/* Fetch button */
+/* ── FETCH BUTTON — explicitly navy, stays navy on hover ──
+   We use !important to override any global theme.css rules
+   that might be making it turn white.
+*/
 .previous-Attendance .controls button {
-  padding: 8px 20px;
-  border-radius: 8px;
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
+  padding: 9px 22px !important;
+  border-radius: 8px !important;
+  background: #1E3A8A !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.28) !important;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease !important;
+  letter-spacing: 0.03em !important;
 }
 
+/* ── HOVER STATE — stays dark navy, NOT white ── */
 .previous-Attendance .controls button:hover {
-  background: var(--primary-700);
+  background: #1E40AF !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 18px rgba(30, 58, 138, 0.38) !important;
 }
 
-/* Download button */
-.previous-Attendance button {
-  padding: 8px 16px;
+.previous-Attendance .controls button:active {
+  transform: translateY(1px) !important;
+  filter: brightness(0.95) !important;
+}
+
+/* ── DOWNLOAD BUTTON in header ── */
+.previous-Attendance .header button,
+.previous-Attendance > button {
+  padding: 9px 18px;
   border-radius: 8px;
-  background: var(--primary);
+  background: #1E3A8A;
   color: #fff;
   border: none;
   cursor: pointer;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.28);
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.previous-Attendance .header button:hover,
+.previous-Attendance > button:hover {
+  background: #1E40AF !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
 }
 
 /* ── TABLE STYLES ── */
@@ -80,7 +105,7 @@
 }
 
 .previous-Attendance table th {
-  background: linear-gradient(90deg, var(--primary), var(--accent));
+  background: #1E3A8A;
   color: #fff;
   text-align: left;
   padding: 10px 14px;
@@ -97,6 +122,13 @@
   border-radius: 6px;
   border: 1px solid rgba(0,0,0,0.15);
   font-size: 12px;
-  width: auto;                /* don't let table select inherit 180px */
+  width: auto;
   background: #fff;
+}
+
+/* ── ERROR TEXT ── */
+.previous-Attendance .error {
+  color: #dc2626;
+  font-size: 0.9rem;
+  font-weight: 600;
 }

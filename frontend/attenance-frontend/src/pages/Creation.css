@@ -1,46 +1,307 @@
+/* ============================================================
+   Creation.css — Session Setup Page Styles
+   FIXED: All buttons now have visible colors with proper contrast
+   NEW:   Import panel styles added
+   ============================================================ */
+
 .creation-page {
   max-width: 900px;
   margin: 20px auto;
   padding: 12px;
 }
+
+/* ── STATUS MESSAGE ── */
+.creation-message {
+  background: #e6ffed;
+  padding: 10px 14px;
+  border: 1px solid #6ee7a0;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  color: #15803d;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Red version for errors */
+.creation-message--error {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+/* ── PANELS ── */
 .creation-panel {
-  background: #f7f9fb;
-  border: 1px solid #e1e8ee;
-  padding: 12px;
-  margin-bottom: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
+
 .creation-panel h3 {
-  margin-top: 0;
+  margin: 0 0 14px 0;
+  color: #1e3a8a;
+  font-size: 16px;
+  font-weight: 700;
 }
+
 .creation-panel form {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
   align-items: center;
 }
-.creation-panel input {
-  padding: 8px;
-  border: 1px solid #cbd5e0;
-  border-radius: 4px;
+
+/* ── INPUTS & SELECTS ── */
+.creation-panel input,
+.creation-panel select {
+  padding: 9px 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #f8fafc;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.creation-panel button {
-  padding: 8px 12px;
-  background: #2c3e50;
-  color: #fff;
+
+.creation-panel input:focus,
+.creation-panel select:focus {
+  border-color: #1e3a8a;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(30,58,138,0.1);
+}
+
+/* ── PRIMARY BUTTON — Navy blue, always visible ── */
+.btn-primary {
+  padding: 9px 20px;
+  background: #1e3a8a;          /* Navy blue — matches your navbar */
+  color: #ffffff;                /* White text — always readable */
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+  box-shadow: 0 2px 8px rgba(30,58,138,0.3);
+  white-space: nowrap;
 }
-.student-form input { width: 200px; }
-.creation-message { background: #e6ffed; padding: 8px; border: 1px solid #b6f4c8; margin-bottom: 12px; }
 
-/* Responsive table wrapper for horizontal scroll on small screens */
-.table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.table-responsive table { width: 100%; min-width: 640px; border-collapse: collapse; }
-.table-responsive th, .table-responsive td { padding: 8px; border: 1px solid #e6eef6; }
+.btn-primary:hover {
+  background: #1e40af;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(30,58,138,0.4);
+}
 
+.btn-primary:active {
+  transform: translateY(1px);
+  filter: brightness(0.95);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── OUTLINE BUTTON — Template download ── */
+.btn-outline {
+  padding: 8px 16px;
+  background: transparent;
+  color: #1e3a8a;
+  border: 2px solid #1e3a8a;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.btn-outline:hover {
+  background: #1e3a8a;
+  color: #ffffff;
+}
+
+/* ── IMPORT BUTTON — Green, prominent ── */
+.btn-import {
+  padding: 11px 28px;
+  background: #16a34a;          /* Green — "go ahead and import" */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background 0.18s, transform 0.1s;
+  box-shadow: 0 2px 8px rgba(22,163,74,0.3);
+}
+
+.btn-import:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+.btn-import:disabled {
+  background: #9ca3af;          /* Grey when disabled */
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── FILE PICKER ── */
+/* Hide the ugly default file input */
+input[type="file"].file-input {
+  display: none;
+}
+
+/* Style the label to look like a button */
+.btn-file-pick {
+  display: inline-block;
+  padding: 9px 16px;
+  background: #475569;          /* Slate color for "pick file" */
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+  border: none;
+}
+
+.btn-file-pick:hover {
+  background: #334155;
+}
+
+.file-name {
+  margin-left: 10px;
+  font-size: 13px;
+  color: #64748b;
+  font-style: italic;
+}
+
+/* ── IMPORT PANEL ── */
+.import-panel {
+  border: 2px dashed #93c5fd;   /* Dashed blue border = "upload zone" feel */
+  background: #eff6ff;
+}
+
+.import-hint {
+  font-size: 13px;
+  color: #475569;
+  margin-bottom: 14px;
+  line-height: 1.6;
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.import-controls {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 14px;
+}
+
+.import-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.import-controls select,
+.import-controls input {
+  padding: 8px 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 13px;
+  background: #ffffff;
+  color: #1e293b;
+  outline: none;
+}
+
+.import-file-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+/* ── IMPORT PREVIEW TABLE ── */
+.import-preview {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+/* ── IMPORT RESULT BANNER ── */
+.import-result {
+  margin-top: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.import-result--ok {
+  background: #e6ffed;
+  color: #15803d;
+  border: 1px solid #6ee7a0;
+}
+
+.import-result--fail {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+/* ── TABLE ── */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+}
+
+.table-responsive th,
+.table-responsive td {
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  font-size: 13px;
+  text-align: left;
+}
+
+.table-responsive th {
+  background: #1e3a8a;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.table-responsive tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+/* ── RESPONSIVE ── */
 @media (max-width: 700px) {
   .creation-page { padding: 10px; }
-  .creation-panel form { gap: 6px; }
-  .table-responsive table { min-width: 520px; }
+  .creation-panel form { flex-direction: column; align-items: stretch; }
+  .btn-primary, .btn-import, .btn-outline { width: 100%; text-align: center; }
+  .import-controls { flex-direction: column; }
+  .import-file-row { flex-direction: column; align-items: flex-start; }
+  .btn-file-pick { width: 100%; text-align: center; }
 }

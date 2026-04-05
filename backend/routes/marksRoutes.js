@@ -64,4 +64,39 @@ router.get('/', authMiddleware, async (req, res) => {
   } 
 });
 
+// PUT /api/marks/:id - update marks for a specific marks document
+router.put('/:id', authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { records } = req.body;
+
+    if (!records || !Array.isArray(records)) {
+      return res.status(400).json({ message: 'records array is required' });
+    }
+
+    // Find the marks document by ID
+    const doc = await Marks.findById(id);
+    if (!doc) {
+      return res.status(404).json({ message: 'Marks document not found' });
+    }
+
+    // Update each record's mark
+    for (const rec of records) {
+      const sid = String(rec.student);
+      const existing = doc.records.find(r => String(r.student) === sid);
+      if (existing) {
+        existing.mark = rec.mark;
+      } else {
+        doc.records.push({ student: rec.student, mark: rec.mark });
+      }
+    }
+
+    await doc.save();
+    return res.json({ message: 'Marks updated', doc });
+  } catch (err) {
+    console.error('Marks update error', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
