@@ -81,8 +81,8 @@ router.get('/', authMiddleware, async (req, res) => {
     if (department) filter.department = department;
     if (section) filter.section = section;
     // return newest-first
-    const Attendance = await Attendance.find(filter).sort({ createdAt: -1 }).populate('records.student');
-    return res.json(Attendance || []);
+    const attendanceDocs = await Attendance.find(filter).sort({ createdAt: -1 }).populate('records.student');
+    return res.json(attendanceDocs || []);
   } catch (err) {
     console.error('Fetch Attendance error', err);
     return res.status(500).json({ message: 'Server error' });
