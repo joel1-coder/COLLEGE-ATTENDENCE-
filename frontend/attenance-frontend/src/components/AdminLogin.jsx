@@ -25,8 +25,8 @@ export default function AdminLogin() {
     } catch (err) {
       setError(
         err?.response?.data?.message ||
-          err.message ||
-          "Login failed"
+        err.message ||
+        "Login failed"
       );
     } finally {
       setLoading(false);
@@ -53,12 +53,12 @@ export default function AdminLogin() {
                 e.target.nextSibling.style.display = 'block';
               }}
             />
-            <span style={{ display: 'none' }}>A</span>
+            <span style={{ display: 'none' }}>CS Lab</span>
           </div>
-          <div className="title">Attendance</div>
+          <div className="title">CS LAB Attendance</div>
         </div>
 
-        <h2 className="subtitle">Admin Sign In</h2>
+        <h2 className="subtitle">Administrative sign in</h2>
 
         {error && <div className="message error">{error}</div>}
 

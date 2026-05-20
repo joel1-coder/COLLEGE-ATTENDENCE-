@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import "./NavBar.css";
 import { AuthContext } from "../context/AuthContext";
 
@@ -8,10 +8,12 @@ function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
-
   const location = useLocation();
-  const isLoginPage = location.pathname === '/login' || location.pathname === '/admin/login';
-  const isAdmin = user?.role === 'admin';
+
+  const isLoginPage = location.pathname === "/login" || location.pathname === "/admin/login";
+  const isAdmin = user?.role === "admin";
+  const logoLink = isAdmin ? "/admin" : "/";
+  const navClass = ({ isActive }) => (isActive ? "active" : undefined);
 
   const handleLogout = () => {
     logout();
@@ -34,139 +36,85 @@ function NavBar() {
         setMenuOpen(false);
       }
     }
-    document.addEventListener('mousedown', handleOutside);
-    return () => document.removeEventListener('mousedown', handleOutside);
+
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
   }, [menuOpen]);
 
-  const logoLink = isAdmin ? '/admin' : '/';
-  const logoText = 'Attendance';
+  const loginLinks = (
+    <>
+      <NavLink to="/admin/login" className={navClass}>Admin</NavLink>
+      <NavLink to="/login" className={navClass}>Login</NavLink>
+    </>
+  );
+
+  const adminLinks = (
+    <>
+      <NavLink to="/admin" end className={navClass}>Dashboard</NavLink>
+      <NavLink to="/admin/staff" className={navClass}>Staff</NavLink>
+      <NavLink to="/admin/student" className={navClass}>Student</NavLink>
+      <NavLink to="/admin/report" className={navClass}>Report</NavLink>
+      <NavLink to="/admin/assign" className={navClass}>Assign</NavLink>
+    </>
+  );
+
+  const staffLinks = (
+    <>
+      <NavLink to="/" end className={navClass}>Home</NavLink>
+      <NavLink to="/creation" className={navClass}>Session Setup</NavLink>
+      <NavLink to="/previous-Attendance" className={navClass}>Attendance Records</NavLink>
+      <NavLink to="/editing-adding" className={navClass}>Manage Entries</NavLink>
+      <NavLink to="/enter-marks" className={navClass}>Marks Portal</NavLink>
+      <NavLink to="/mark-record" className={navClass}>Mark Record</NavLink>
+    </>
+  );
+
+  const guestLinks = (
+    <>
+      <NavLink to="/previous-Attendance" className={navClass}>Attendance Records</NavLink>
+      <NavLink to="/login" className={navClass}>Login</NavLink>
+      <NavLink to="/admin/login" className={navClass}>Admin</NavLink>
+    </>
+  );
+
+  const links = isLoginPage ? loginLinks : isAdmin ? adminLinks : user ? staffLinks : guestLinks;
 
   return (
-    <nav className={`navbar ${isAdmin ? 'admin' : 'user'}`}>
+    <nav className={`navbar ${isAdmin ? "admin" : "user"}`}>
       <div className="nav-container">
-        <Link to={logoLink} className="nav-logo">{logoText}</Link>
+        <NavLink to={logoLink} className="nav-logo">
+          <img src="/favicon.jpg" alt="cs lab crest" className="nav-logo-img" />
+          <span>CS LAB Attendance</span>
+        </NavLink>
 
-        {/* ── DESKTOP LINKS ── */}
         <div className="nav-links">
-          {isLoginPage ? (
-            // On the login page itself — show Admin + Login options
-            <>
-              <Link to="/admin/login">Admin</Link>
-              <Link to="/login">Login</Link>
-            </>
-          ) : isAdmin ? (
-            // Logged in as admin
-            <>
-              <Link to="/admin">Dashboard</Link>
-              <Link to="/admin/staff">Staff</Link>
-              <Link to="/admin/student">Student</Link>
-              <Link to="/admin/report">Report</Link>
-              <button
-                onClick={handleLogout}
-                type="button"
-                style={{
-                  cursor: "pointer",
-                  color: "#000",
-                  marginLeft: 12,
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  font: 'inherit'
-                }}
-              >
-                Logout
-              </button>
-            </>
-          ) : user ? (
-            // Logged in as staff
-            <>
-              <Link to="/">Home</Link>
-              <Link to="/creation">Session Setup</Link>
-              <Link to="/previous-Attendance">Attendance Records</Link>
-              <Link to="/editing-adding">Manage Entries</Link>
-              <Link to="/enter-marks">Marks Portal</Link>
-              <Link to="/mark-record">Mark Record</Link>
-              <button
-                onClick={handleLogout}
-                type="button"
-                style={{
-                  cursor: "pointer",
-                  color: "#000",
-                  marginLeft: 12,
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  font: 'inherit'
-                }}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            // Guest — not logged in at all
-            <>
-              <Link to="/previous-Attendance">Attendance Records</Link>
-              <Link to="/login">Login</Link>
-              <Link to="/admin/login">Admin</Link>
-            </>
+          {links}
+          {(isAdmin || user) && (
+            <button onClick={handleLogout} type="button">
+              Logout
+            </button>
           )}
         </div>
 
-        {/* ── HAMBURGER BUTTON (mobile) ── */}
         <button
           ref={buttonRef}
-          className={`hamburger ${menuOpen ? 'open' : ''}`}
+          className={`hamburger ${menuOpen ? "open" : ""}`}
           aria-label="Toggle menu"
-          onClick={() => setMenuOpen(v => !v)}
+          onClick={() => setMenuOpen((v) => !v)}
         >
           <span className="bar" />
           <span className="bar" />
           <span className="bar" />
         </button>
 
-        {/* ── MOBILE MENU ── */}
-        <div ref={menuRef} className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
-          {isLoginPage ? (
-            // On the login page itself
-            <>
-              <Link to="/admin/login">Admin</Link>
-              <Link to="/login">Login</Link>
-            </>
-          ) : isAdmin ? (
-            // Logged in as admin
-            <>
-              <Link to="/admin">Dashboard</Link>
-              <Link to="/admin/staff">Staff</Link>
-              <Link to="/admin/student">Student</Link>
-              <Link to="/admin/report">Report</Link>
-              <Link to="/admin/assign">Assign</Link>
-              <button onClick={handleLogout} type="button" className="mobile-logout">
-                Logout
-              </button>
-            </>
-          ) : user ? (
-            // Logged in as staff
-            <>
-              <Link to="/">Home</Link>
-              <Link to="/creation">Session Setup</Link>
-              <Link to="/previous-Attendance">Attendance Records</Link>
-              <Link to="/editing-adding">Manage Entries</Link>
-              <Link to="/enter-marks">Marks Portal</Link>
-              <Link to="/mark-record">Mark Record</Link>
-              <button onClick={handleLogout} type="button" className="mobile-logout">
-                Logout
-              </button>
-            </>
-          ) : (
-            // Guest — not logged in
-            <>
-              <Link to="/previous-Attendance">Attendance Records</Link>
-              <Link to="/login">Login</Link>
-              <Link to="/admin/login">Admin</Link>
-            </>
+        <div ref={menuRef} className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+          {links}
+          {(isAdmin || user) && (
+            <button onClick={handleLogout} type="button" className="mobile-logout">
+              Logout
+            </button>
           )}
         </div>
-
       </div>
     </nav>
   );

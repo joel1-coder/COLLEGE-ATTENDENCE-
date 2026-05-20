@@ -54,13 +54,13 @@ const Login = () => {
                 e.target.nextSibling.style.display = 'block';
               }}
             />
-            <span style={{ display: 'none' }}>A</span>
+            <span style={{ display: 'none' }}>CS Lab</span>
           </div>
 
-          <div className="title">Attendance</div>
+          <div className="title">CS LAB Attendance</div>
         </div>
 
-        <h2 className="subtitle">Sign in to your account</h2>
+        <h2 className="subtitle">Institutional attendance portal</h2>
 
         {error && <div className="message error">{error}</div>}
 
@@ -88,7 +88,7 @@ const Login = () => {
           </div>
 
           <button className="btn-primary" type="submit" disabled={loading}>
-            {loading ? 'Signing in…' : 'Sign In'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 

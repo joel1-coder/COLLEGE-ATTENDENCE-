@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap');
 
 body {
   margin: 0;
-  font-family: 'DM Sans', sans-serif;
-  background-color: #F8FAFC;
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  background-color: #F8F6F0;
   color: #1E293B;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
