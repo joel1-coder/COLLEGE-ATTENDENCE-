@@ -325,7 +325,6 @@ table td select:focus { border-color: var(--primary); }
   transition: all 0.18s ease;
   min-height: 44px;
   height: 44px;
-  overflow-wrap: anywhere;
 }
 
 /* 🔵 PRESENT BOX (Blue) */
@@ -361,8 +360,11 @@ table td select:focus { border-color: var(--primary); }
   font-weight: 800;
   letter-spacing: 0.03em;
   text-align: center;
-  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   line-height: 1.2;
+  width: 100%;
 }
 
 /* ---- SCROLLBAR ---- */
