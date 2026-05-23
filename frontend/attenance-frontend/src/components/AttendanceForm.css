@@ -318,13 +318,13 @@ table td select:focus { border-color: var(--primary); }
   width: 100%;
   min-width: 0;
   background: var(--blue-bg);
-  border: 1px solid var(--blue-soft);
+  border: 1.5px solid var(--blue-soft);
   border-radius: 8px;
-  padding: 2px 4px;
+  padding: 6px 8px;
   cursor: pointer;
   transition: all 0.18s ease;
-  min-height: 30px;
-  height: 30px;
+  min-height: 44px;
+  height: 44px;
   overflow-wrap: anywhere;
 }
 
@@ -357,12 +357,12 @@ table td select:focus { border-color: var(--primary); }
 /* ---- STUDENT ID TEXT ---- */
 .student-box .student-id-text {
   font-family: var(--font-heading);
-  font-size: 0.6rem;
+  font-size: 0.85rem;
   font-weight: 800;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
   text-align: center;
   word-break: break-word;
-  line-height: 1;
+  line-height: 1.2;
 }
 
 /* ---- SCROLLBAR ---- */
@@ -388,12 +388,12 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .student-box { 
-    min-height: 40px;
-    padding: 4px;
+    min-height: 44px;
+    padding: 6px;
   }
   
   .student-box .student-id-text { 
-    font-size: 0.6rem;
+    font-size: 0.82rem;
   }
   .Attendance-container { 
     width: 96%; 
@@ -433,14 +433,14 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .student-box { 
-    min-height: 34px;
-    height: 34px;
-    padding: 3px 4px;
+    min-height: 44px;
+    height: 44px;
+    padding: 5px 6px;
     border-radius: 6px;
   }
   
   .student-box .student-id-text { 
-    font-size: 0.58rem;
+    font-size: 0.8rem;
   }
   
   .submit-btn {
@@ -483,19 +483,19 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .students-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 6px;
   }
   
   .student-box {
-    min-height: 32px;
-    height: 32px;
-    padding: 2px 4px;
+    min-height: 42px;
+    height: 42px;
+    padding: 5px 4px;
     border-radius: 4px;
   }
   
   .student-box .student-id-text {
-    font-size: 0.52rem;
+    font-size: 0.75rem;
   }
   
   .submit-btn {
