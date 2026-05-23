@@ -357,7 +357,7 @@ table td select:focus { border-color: var(--primary); }
 /* ---- STUDENT ID TEXT ---- */
 .student-box .student-id-text {
   font-family: var(--font-heading);
-  font-size: 0.85rem;
+  font-size: 0.85rem !important;
   font-weight: 800;
   letter-spacing: 0.03em;
   text-align: center;
@@ -393,7 +393,7 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .student-box .student-id-text { 
-    font-size: 0.82rem;
+    font-size: 0.85rem !important;
   }
   .Attendance-container { 
     width: 96%; 
@@ -440,7 +440,7 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .student-box .student-id-text { 
-    font-size: 0.8rem;
+    font-size: 0.85rem !important;
   }
   
   .submit-btn {
@@ -495,7 +495,7 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .student-box .student-id-text {
-    font-size: 0.75rem;
+    font-size: 0.85rem !important;
   }
   
   .submit-btn {
