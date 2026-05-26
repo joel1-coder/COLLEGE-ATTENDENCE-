@@ -323,8 +323,8 @@ table td select:focus { border-color: var(--primary); }
   padding: 6px 8px;
   cursor: pointer;
   transition: all 0.18s ease;
-  min-height: 44px;
-  height: 44px;
+  min-height: 30px;
+  height: 30px;
 }
 
 /* 🔵 PRESENT BOX (Blue) */
@@ -390,7 +390,8 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .student-box { 
-    min-height: 44px;
+    min-height: 30px;
+    height: 30px;
     padding: 6px;
   }
   
@@ -435,8 +436,8 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .student-box { 
-    min-height: 44px;
-    height: 44px;
+    min-height: 30px;
+    height: 30px;
     padding: 5px 6px;
     border-radius: 6px;
   }
@@ -490,8 +491,8 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .student-box {
-    min-height: 42px;
-    height: 42px;
+    min-height: 30px;
+    height: 30px;
     padding: 5px 4px;
     border-radius: 4px;
   }
