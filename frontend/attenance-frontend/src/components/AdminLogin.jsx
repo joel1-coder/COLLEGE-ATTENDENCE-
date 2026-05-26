@@ -66,6 +66,8 @@ export default function AdminLogin() {
           <div className="input-group">
             <label>Admin ID</label>
             <input
+              type="text"
+              name="username"
               value={adminId}
               onChange={(e) => setAdminId(e.target.value)}
               required
@@ -76,6 +78,7 @@ export default function AdminLogin() {
             <label>Password</label>
             <input
               type="password"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
