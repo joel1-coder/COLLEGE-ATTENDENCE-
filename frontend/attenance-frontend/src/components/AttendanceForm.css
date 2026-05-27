@@ -316,15 +316,15 @@ table td select:focus { border-color: var(--primary); }
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-width: min(245px, 100%);
+  min-width: 100%;
   background: var(--blue-bg);
   border: 1.5px solid var(--blue-soft);
   border-radius: 8px;
-  padding: 11px 8px;
+  padding: 16px 10px;
   cursor: pointer;
   transition: all 0.18s ease;
-  min-height: 30px;
-  height: 44px;
+  min-height: 48px;
+  height: 52px;
 }
 
 /* 🔵 PRESENT BOX (Blue) */
@@ -390,13 +390,14 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .student-box { 
-    min-height: 30px;
-    height: 44px;
-    padding: 10px 6px;
+    min-height: 48px;
+    height: 52px;
+    padding: 14px 8px;
+    border-radius: 6px;
   }
   
   .student-box .student-id-text { 
-    font-size: 0.9rem !important;
+    font-size: 0.95rem !important;
   }
   .Attendance-container { 
     width: 96%; 
@@ -436,14 +437,14 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .student-box { 
-    min-height: 30px;
-    height: 44px;
-    padding: 10px 6px;
+    min-height: 48px;
+    height: 52px;
+    padding: 14px 8px;
     border-radius: 6px;
   }
   
   .student-box .student-id-text { 
-    font-size: 0.9rem !important;
+    font-size: 0.95rem !important;
   }
   
   .submit-btn {
@@ -491,9 +492,9 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .student-box {
-    min-height: 30px;
-    height: 44px;
-    padding: 10px 4px;
+    min-height: 44px;
+    height: 48px;
+    padding: 12px 6px;
     border-radius: 4px;
   }
   
