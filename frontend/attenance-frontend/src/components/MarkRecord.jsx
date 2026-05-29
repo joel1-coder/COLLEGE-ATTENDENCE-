@@ -164,7 +164,6 @@ export default function MarkRecord() {
     setLoading(true);
     setMessage('');
     setMarkTables([]);
-    setFetchAttempted(false);
     try {
       const api = apiClient();
 
@@ -215,7 +214,6 @@ export default function MarkRecord() {
       setMessage(err?.response?.data?.message || 'Failed to fetch marks.');
     } finally {
       setLoading(false);
-      setFetchAttempted(true);
     }
   };
 
@@ -296,7 +294,6 @@ export default function MarkRecord() {
                 setDepartment(e.target.value);
                 setSection('');
                 setMarkTables([]);
-                setFetchAttempted(false);
                 setMessage('');
               }}
             >
@@ -312,7 +309,6 @@ export default function MarkRecord() {
               onChange={e => {
                 setSection(e.target.value);
                 setMarkTables([]);
-                setFetchAttempted(false);
                 setMessage('');
               }}
             >
@@ -329,7 +325,6 @@ export default function MarkRecord() {
               onChange={e => {
                 setDate(e.target.value);
                 setMarkTables([]);
-                setFetchAttempted(false);
                 setMessage('');
               }}
             />
