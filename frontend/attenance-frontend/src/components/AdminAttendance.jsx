@@ -8,7 +8,7 @@ const AdminAttendance = () => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [departments, setDepartments] = useState([]);
-  const [sections, setSections] = useState([]);
+  const [sections] = useState([]);
   const [department, setDepartment] = useState('');
   const [section, setSection] = useState('');
   const [togglingIds, setTogglingIds] = useState(new Set());
