@@ -18,7 +18,7 @@ export default function ResetPassword() {
 
   useEffect(() => {
     if (!token || !email) toast.error('Missing token or email in link');
-  }, [token, email]);
+  }, [token, email, toast]);
 
   const submit = async () => {
     if (!newPassword) { toast.warning('Please enter a new password'); return; }

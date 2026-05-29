@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Toast from './Toast';
 import useToast from '../Hooks/usetoast';
@@ -8,7 +8,6 @@ const AdminAttendance = () => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [departments, setDepartments] = useState([]);
-  const [sections, setSections] = useState([]);
   const [department, setDepartment] = useState('');
   const [section, setSection] = useState('');
   const [togglingIds, setTogglingIds] = useState(new Set());
@@ -46,7 +45,7 @@ const AdminAttendance = () => {
       }
     };
     fetchAttendance();
-  }, [date]);
+  }, [date, toast, departments.length]);
 
   const filteredRecords = records.filter(r => {
     if (department && r.student?.department !== department) return false;

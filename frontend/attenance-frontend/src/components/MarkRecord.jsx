@@ -109,7 +109,6 @@ export default function MarkRecord() {
   const [markTables, setMarkTables] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [fetchAttempted, setFetchAttempted] = useState(false);
 
   // ── API Client ───────────────────────────────────────────────────────────
   // useCallback means this function is only recreated when dependencies change,

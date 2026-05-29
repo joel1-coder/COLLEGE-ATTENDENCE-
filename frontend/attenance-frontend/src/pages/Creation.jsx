@@ -203,7 +203,6 @@ function Creation() {
         // Map each row to our student format
         // 💡 We're flexible with column names — we try multiple options
         const students = rows.map((row, i) => {
-          const keys = Object.keys(row).map((k) => k.toLowerCase().trim());
           const get = (names) => {
             for (const n of names) {
               const found = Object.keys(row).find((k) => k.toLowerCase().trim() === n);
@@ -228,7 +227,7 @@ function Creation() {
         }
 
         // Send all students to backend using the bulk endpoint
-        const res = await apiClient().post("/admin/students/bulk", { students });
+        await apiClient().post("/admin/students/bulk", { students });
         setImportResult({
           success: true,
           count: students.length,

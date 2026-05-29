@@ -26,13 +26,11 @@ const AdminDashboard = () => {
     presentsToday: 0,
     date: ''
   });
-  const [loading, setLoading] = useState(false);
 
   // 💡 Beginner tip: useEffect with [] as the second argument runs only ONCE
   // when the component first appears on screen. It's like "on page load".
   useEffect(() => {
     const fetchStats = async () => {
-      setLoading(true);
       try {
         const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api' });
         const stored = JSON.parse(localStorage.getItem('user')) || null;
@@ -42,7 +40,6 @@ const AdminDashboard = () => {
       } catch (err) {
         console.error('Failed to load admin stats', err);
       } finally {
-        setLoading(false);
       }
     };
     fetchStats();

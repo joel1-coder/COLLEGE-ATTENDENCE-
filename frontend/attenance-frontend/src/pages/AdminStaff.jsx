@@ -49,10 +49,10 @@ export default function AdminStaff() {
     } finally {
       setLoading(false);
     }
-  }, [apiClient]);
+  }, [apiClient, toast]);
 
   // Load staff list on first render
-  useEffect(() => { fetchStaff(1, search); }, []);
+  useEffect(() => { fetchStaff(1, search); }, [fetchStaff, search]);
 
   const createStaff = async (e) => {
     e.preventDefault();

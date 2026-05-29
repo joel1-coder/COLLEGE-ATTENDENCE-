@@ -12,7 +12,6 @@ export default function AdminStudent() {
   const [student, setStudent] = useState({ studentId: "", name: "", email: "", department: "", section: "" });
   const [students, setStudents] = useState([]);
   const [loadingStudents, setLoadingStudents] = useState(false);
-  const [studentsError, setStudentsError] = useState("");
 
   // 💡 All success/error messages now go through toast
   const { toasts, toast, removeToast } = useToast();
@@ -33,7 +32,7 @@ export default function AdminStudent() {
     } catch (err) {
       toast.error("Failed to load departments");
     }
-  }, [apiClient, selectedDepartment]);
+  }, [apiClient, selectedDepartment, toast]);
 
   const loadSections = useCallback(async () => {
     if (!selectedDepartment) return;
@@ -47,24 +46,22 @@ export default function AdminStudent() {
 
   const fetchStudents = useCallback(async () => {
     setLoadingStudents(true);
-    setStudentsError("");
     try {
       const res = await apiClient().get("/admin/students");
       setStudents(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      setStudentsError(err?.response?.data?.message || "Failed to fetch students");
       toast.error("Failed to fetch students");
     } finally {
       setLoadingStudents(false);
     }
-  }, [apiClient]);
+  }, [apiClient, toast]);
 
   useEffect(() => {
     loadDepartments();
     fetchStudents();
-  }, []);
+  }, [loadDepartments, fetchStudents]);
 
-  useEffect(() => { loadSections(); }, [selectedDepartment]);
+  useEffect(() => { loadSections(); }, [loadSections]);
 
   const handleAddDepartment = async (e) => {
     e.preventDefault();
