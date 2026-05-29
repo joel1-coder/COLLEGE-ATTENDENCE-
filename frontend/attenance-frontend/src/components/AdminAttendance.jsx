@@ -19,7 +19,7 @@ const AdminAttendance = () => {
   const { toasts, toast, removeToast } = useToast();
 
   const makeApi = () => {
-    const api = axios.create({ baseURL: 'https://college-attendence.onrender.com/api' });
+    const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api' });
     const stored = JSON.parse(localStorage.getItem('user')) || null;
     if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
     return api;

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Ensure the API base URL always points to the /api root.
-let raw = process.env.REACT_APP_API_URL || 'https://college-attendence.onrender.com';
+let raw = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 raw = String(raw).replace(/\/+$/, '');
 const baseURL = raw.endsWith('/api') ? raw : `${raw}/api`;
 const api = axios.create({ baseURL });

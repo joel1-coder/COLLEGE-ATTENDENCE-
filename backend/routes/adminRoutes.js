@@ -274,8 +274,6 @@ router.post('/users/admin', auth, requireAdmin, async (req, res) => {
   }
 });
 
-module.exports = router;
-
 // Admin stats: counts for dashboard
 router.get('/stats', auth, requireAdmin, async (req, res) => {
   try {
@@ -439,3 +437,5 @@ router.get('/reports/monthly', auth, requireAdmin, async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 });
+
+module.exports = router;
