@@ -14,18 +14,18 @@ exports.markAttendance = async (req, res) => {
     const AttendanceDate = date ? new Date(date) : new Date();
     AttendanceDate.setHours(0, 0, 0, 0);
 
-    const Attendance = new Attendance({
+    const newAttendance = new Attendance({
       staff: staffId,
       studentId,
       status,
       date: AttendanceDate,
     });
 
-    await Attendance.save();
+    await newAttendance.save();
 
     res.status(201).json({
       message: "Attendance marked successfully",
-      Attendance,
+      Attendance: newAttendance,
     });
   } catch (error) {
     console.error("Error marking Attendance ❌", error);
@@ -47,12 +47,12 @@ exports.getAttendanceByDate = async (req, res) => {
     const queryDate = new Date(date);
     queryDate.setHours(0, 0, 0, 0);
 
-    const Attendance = await Attendance.find({
+    const attendanceRecords = await Attendance.find({
       staff: staffId,
       date: queryDate,
     });
 
-    res.status(200).json(Attendance);
+    res.status(200).json(attendanceRecords);
   } catch (error) {
     console.error("Fetch Attendance error ❌", error);
     res.status(500).json({ message: "Server error" });
