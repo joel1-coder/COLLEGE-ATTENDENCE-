@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Toast from "./Toast";
 import useToast from "../Hooks/usetoast";
+import { baseURL } from "../api/api";
 
 // Shared inline styles — same look as MarkRecord.jsx and Login.jsx
 const pageStyle = {
@@ -87,7 +88,7 @@ export default function EnterMarks() {
   };
 
   const apiClient = useCallback(() => {
-    const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api' });
+    const api = axios.create({ baseURL });
     const stored = JSON.parse(localStorage.getItem("user"));
     if (stored?.token) api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
     return api;

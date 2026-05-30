@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import axios from 'axios';
+import { baseURL } from "../api/api";
 
 export const AuthContext = createContext();
 
@@ -16,7 +17,7 @@ export const AuthProvider = ({ children }) => {
 
     // set header and verify token with backend
     axios.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-    axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/verify`)
+    axios.get(`${baseURL}/auth/verify`)
       .then((res) => {
         if (res.data && res.data.valid) {
           setUser(stored);

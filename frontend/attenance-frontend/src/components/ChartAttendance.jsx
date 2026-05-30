@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import axios from 'axios';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { baseURL } from '../api/api';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -10,7 +11,7 @@ export default function ChartAttendance({ limit = 8 }){
   useEffect(() => {
     const fetch = async () => {
       try {
-        const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api' });
+        const api = axios.create({ baseURL });
         const stored = JSON.parse(localStorage.getItem('user')) || null;
         if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
         const res = await api.get('/admin/charts/Attendance', { params: { limit } });

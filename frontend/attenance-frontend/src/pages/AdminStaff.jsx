@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Toast from "../components/Toast";
 import useToast from "../Hooks/usetoast";
+import { baseURL } from "../api/api";
 
 export default function AdminStaff() {
   const [staff, setStaff] = useState([]);
@@ -20,7 +21,7 @@ export default function AdminStaff() {
   // This is important because it's used inside useEffect — without useCallback
   // it would cause an infinite loop.
   const apiClient = useCallback(() => {
-    const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api' });
+    const api = axios.create({ baseURL });
     const stored = JSON.parse(localStorage.getItem("user"));
     if (stored?.token) api.defaults.headers.common["Authorization"] = `Bearer ${stored.token}`;
     return api;

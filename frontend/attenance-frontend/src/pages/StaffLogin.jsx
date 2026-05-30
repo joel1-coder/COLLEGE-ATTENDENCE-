@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { baseURL } from "../api/api";
 
 export default function StaffLogin() {
   const [email, setEmail] = useState("");
@@ -10,7 +11,7 @@ export default function StaffLogin() {
   const login = async () => {
     try {
       const res = await axios.post(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/login`,
+        `${baseURL}/auth/login`,
         { email, password }
       );
 

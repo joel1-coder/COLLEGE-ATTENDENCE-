@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { baseURL } from '../api/api';
 
 export default function AdminReportMonthly(){
   const [month, setMonth] = useState('');
@@ -17,7 +18,7 @@ export default function AdminReportMonthly(){
   const [pages, setPages] = useState(1);
 
   useEffect(() => {
-    const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api' });
+    const api = axios.create({ baseURL });
     const stored = JSON.parse(localStorage.getItem('user')) || null;
     if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
     api.get('/admin/departments').then(res => setDepartments(res.data || [])).catch(() => setDepartments([]));
@@ -26,7 +27,7 @@ export default function AdminReportMonthly(){
   const fetchReport = async (p = 1, fmt) => {
     setLoading(true);
     try {
-      const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api' });
+      const api = axios.create({ baseURL });
       const stored = JSON.parse(localStorage.getItem('user')) || null;
       if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
 

@@ -47,4 +47,5 @@ export async function login(email, password) {
   return res.data;
 }
 
+export { baseURL };
 export default api;

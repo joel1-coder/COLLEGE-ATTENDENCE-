@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import { baseURL } from "../api/api";
 import "./Creation.css";
 
 // ===========================================================
@@ -45,7 +46,7 @@ function Creation() {
    */
   const apiClient = useCallback(() => {
     const api = axios.create({
-      baseURL: process.env.REACT_APP_API_URL || "http://localhost:5000/api",
+      baseURL,
     });
     const stored = JSON.parse(localStorage.getItem("user")) || null;
     if (stored?.token) {

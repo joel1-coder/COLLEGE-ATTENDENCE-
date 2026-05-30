@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
+import { baseURL } from '../api/api';
 import './AdminDashboard.css';
 // ChartMarks and ChartAttendance are imported but currently commented-out below.
 // They can be re-enabled later when chart data is stable.
@@ -32,7 +33,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api' });
+        const api = axios.create({ baseURL });
         const stored = JSON.parse(localStorage.getItem('user')) || null;
         if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
         const res = await api.get('/admin/stats');

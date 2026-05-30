@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import { baseURL } from "../api/api";
 import "./AttendanceForm.css";
 
 // ── What is a "component"? ──────────────────────────────────────────────────
@@ -32,7 +33,7 @@ const AttendanceForm = () => {
 
   // Helper to build an API client with auth token
   const makeApi = () => {
-    const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api' });
+    const api = axios.create({ baseURL });
     const stored = JSON.parse(localStorage.getItem('user')) || null;
     if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
     return api;

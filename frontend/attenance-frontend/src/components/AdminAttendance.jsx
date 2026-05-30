@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Toast from './Toast';
 import useToast from '../Hooks/usetoast';
+import { baseURL } from '../api/api';
 
 const AdminAttendance = () => {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -19,7 +20,7 @@ const AdminAttendance = () => {
   const { toasts, toast, removeToast } = useToast();
 
   const makeApi = () => {
-    const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api' });
+    const api = axios.create({ baseURL });
     const stored = JSON.parse(localStorage.getItem('user')) || null;
     if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
     return api;

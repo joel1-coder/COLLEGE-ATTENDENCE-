@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
+import { baseURL } from '../api/api';
 
 // ── What is this page? ────────────────────────────────────────────────────
 // MarkRecord lets teachers VIEW and EDIT marks they previously entered.
@@ -114,7 +115,7 @@ export default function MarkRecord() {
   // useCallback means this function is only recreated when dependencies change,
   // saving memory by not creating a new function on every re-render.
   const apiClient = useCallback(() => {
-    const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api' });
+    const api = axios.create({ baseURL });
     const stored = JSON.parse(localStorage.getItem('user'));
     if (stored?.token) api.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
     return api;
