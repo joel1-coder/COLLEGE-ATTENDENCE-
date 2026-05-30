@@ -65,8 +65,9 @@ router.post("/login", async (req, res) => {
       userId: user._id,
       token,
     });
-  } catch {
-    res.status(500).json({ message: "Server error" });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Server error", error: err?.message || err });
   }
 });
 
@@ -126,8 +127,9 @@ router.post("/reset-password", async (req, res) => {
     await user.save();
 
     res.json({ message: "Password reset successful" });
-  } catch {
-    res.status(500).json({ message: "Server error" });
+  } catch (err) {
+    console.error("Reset password error:", err);
+    res.status(500).json({ message: "Server error", error: err?.message || err });
   }
 });
 
