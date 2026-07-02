@@ -146,6 +146,10 @@ export default function EnterMarks() {
   }, [department, section, apiClient]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const save = async (opts = {}) => {
+    if (!description || !description.trim()) {
+      toast.error("Please enter the Description (Exam / Test Name) before saving.");
+      return;
+    }
     const records = Object.keys(marks).map((id) => ({ student: id, mark: Number(marks[id]) }));
     const payload = {
       date: getLocalDate(),
