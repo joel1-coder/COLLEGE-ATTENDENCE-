@@ -173,6 +173,25 @@ router.get('/sections', auth, async (req, res) => {
   }
 });
 
+// List students (admin only)
+router.get('/students', auth, async (req, res) => {
+  try {
+    const { department, section, q } = req.query;
+    const filter = {};
+    if (department) filter.department = department;
+    if (section) filter.section = section;
+    if (q) {
+      const re = new RegExp(q, 'i');
+      filter.$or = [{ name: re }, { studentId: re }];
+    }
+    const students = await Student.find(filter).sort({ name: 1 });
+    res.json(students);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Create student (allow any authenticated user to create)
 router.post('/students', auth, async (req, res) => {
   try {

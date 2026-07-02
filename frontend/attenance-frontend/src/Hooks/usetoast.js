@@ -4,7 +4,7 @@
 //    React hooks (like useState) inside it. We use the "use" prefix by convention.
 //    The benefit: we write the toast logic ONCE here, and reuse it in every component!
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 
 export default function useToast() {
   // 💡 toasts is an array of objects: [{ id, message, type }, ...]
@@ -22,13 +22,15 @@ export default function useToast() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  // Convenience shortcuts — so you can call toast.success("done!") instead of addToast("done!", "success")
-  const toast = {
+  // ✅ FIX: useMemo keeps the toast object reference STABLE across renders.
+  // Without this, every render creates a new object → useCallback hooks that
+  // list `toast` as a dependency think it changed → infinite re-fetch loops.
+  const toast = useMemo(() => ({
     success: (msg) => addToast(msg, "success"),
     error:   (msg) => addToast(msg, "error"),
     warning: (msg) => addToast(msg, "warning"),
     info:    (msg) => addToast(msg, "info"),
-  };
+  }), [addToast]);
 
   return { toasts, toast, removeToast };
-}
+}

@@ -29,11 +29,13 @@ export default function AdminStudent() {
       const res = await apiClient().get("/admin/departments");
       const list = Array.isArray(res.data) ? res.data.map(d => d.name) : [];
       setClassesList(list);
-      if (!selectedDepartment && list.length) setSelectedDepartment(list[0]);
+      // ✅ FIX: Use functional updater so we don't need selectedDepartment as a dep.
+      // If selectedDepartment is already set, keep it; otherwise default to first item.
+      setSelectedDepartment(prev => prev || (list.length ? list[0] : prev));
     } catch (err) {
       toast.error("Failed to load departments");
     }
-  }, [apiClient, selectedDepartment, toast]);
+  }, [apiClient, toast]);
 
   const loadSections = useCallback(async () => {
     if (!selectedDepartment) return;

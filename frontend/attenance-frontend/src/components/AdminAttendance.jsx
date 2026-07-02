@@ -9,12 +9,12 @@ const AdminAttendance = () => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [departments, setDepartments] = useState([]);
-  const [sections] = useState([]);
+  const [sections, setSections] = useState([]);
   const [department, setDepartment] = useState('');
   const [section, setSection] = useState('');
   const [togglingIds, setTogglingIds] = useState(new Set());
   const [actionLoading, setActionLoading] = useState(false);
-  const [isAdmin] = useState(true);
+  const isAdmin = true; // This page is admin-only (protected by route guard)
 
   // 💡 Replaced plain setError with toast notifications
   const { toasts, toast, removeToast } = useToast();
@@ -26,6 +26,38 @@ const AdminAttendance = () => {
     return api;
   };
 
+  // ✅ FIX: Load departments from the database on mount, not from attendance records.
+  // Previously departments were only populated when attendance records existed for the
+  // selected date. If no records existed, the dropdown stayed empty.
+  useEffect(() => {
+    const loadDepts = async () => {
+      try {
+        const res = await makeApi().get('/admin/departments');
+        const list = Array.isArray(res.data) ? res.data.map(d => d.name || d) : [];
+        setDepartments(list);
+      } catch (err) {
+        console.error('Failed to load departments', err);
+      }
+    };
+    loadDepts();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Load sections when department changes
+  useEffect(() => {
+    if (!department) { setSections([]); return; }
+    const loadSecs = async () => {
+      try {
+        const res = await makeApi().get(`/admin/sections?department=${encodeURIComponent(department)}`);
+        const list = Array.isArray(res.data) ? res.data.map(s => s.name || s) : [];
+        setSections(list);
+      } catch (err) {
+        console.error('Failed to load sections', err);
+        setSections([]);
+      }
+    };
+    loadSecs();
+  }, [department]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     const fetchAttendance = async () => {
       setLoading(true);
@@ -35,11 +67,6 @@ const AdminAttendance = () => {
         const Attendance = Array.isArray(res.data) ? res.data[0] : res.data;
         const recs = Attendance?.records || [];
         setRecords(recs);
-
-        if (departments.length === 0 && recs.length > 0) {
-          const depts = [...new Set(recs.map(r => r.student?.department).filter(Boolean))];
-          setDepartments(depts);
-        }
       } catch (err) {
         toast.error("Failed to load Attendance");
       } finally {
@@ -47,7 +74,7 @@ const AdminAttendance = () => {
       }
     };
     fetchAttendance();
-  }, [date, toast, departments.length]);
+  }, [date]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const filteredRecords = records.filter(r => {
     if (department && r.student?.department !== department) return false;
