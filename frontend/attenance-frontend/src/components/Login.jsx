@@ -58,7 +58,7 @@ const Login = () => {
             <span style={{ display: 'none' }}>CS Lab</span>
           </div>
 
-          <div className="title">CS LAB Attendance</div>
+          <div className="title">LAB Attendance</div>
         </div>
 
         <h2 className="subtitle">Institutional attendance portal</h2>

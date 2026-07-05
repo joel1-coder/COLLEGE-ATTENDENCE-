@@ -107,6 +107,12 @@ const AttendanceForm = () => {
   const presentCount = Object.values(Attendance).filter(s => s === "present").length;
   const absentCount = Object.values(Attendance).filter(s => s === "absent").length;
 
+  const markAll = (status) => {
+    const newAttendance = {};
+    students.forEach((s) => { newAttendance[s._id] = status; });
+    setAttendance(newAttendance);
+  };
+
   const handleSubmit = async () => {
     if (!description || !description.trim()) {
       setDescError(true);
@@ -142,7 +148,7 @@ const AttendanceForm = () => {
     <div className="Attendance-container">
       {/* ── HEADER ── */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
-        <h2 style={{ margin: 0 }}>CS LAB Attendance</h2>
+        <h2 style={{ margin: 0 }}>LAB Attendance</h2>
         <span style={{
           background: '#EFF6FF',
           color: '#1E3A8A',
@@ -161,12 +167,17 @@ const AttendanceForm = () => {
       <div className="info">
         <label>
           Department:
-          <select value={department} onChange={(e) => setDepartment(e.target.value)} style={{ marginLeft: 8 }}>
-            {classesList.length ? (
-              classesList.map((c) => <option key={c} value={c}>{c}</option>)
+          <select value={department} onChange={(e) => setDepartment(e.target.value)}>
+            {classesList.length > 0 ? (
+              <>
+                <option value="">--Select--</option>
+                {classesList.map((c) => <option key={c} value={c}>{c}</option>)}
+              </>
             ) : (
               <>
-                <option value="BSc">BSc</option>
+                <option value="">--Select--</option>
+                <option value="BSc(CS)">BSc(CS)</option>
+                <option value="BCA">BCA</option>
                 <option value="BA">BA</option>
               </>
             )}
@@ -175,7 +186,7 @@ const AttendanceForm = () => {
 
         <label>
           Section:
-          <select value={section} onChange={(e) => setSection(e.target.value)} style={{ marginLeft: 8 }}>
+          <select value={section} onChange={(e) => setSection(e.target.value)}>
             {sectionsList.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </label>
@@ -189,13 +200,12 @@ const AttendanceForm = () => {
               setDescription(e.target.value);
               if (e.target.value.trim()) setDescError(false);
             }}
-            placeholder="Reason / notes for this session (required)"
+            placeholder="Reason / notes"
             rows={1}
             style={{
-              marginLeft: 8,
               verticalAlign: 'middle',
               resize: 'none',
-              minWidth: 220,
+              width: '100%',
               border: descError ? '1.5px solid #DC2626' : '1px solid #CBD5E1'
             }}
           />
@@ -215,7 +225,8 @@ const AttendanceForm = () => {
           background: '#F8FAFC',
           borderRadius: 8,
           border: '1px solid #E2E8F0',
-          alignItems: 'center'
+          alignItems: 'center',
+          flexWrap: 'wrap'
         }}>
           <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', fontWeight: 700, color: '#2563EB' }}>
             🔵 Present: {presentCount}
@@ -223,25 +234,65 @@ const AttendanceForm = () => {
           <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', fontWeight: 700, color: '#DC2626' }}>
             🔴 Absent: {absentCount}
           </span>
+          {(() => {
+            const counts = {};
+            students.forEach(s => {
+              const m = s.studentId.match(/^(.*?)(\d+)$/);
+              const p = m ? m[1] : "";
+              counts[p] = (counts[p] || 0) + 1;
+            });
+            let max = 0;
+            let primary = "";
+            for (const p in counts) {
+              if (counts[p] > max) { max = counts[p]; primary = p; }
+            }
+            return primary ? (
+              <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: 800, color: '#D4AF37', marginLeft: 16 }}>
+                {primary}
+              </span>
+            ) : null;
+          })()}
           <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: '#94A3B8', marginLeft: 'auto' }}>
             Tap a chip to mark absent (red)
           </span>
+          <div style={{ display: 'flex', gap: 8, marginLeft: 12 }}>
+            <button
+              onClick={() => markAll('present')}
+              style={{ padding: '4px 10px', fontSize: '0.75rem', background: 'transparent', border: '1px solid #3B82F6', color: '#3B82F6', borderRadius: 6, cursor: 'pointer', fontWeight: 700, minWidth: 'auto', height: 32 }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#EFF6FF' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+            >
+              All Present
+            </button>
+            <button
+              onClick={() => markAll('absent')}
+              style={{ padding: '4px 10px', fontSize: '0.75rem', background: 'transparent', border: '1px solid #EF4444', color: '#EF4444', borderRadius: 6, cursor: 'pointer', fontWeight: 700, minWidth: 'auto', height: 32 }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+            >
+              All Absent
+            </button>
+          </div>
         </div>
       )}
 
       {/* ── STUDENT GRID ── */}
       {students.length > 0 ? (
         <div className="students-grid">
-          {students.map((student) => (
-            <div
-              key={student._id}
-              className={`student-box ${Attendance[student._id] === "present" ? "present" : "absent"}`}
-              onClick={() => toggleAttendance(student._id)}
-              title={Attendance[student._id] === "present" ? "✔ Present" : "✘ Absent"}
-            >
-              <span className="student-id-text">{student.studentId}</span>
-            </div>
-          ))}
+          {students.map((student) => {
+            const m = student.studentId.match(/^(.*?)(\d+)$/);
+            const num = m ? m[2] : student.studentId;
+            return (
+              <div
+                key={student._id}
+                className={`student-box ${Attendance[student._id] === "present" ? "present" : "absent"}`}
+                onClick={() => toggleAttendance(student._id)}
+                title={Attendance[student._id] === "present" ? "✔ Present" : "✘ Absent"}
+              >
+                <span className="student-id-text">{num}</span>
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div className="empty-state">

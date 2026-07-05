@@ -51,7 +51,12 @@
   align-items: center;
 }
 
-/* ── INPUTS & SELECTS ── */
+@media (min-width: 640px) {
+  .creation-panel form:not(.student-form) {
+    flex-wrap: nowrap;
+  }
+}
+
 .creation-panel input,
 .creation-panel select {
   font-family: 'Nunito', system-ui, sans-serif;
@@ -63,7 +68,9 @@
   color: #1E293B;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
-  min-width: 180px;
+  min-width: 0;
+  width: 100%;
+  flex: 1;
 }
 
 .creation-panel input::placeholder { color: #94A3B8; }
@@ -81,7 +88,13 @@
   font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  padding: 9px 20px;
+  padding: 0 14px;
+  height: 36px;
+  min-width: 90px;
+  width: max-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: #1E3A8A;
   color: #FFFFFF;
   border: none;
@@ -125,6 +138,41 @@
 /* ── TABLE ── */
 .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
+.import-file-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
+
+.file-input {
+  display: none;
+}
+
+.btn-file-pick {
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0 14px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #F1F5F9;
+  color: #1E3A8A;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-file-pick:hover {
+  background: #E2E8F0;
+  border-color: #94A3B8;
+}
+
 .table-responsive table {
   width: 100%;
   min-width: 580px;
@@ -141,6 +189,10 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .table-responsive th:first-child { border-radius: 8px 0 0 0; }
@@ -155,6 +207,7 @@
   background: #FFFFFF;
 }
 
+.table-responsive tbody tr:nth-child(even) td { background: #F8FAFC; }
 .table-responsive tbody tr:hover td { background: #EFF6FF; }
 .table-responsive tbody tr:last-child td { border-bottom: none; }
 

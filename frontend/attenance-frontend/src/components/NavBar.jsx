@@ -55,15 +55,15 @@ function NavBar() {
       <NavLink to="/admin/student" className={navClass}>Student</NavLink>
       <NavLink to="/admin/report" className={navClass}>Report</NavLink>
       <NavLink to="/admin/assign" className={navClass}>Assign</NavLink>
+      <NavLink to="/creation" className={navClass}>Session Setup</NavLink>
+      <NavLink to="/editing-adding" className={navClass}>Manage Entries</NavLink>
     </>
   );
 
   const staffLinks = (
     <>
       <NavLink to="/" end className={navClass}>Home</NavLink>
-      <NavLink to="/creation" className={navClass}>Session Setup</NavLink>
       <NavLink to="/previous-Attendance" className={navClass}>Attendance Records</NavLink>
-      <NavLink to="/editing-adding" className={navClass}>Manage Entries</NavLink>
       <NavLink to="/enter-marks" className={navClass}>Marks Portal</NavLink>
       <NavLink to="/mark-record" className={navClass}>Mark Record</NavLink>
     </>
@@ -84,7 +84,7 @@ function NavBar() {
       <div className="nav-container">
         <NavLink to={logoLink} className="nav-logo">
           <img src="/favicon.jpg" alt="cs lab crest" className="nav-logo-img" />
-          <span>CS LAB Attendance</span>
+          <span>LAB Attendance</span>
         </NavLink>
 
         <div className="nav-links">
@@ -115,6 +115,9 @@ function NavBar() {
             </button>
           )}
         </div>
+        
+        {/* Backdrop for mobile menu */}
+        <div className={`menu-backdrop ${menuOpen ? "open" : ""}`} aria-hidden="true" />
       </div>
     </nav>
   );

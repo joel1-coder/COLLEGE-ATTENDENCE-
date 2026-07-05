@@ -30,7 +30,13 @@
   color: #FFFFFF;
   border: none;
   border-radius: 8px;
-  padding: 9px 20px;
+  padding: 0 14px;
+  height: 36px;
+  min-width: 90px;
+  width: max-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'Nunito', system-ui, sans-serif;
   font-size: 0.88rem;
   font-weight: 700;
@@ -82,7 +88,13 @@
 }
 
 .previous-Attendance .controls button {
-  padding: 9px 20px;
+  padding: 0 14px;
+  height: 36px;
+  min-width: 90px;
+  width: max-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 8px;
   background: #1E3A8A;
   color: #FFFFFF;

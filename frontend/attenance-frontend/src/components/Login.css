@@ -2,7 +2,7 @@
    LOGIN PAGE — LIGHT PROFESSIONAL
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Nunito:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
 
 .login-page {
   min-height: 100vh;
@@ -56,15 +56,24 @@
 }
 
 @keyframes cardIn {
-  from { opacity: 0; transform: translateY(24px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* Top navy accent line */
 .login-card::before {
   content: '';
   position: absolute;
-  top: 0; left: 20%; right: 20%;
+  top: 0;
+  left: 20%;
+  right: 20%;
   height: 3px;
   background: linear-gradient(90deg, transparent, #1E3A8A, transparent);
   border-radius: 99px;
@@ -87,7 +96,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Sora', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 800;
   font-size: 20px;
   box-shadow: 0 4px 16px rgba(30, 58, 138, 0.35);
@@ -95,7 +104,7 @@
 }
 
 .title {
-  font-family: 'Sora', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 800;
   font-size: 1.25rem;
   color: #1E3A8A;
@@ -103,7 +112,7 @@
 }
 
 .subtitle {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 0.88rem;
   color: #64748B;
   margin: 4px 0 28px 0;
@@ -111,7 +120,11 @@
 }
 
 /* ── FORM ── */
-.login-form { display: flex; flex-direction: column; gap: 0; }
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
 
 .input-group {
   display: flex;
@@ -121,7 +134,7 @@
 }
 
 .input-group label {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -130,7 +143,7 @@
 }
 
 .input-group input {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 0.92rem;
   padding: 12px 14px;
   background: #F8FAFC;
@@ -142,7 +155,9 @@
   width: 100%;
 }
 
-.input-group input::placeholder { color: #94A3B8; }
+.input-group input::placeholder {
+  color: #94A3B8;
+}
 
 .input-group input:focus {
   border-color: #1E3A8A;
@@ -152,14 +167,20 @@
 
 /* ── SUBMIT BUTTON ── */
 .btn-primary {
-  width: 100%;
-  padding: 13px;
+  width: max-content;
+  min-width: 90px;
+  height: 36px;
+  padding: 0 14px;
   margin-top: 6px;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   border-radius: 10px;
   background: #1E3A8A;
   color: #FFFFFF;
-  font-family: 'Sora', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -174,7 +195,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -184,7 +205,10 @@
   transform: translateY(-1px);
 }
 
-.btn-primary:active { transform: translateY(1px); filter: brightness(0.95); }
+.btn-primary:active {
+  transform: translateY(1px);
+  filter: brightness(0.95);
+}
 
 .btn-primary:disabled {
   opacity: 0.45;
@@ -228,13 +252,23 @@
   opacity: 0.8;
   transition: opacity 0.2s;
 }
-.login-footer a:hover { opacity: 1; text-decoration: underline; }
+
+.login-footer a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
 
 /* ── RESPONSIVE ── */
 @media (max-width: 480px) {
-  .login-card { padding: 28px 22px; }
-  .login-page { padding: 1.2rem; }
+  .login-card {
+    padding: 28px 22px;
+  }
+
+  .login-page {
+    padding: 1.2rem;
+  }
 }
+
 /* Favicon image inside the blue logo box */
 .logo-img {
   width: 28px;

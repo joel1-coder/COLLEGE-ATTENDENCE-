@@ -14,11 +14,11 @@
   --ivory: #F8F6F0;
   --silver: #E5E7EB;
 
-  --bg: #F8F6F0;
-  --bg-2: #EFEAE0;
+  --bg: #F8FAFC;
+  --bg-2: #F1F5F9;
   --surface: #FFFFFF;
-  --surface-2: #F8F6F0;
-  --surface-3: #F2EEE4;
+  --surface-2: #F8FAFC;
+  --surface-3: #F1F5F9;
 
   --navy-50: #F3F6FB;
   --navy-100: #E8EEF7;
@@ -55,8 +55,8 @@
   --border: rgba(8, 37, 103, 0.12);
   --border-strong: rgba(212, 175, 55, 0.52);
   --gold-border: rgba(212, 175, 55, 0.42);
-  --card-shadow: 0 10px 30px rgba(8, 37, 103, 0.08);
-  --card-shadow-hover: 0 16px 42px rgba(8, 37, 103, 0.13);
+  --card-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  --card-shadow-hover: 0 8px 24px rgba(15, 23, 42, 0.08);
 
   --radius-sm: 6px;
   --radius: 10px;
@@ -66,9 +66,9 @@
   --font-sans: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --base-font-size: 16px;
-  --h1-size: 2.25rem;
-  --h2-size: 1.6rem;
-  --h3-size: 1.18rem;
+  --h1-size: clamp(1.75rem, 5vw, 2.25rem);
+  --h2-size: clamp(1.35rem, 4vw, 1.6rem);
+  --h3-size: clamp(1.1rem, 3vw, 1.18rem);
 }
 
 *,
@@ -89,24 +89,12 @@ body {
   font-family: var(--font-sans);
   font-size: var(--base-font-size);
   color: var(--text);
-  background:
-    linear-gradient(180deg, rgba(248, 246, 240, 0.96), rgba(248, 246, 240, 0.98)),
-    repeating-linear-gradient(0deg, rgba(8, 37, 103, 0.025) 0 1px, transparent 1px 36px),
-    repeating-linear-gradient(90deg, rgba(212, 175, 55, 0.025) 0 1px, transparent 1px 36px);
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  background:
-    linear-gradient(90deg, rgba(8, 37, 103, 0.05), transparent 18%, transparent 82%, rgba(8, 37, 103, 0.05)),
-    linear-gradient(180deg, rgba(212, 175, 55, 0.06), transparent 220px);
-}
+
 
 h1,
 h2,
@@ -173,12 +161,15 @@ a:hover {
 button,
 .btn {
   font-family: var(--font-sans);
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
-  padding: 10px 18px;
+  padding: 0 14px;
+  height: 36px;
+  min-width: 90px;
+  max-width: fit-content;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   display: inline-flex;
   align-items: center;
@@ -404,8 +395,8 @@ textarea:focus,
 .mr-select:focus,
 .mr-input:focus,
 .edit-input:focus {
-  border-color: var(--gold) !important;
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15) !important;
   background: #FFFFFF !important;
 }
 

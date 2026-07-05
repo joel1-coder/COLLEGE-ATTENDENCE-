@@ -213,6 +213,7 @@ router.post('/students', auth, async (req, res) => {
 });
 
 // Bulk create/update students. Expect array of objects with studentId,name,class,section,email
+// ✨ Auto-creates missing departments and sections from the uploaded data
 router.post('/students/bulk', auth, async (req, res) => {
   try {
     const { students } = req.body;
@@ -220,8 +221,42 @@ router.post('/students/bulk', auth, async (req, res) => {
       return res.status(400).json({ message: 'students must be a non-empty array' });
     }
 
+    // ── Step 1: Collect unique departments and dept+section pairs ──
+    const deptSet = new Set();
+    const sectionPairs = new Set(); // "dept|||section" strings for uniqueness
+    students.forEach((s) => {
+      const dept = (s.department || s.class || '').trim();
+      const sec = (s.section || '').trim();
+      if (dept) deptSet.add(dept);
+      if (dept && sec) sectionPairs.add(`${dept}|||${sec}`);
+    });
+
+    // ── Step 2: Auto-create missing departments ──
+    const createdDepts = [];
+    for (const deptName of deptSet) {
+      const existing = await Department.findOne({ name: deptName });
+      if (!existing) {
+        await Department.create({ name: deptName });
+        createdDepts.push(deptName);
+        console.log('[bulk-import] Auto-created department:', deptName);
+      }
+    }
+
+    // ── Step 3: Auto-create missing sections ──
+    const createdSections = [];
+    for (const pair of sectionPairs) {
+      const [deptName, secName] = pair.split('|||');
+      const existing = await Section.findOne({ name: secName, department: deptName });
+      if (!existing) {
+        await Section.create({ name: secName, department: deptName });
+        createdSections.push({ department: deptName, section: secName });
+        console.log('[bulk-import] Auto-created section:', secName, 'for dept:', deptName);
+      }
+    }
+
+    // ── Step 4: Upsert all students ──
     const operations = students.map((s) => {
-      const dept = s.department || s.class;
+      const dept = (s.department || s.class || '').trim();
       return {
         updateOne: {
           filter: { studentId: s.studentId || s.email },
@@ -231,7 +266,7 @@ router.post('/students/bulk', auth, async (req, res) => {
               name: s.name,
               email: s.email,
               department: dept,
-              section: s.section,
+              section: (s.section || '').trim(),
             },
           },
           upsert: true,
@@ -240,7 +275,14 @@ router.post('/students/bulk', auth, async (req, res) => {
     });
 
     const writeResult = await Student.bulkWrite(operations, { ordered: false });
-    res.status(200).json({ message: 'Bulk students processed', result: writeResult });
+    res.status(200).json({
+      message: 'Bulk students processed',
+      result: writeResult,
+      autoCreated: {
+        departments: createdDepts,
+        sections: createdSections,
+      },
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

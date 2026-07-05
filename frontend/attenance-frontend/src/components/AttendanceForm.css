@@ -56,9 +56,9 @@
 .info,
 .filter-row {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
   margin-bottom: 24px;
   padding: 16px 20px;
   background: #F8FAFC;
@@ -74,11 +74,11 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-muted);
-  display: flex;
+  display: grid;
+  grid-template-columns: 110px 1fr;
   align-items: center;
   gap: 8px;
-  flex: 1;
-  min-width: 200px;
+  width: 100%;
 }
 
 /* ---- SELECTS & INPUTS ---- */
@@ -214,7 +214,13 @@ button,
   cursor: pointer;
   border: none;
   border-radius: var(--radius-sm);
-  padding: 10px 22px;
+  padding: 0 16px;
+  height: 44px;
+  min-width: 110px;
+  width: max-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--primary);
   color: #FFFFFF;
   box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
@@ -301,13 +307,12 @@ table td select {
 
 table td select:focus { border-color: var(--primary); }
 
-/* ---- GRID LAYOUT FOR STUDENTS (4 COLUMNS) ---- */
+/* ---- GRID LAYOUT FOR STUDENTS ---- */
 .students-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 10px;
   margin-bottom: 20px;
-  min-width: 0;
 }
 
 /* ---- STUDENT BOX ---- */
@@ -315,16 +320,17 @@ table td select:focus { border-color: var(--primary); }
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  min-width: 100%;
   background: var(--blue-bg);
   border: 1.5px solid var(--blue-soft);
-  border-radius: 8px;
-  padding: 16px 10px;
+  border-radius: 6px;
+  padding: 6px 16px;
   cursor: pointer;
-  transition: all 0.18s ease;
-  min-height: 48px;
-  height: 52px;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, box-shadow 0.2s, border-color 0.2s;
+  height: 38px;
+}
+
+.student-box:active {
+  transform: scale(0.95) !important;
 }
 
 /* 🔵 PRESENT BOX (Blue) */
@@ -385,14 +391,12 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .students-grid { 
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
+    gap: 8px;
   }
   
   .student-box { 
-    min-height: 48px;
-    height: 52px;
-    padding: 14px 8px;
+    height: 36px;
+    padding: 6px 12px;
     border-radius: 6px;
   }
   
@@ -432,14 +436,12 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .students-grid { 
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    gap: 8px;
   }
   
   .student-box { 
-    min-height: 48px;
-    height: 52px;
-    padding: 14px 8px;
+    height: 36px;
+    padding: 6px 12px;
     border-radius: 6px;
   }
   
@@ -487,14 +489,13 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .students-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
   }
   
   .student-box {
-    min-height: 44px;
-    height: 48px;
-    padding: 12px 6px;
+    height: 34px;
+    padding: 6px 10px;
     border-radius: 4px;
   }
   
@@ -503,14 +504,12 @@ table td select:focus { border-color: var(--primary); }
   }
   
   .submit-btn {
-    width: 100%;
-    padding: 8px 10px;
-    font-size: 0.75rem;
+    width: max-content;
+    height: 44px;
     margin-top: 12px;
   }
   
   button {
-    padding: 8px 10px;
-    font-size: 0.75rem;
+    height: 44px;
   }
 }

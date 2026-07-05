@@ -187,7 +187,6 @@ function Creation() {
   /* Step 2: User confirms → send all rows to backend */
   const handleBulkImport = async () => {
     if (!importFile) return showMsg("Please select a file first", "error");
-    if (!importDept) return showMsg("Please select a department", "error");
 
     setImporting(true);
     setImportResult(null);
@@ -205,19 +204,21 @@ function Creation() {
         // 💡 We're flexible with column names — we try multiple options
         const students = rows.map((row, i) => {
           const get = (names) => {
-            for (const n of names) {
-              const found = Object.keys(row).find((k) => k.toLowerCase().trim() === n);
-              if (found && row[found] !== "") return String(row[found]).trim();
-            }
+            const normalizedNames = names.map(n => n.toLowerCase().replace(/[^a-z0-9]/g, ""));
+            const foundKey = Object.keys(row).find((k) => {
+              const normalizedK = k.toLowerCase().replace(/[^a-z0-9]/g, "");
+              return normalizedNames.includes(normalizedK);
+            });
+            if (foundKey && row[foundKey] !== "") return String(row[foundKey]).trim();
             return "";
           };
 
           return {
             studentId: get(["studentid", "student_id", "id", "roll", "rollno", "roll no", "rollnumber"]) || `IMPORT-${i + 1}`,
-            name: get(["name", "student name", "studentname", "full name", "fullname"]),
-            email: get(["email", "mail", "emailid", "email id"]),
-            department: importDept,
-            section: importSection || get(["section", "sec", "class"]),
+            name: get(["name", "student name", "studentname", "full name", "fullname", "student_name"]),
+            email: get(["email", "mail", "emailid", "email id", "email_id"]),
+            department: get(["department", "depatment", "dept", "course", "class", "branch", "stream", "major"]) || importDept,
+            section: get(["section", "sec", "sec.", "class section", "division", "div"]) || importSection,
           };
         }).filter((s) => s.name); // Skip rows with no name
 
@@ -227,14 +228,31 @@ function Creation() {
           return;
         }
 
+        if (students.some((s) => !s.department)) {
+          showMsg("Missing department. Please select a Department from the dropdown or add a 'department' column to your file.", "error");
+          setImporting(false);
+          return;
+        }
+
         // Send all students to backend using the bulk endpoint
-        await apiClient().post("/admin/students/bulk", { students });
+        const response = await apiClient().post("/admin/students/bulk", { students });
+        const autoCreated = response.data?.autoCreated || {};
+        const newDepts = autoCreated.departments || [];
+        const newSections = autoCreated.sections || [];
+
+        let successMsg = `✅ Imported ${students.length} students!`;
+        if (newDepts.length > 0) successMsg += ` Auto-created departments: ${newDepts.join(', ')}.`;
+        if (newSections.length > 0) successMsg += ` Auto-created sections: ${newSections.map(s => `${s.section} (${s.department})`).join(', ')}.`;
+
         setImportResult({
           success: true,
           count: students.length,
-          message: `✅ Successfully imported ${students.length} students!`,
+          message: successMsg,
         });
-        showMsg(`✅ Imported ${students.length} students!`);
+        showMsg(successMsg);
+
+        // Refresh department list so new ones appear in dropdowns
+        loadDepartments();
 
         // Reset
         setImportFile(null);
@@ -257,9 +275,9 @@ function Creation() {
   /* Download a template Excel file so users know what columns to use */
   const downloadTemplate = () => {
     const templateData = [
-      { studentId: "24UCS101", name: "Alice Johnson", email: "alice@college.edu", section: "A" },
-      { studentId: "24UCS102", name: "Bob Smith", email: "bob@college.edu", section: "A" },
-      { studentId: "24UCS103", name: "Carol White", email: "carol@college.edu", section: "B" },
+      { studentId: "24UCS101", name: "Alice Johnson", email: "alice@college.edu", section: "A", department: "IIBSc(CS)" },
+      { studentId: "24UCS102", name: "Bob Smith", email: "bob@college.edu", section: "A", department: "IIBSc(CS)" },
+      { studentId: "24UCS103", name: "Carol White", email: "carol@college.edu", section: "B", department: "IIBSc(CS)" },
     ];
     const ws = XLSX.utils.json_to_sheet(templateData);
     const wb = XLSX.utils.book_new();
@@ -391,7 +409,7 @@ function Creation() {
         {/* Row 1: Department + Section selectors */}
         <div className="import-controls">
           <label>
-            Department:
+            Department (optional):
             <select
               value={importDept}
               onChange={(e) => setImportDept(e.target.value)}
@@ -466,7 +484,7 @@ function Creation() {
           type="button"
           className="btn-import"
           onClick={handleBulkImport}
-          disabled={importing || !importFile || !importDept}
+          disabled={importing || !importFile}
         >
           {importing ? "⏳ Importing..." : "✅ Confirm Import"}
         </button>

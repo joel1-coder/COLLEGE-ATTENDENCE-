@@ -82,6 +82,10 @@ const thStyle = {
   fontWeight: 700,
   textTransform: 'uppercase',
   letterSpacing: '0.08em',
+  position: 'sticky',
+  top: 0,
+  zIndex: 10,
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
 };
 
 const tdStyle = {
@@ -413,7 +417,7 @@ export default function MarkRecord() {
               </thead>
               <tbody>
                 {table.records.map((r, recordIndex) => (
-                  <tr key={r.id}>
+                  <tr key={r.id} style={{ background: recordIndex % 2 === 0 ? '#FFFFFF' : '#F8FAFC' }}>
                     <td style={{ ...tdStyle, color: '#94A3B8', fontSize: '0.8rem', fontWeight: 600 }}>
                       {recordIndex + 1}
                     </td>
