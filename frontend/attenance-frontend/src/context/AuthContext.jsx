@@ -7,32 +7,52 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [initializing, setInitializing] = useState(true);
+  // null = unknown, true = first-time setup needed, false = system ready
+  const [setupRequired, setSetupRequired] = useState(null);
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('user')) || null;
-    if (!stored?.token) {
-      setInitializing(false);
-      return;
-    }
-
-    // set header and verify token with backend
-    axios.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
-    axios.get(`${baseURL}/auth/verify`)
+    // First check if the system has been configured (any users exist)
+    axios.get(`${baseURL}/auth/setup-status`)
       .then((res) => {
-        if (res.data && res.data.valid) {
-          setUser(stored);
-        } else {
-          localStorage.removeItem('user');
-          delete axios.defaults.headers.common['Authorization'];
-          setUser(null);
+        const configured = res.data?.configured;
+        setSetupRequired(!configured);
+        if (!configured) {
+          // System not set up — skip token verification
+          setInitializing(false);
+          return;
         }
+        // System configured — now verify stored token
+        const stored = JSON.parse(localStorage.getItem('user')) || null;
+        if (!stored?.token) {
+          setInitializing(false);
+          return;
+        }
+        axios.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
+        axios.get(`${baseURL}/auth/verify`)
+          .then((verifyRes) => {
+            if (verifyRes.data?.valid) {
+              setUser(stored);
+            } else {
+              localStorage.removeItem('user');
+              delete axios.defaults.headers.common['Authorization'];
+            }
+          })
+          .catch(() => {
+            localStorage.removeItem('user');
+            delete axios.defaults.headers.common['Authorization'];
+          })
+          .finally(() => setInitializing(false));
       })
       .catch(() => {
-        localStorage.removeItem('user');
-        delete axios.defaults.headers.common['Authorization'];
-        setUser(null);
-      })
-      .finally(() => setInitializing(false));
+        // If we can't reach the backend, fall back to stored token
+        setSetupRequired(false);
+        const stored = JSON.parse(localStorage.getItem('user')) || null;
+        if (stored?.token) {
+          axios.defaults.headers.common['Authorization'] = `Bearer ${stored.token}`;
+          setUser(stored);
+        }
+        setInitializing(false);
+      });
   }, []);
 
   const login = (userData) => {
@@ -49,8 +69,11 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common['Authorization'];
   };
 
+  // Called after onboarding completes to flip the flag
+  const markConfigured = () => setSetupRequired(false);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, initializing }}>
+    <AuthContext.Provider value={{ user, login, logout, initializing, setupRequired, markConfigured }}>
       {children}
     </AuthContext.Provider>
   );

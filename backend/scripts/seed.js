@@ -18,7 +18,7 @@ const ADMIN = { name: 'Admin',       email: 'admin@school.edu',  password: 'Admi
 const STAFF = { name: 'Staff User',  email: 'staff@school.edu',  password: 'Staff@123', role: 'staff' };
 
 // ── Departments & sections ──────────────────────────────────────────────────
-const DEPARTMENTS = ['CS', 'IT'];
+const DEPARTMENTS = ['BCA', 'CS', 'IT'];
 const SECTIONS    = ['A', 'B'];
 
 // ── Student name pool (used to generate realistic names) ───────────────────

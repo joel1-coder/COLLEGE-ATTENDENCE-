@@ -14,6 +14,7 @@ import AdminReportMonthly from "./pages/AdminReportMonthly";
 import AdminReportReset from "./pages/AdminReportReset";
 import AdminAssign from "./pages/AdminAssign";
 import Creation from "./pages/Creation";
+import Onboarding from "./pages/Onboarding";
 import NavBar from "./components/NavBar";
 import PreviousAttendance from "./components/PreviousAttendance";
 import EditAddStudent from "./components/EditAddStudent";
@@ -23,22 +24,34 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import { AuthProvider } from './context/AuthContext';
 import { AuthContext } from './context/AuthContext';
+import { BrandingProvider } from './context/BrandingContext';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
-import "./theme.css"; // Import global theme.css to apply color variables
+import "./theme.css";
 
+/* ── Protected: requires any logged-in user ── */
 function Protected({ children }) {
-  const { user, initializing } = useContext(AuthContext);
-  if (initializing) return null;
-  if (!user) return <Navigate to="/login" replace />; // redirect to login
+  const { user, initializing, setupRequired } = useContext(AuthContext);
+  if (initializing || setupRequired === null) return null;
+  if (setupRequired) return <Navigate to="/onboarding" replace />;
+  if (!user) return <Navigate to="/login" replace />;
   return children;
 }
 
+/* ── AdminProtected: requires admin role ── */
 function AdminProtected({ children }) {
-  const { user, initializing } = useContext(AuthContext);
-  if (initializing) return null;
+  const { user, initializing, setupRequired } = useContext(AuthContext);
+  if (initializing || setupRequired === null) return null;
+  if (setupRequired) return <Navigate to="/onboarding" replace />;
   if (!user) return <Navigate to="/admin/login" replace />;
   if (user.role !== 'admin') return <Navigate to="/" replace />;
+  return children;
+}
+
+/* ── OnboardingGuard: always allow visiting onboarding, no auto-redirect ── */
+function OnboardingGuard({ children }) {
+  const { initializing } = useContext(AuthContext);
+  if (initializing) return null;
   return children;
 }
 
@@ -55,7 +68,6 @@ function ErrorPage() {
 function Layout() {
   const location = useLocation();
   useEffect(() => {
-    // remove any previous page- classes
     document.body.classList.remove(
       'page-default',
       'page-Attendance',
@@ -84,6 +96,17 @@ function Layout() {
 
 const router = createBrowserRouter(
   [
+    /* ── Standalone route: Onboarding (no NavBar) ── */
+    {
+      path: "/onboarding",
+      element: (
+        <OnboardingGuard>
+          <Onboarding />
+        </OnboardingGuard>
+      ),
+    },
+
+    /* ── Main layout (with NavBar) ── */
     {
       path: "/",
       element: <Layout />,
@@ -108,7 +131,7 @@ const router = createBrowserRouter(
         { path: "previous-Attendance", element: <Protected><PreviousAttendance /></Protected> },
         { path: "editing-adding", element: <AdminProtected><EditAddStudent /></AdminProtected> },
         { path: "enter-marks", element: <Protected><EnterMarks /></Protected> },
-          { path: "mark-record", element: <Protected><MarkRecord /></Protected> },
+        { path: "mark-record", element: <Protected><MarkRecord /></Protected> },
         { path: "forgot-password", element: <ForgotPassword /> },
         { path: "reset-password", element: <ResetPassword /> },
         { path: "creation", element: <AdminProtected><Creation /></AdminProtected> },
@@ -127,6 +150,8 @@ const router = createBrowserRouter(
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <AuthProvider>
-    <RouterProvider router={router} />
+    <BrandingProvider>
+      <RouterProvider router={router} />
+    </BrandingProvider>
   </AuthProvider>
 );

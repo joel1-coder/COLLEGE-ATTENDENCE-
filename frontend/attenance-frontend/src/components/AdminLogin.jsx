@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import { useBranding } from "../context/BrandingContext";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from "../api/api";
 import "./Login.css";
@@ -12,6 +13,7 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
 
   const { login } = useContext(AuthContext);
+  const { branding } = useBranding();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -45,18 +47,18 @@ export default function AdminLogin() {
         */}
         <div className="brand">
           <div className="logo">
-            <img
-              src="/favicon.jpg"
-              alt="Logo"
-              className="logo-img"
-              onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'block';
-              }}
-            />
-            <span style={{ display: 'none' }}>CS Lab</span>
+            {branding.logoDataUrl ? (
+              <img src={branding.logoDataUrl} alt="Logo" className="logo-img" />
+            ) : (
+              <img
+                src="/favicon.jpg"
+                alt="Logo"
+                className="logo-img"
+                onError={(e) => { e.target.style.display = 'none'; }}
+              />
+            )}
           </div>
-          <div className="title">LAB Attendance</div>
+          <div className="title">{branding.collegeName}</div>
         </div>
 
         <h2 className="subtitle">Administrative sign in</h2>

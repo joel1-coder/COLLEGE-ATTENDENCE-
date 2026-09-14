@@ -2,9 +2,11 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import "./NavBar.css";
 import { AuthContext } from "../context/AuthContext";
+import { useBranding } from "../context/BrandingContext";
 
 function NavBar() {
   const { user, logout } = useContext(AuthContext);
+  const { branding } = useBranding();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
@@ -83,8 +85,12 @@ function NavBar() {
     <nav className={`navbar ${isAdmin ? "admin" : "user"}`}>
       <div className="nav-container">
         <NavLink to={logoLink} className="nav-logo">
-          <img src="/favicon.jpg" alt="cs lab crest" className="nav-logo-img" />
-          <span>LAB Attendance</span>
+          {branding.logoDataUrl ? (
+            <img src={branding.logoDataUrl} alt="logo" className="nav-logo-img" />
+          ) : (
+            <img src="/favicon.jpg" alt="lab crest" className="nav-logo-img" />
+          )}
+          <span>{branding.collegeName}</span>
         </NavLink>
 
         <div className="nav-links">

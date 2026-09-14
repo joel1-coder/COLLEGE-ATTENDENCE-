@@ -8,6 +8,61 @@ const auth = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+/* ──────────────────────────────────────────────────────────────
+   SETUP STATUS — called on app load to decide if onboarding is needed
+   Returns { configured: true } if ANY user exists in the DB.
+────────────────────────────────────────────────────────────── */
+router.get("/setup-status", async (req, res) => {
+  try {
+    const count = await User.countDocuments();
+    res.json({ configured: count > 0 });
+  } catch (err) {
+    console.error("setup-status error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+/* ──────────────────────────────────────────────────────────────
+   INITIAL SETUP — creates the first admin + staff user.
+   This endpoint is BLOCKED if any user already exists.
+   Body: { admin: { email, password }, staff: { email, password } }
+────────────────────────────────────────────────────────────── */
+router.post("/setup", async (req, res) => {
+  try {
+    const count = await User.countDocuments();
+    if (count > 0) {
+      return res.status(403).json({
+        message: "System is already configured. Setup is not allowed.",
+      });
+    }
+
+    const { admin, staff } = req.body;
+
+    if (!admin?.email || !admin?.password || !staff?.email || !staff?.password) {
+      return res.status(400).json({ message: "Admin and Staff email + password are required." });
+    }
+    if (admin.password.length < 6 || staff.password.length < 6) {
+      return res.status(400).json({ message: "Passwords must be at least 6 characters." });
+    }
+    if (admin.email === staff.email) {
+      return res.status(400).json({ message: "Admin and Staff must have different emails." });
+    }
+
+    const adminHash = await bcrypt.hash(admin.password, 10);
+    const staffHash = await bcrypt.hash(staff.password, 10);
+
+    await User.create({ email: admin.email, password: adminHash, role: "admin", name: "Admin" });
+    await User.create({ email: staff.email, password: staffHash, role: "staff", name: "Staff" });
+
+    console.log("[setup] Initial admin + staff created successfully.");
+    res.status(201).json({ message: "Setup complete. You can now log in." });
+  } catch (err) {
+    console.error("Setup error:", err);
+    res.status(500).json({ message: "Server error", error: err?.message });
+  }
+});
+
+
 /* helper: send reset email */
 async function sendResetEmail(toEmail, resetLink) {
   const host = process.env.SMTP_HOST;
